@@ -7380,12 +7380,6 @@ translate zh_tw elena_ending_eaad25b6:
     # "Time to do what you've been waiting to do for a long time."
     ""
 
-# game/script.rpy:1800
-translate zh_tw elena_ending_e69e56f2:
-
-    # daycard "ELENA"
-    daycard "ELENA"
-
 # game/script.rpy:1799
 translate zh_tw elena_ending_5515dd8c:
 
@@ -7997,12 +7991,6 @@ translate zh_tw emma_ending_eaad25b6:
 
     # "Time to do what you've been waiting to do for a long time."
     ""
-
-# game/script.rpy:1933
-translate zh_tw emma_ending_7ed4e397:
-
-    # daycard "EMMA"
-    daycard "EMMA"
 
 # game/script.rpy:1931
 translate zh_tw emma_ending_5732ca19:

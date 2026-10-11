@@ -1806,7 +1806,6 @@ label elena_ending:
     scene black
     with fade
     play music "audio/elena.mp3" fadein 1.0
-    daycard "ELENA"
     lv "You suddenly realize something."
     scene place
     with dissolve
@@ -1939,7 +1938,6 @@ label emma_ending:
     scene black
     with fade
     play music "audio/emma.mp3" fadein 1.0
-    daycard "EMMA"
     lv "You realize something."
     scene cafe 
     with dissolve
