@@ -1,15 +1,19 @@
 ## Phone chat ##################################################################
 ##
 ## Text messages are shown as chat bubbles inside a phone in the middle of the
-## screen. Narration and inner thoughts keep using the normal textbox.
+## screen. The textbox stays visible underneath: for a message it shows the
+## sender and the same line, and narration and inner thoughts use it as usual.
 ##
 ## In the script:
 ##
-##     $ phone_open("Emma")   # show the phone with an empty chat
-##     b_txt "Hey!"           # message from Emma (left side, Emma's color)
-##     p_txt "Hi Emma"        # message from the player (right side)
-##     p "(Oh no.)"           # normal dialogue still uses the textbox
-##     $ phone_close()        # hide the phone
+##     $ phone_open("Emma")             # show the phone with an empty chat
+##     b_txt "Hey!"                     # message from Emma (left, Emma's color)
+##     p_txt "Hi Emma"                  # message from the player (right)
+##     p "(Oh no.)"                     # normal dialogue, phone stays up
+##     $ phone_typing_start(b_txt)      # show "..." for Emma until she sends
+##     $ phone_typing_start(p_txt)      # show "..." for the player
+##     $ phone_typing_stop()            # remove all "..." bubbles
+##     $ phone_close()                  # hide the phone
 
 ## Characters that talk through the phone.
 define a_txt = PhoneCharacter("Elena", "#E31B61")
@@ -22,7 +26,11 @@ define phone_typing_delay = 0.7
 
 default phone_contact = ""
 default phone_log = []
-default phone_typing = None
+
+## The color of the other person's "..." bubble, or None when they are not
+## typing, and whether the player's "..." bubble is showing.
+default phone_typing_them = None
+default phone_typing_me = False
 
 init -1 python:
 
@@ -37,7 +45,8 @@ init -1 python:
     def phone_open(contact):
         store.phone_contact = contact
         store.phone_log = [ ]
-        store.phone_typing = None
+        store.phone_typing_them = None
+        store.phone_typing_me = False
         renpy.show_screen("phone_chat")
         renpy.with_statement(dissolve)
 
@@ -45,62 +54,77 @@ init -1 python:
         renpy.hide_screen("phone_chat")
         renpy.with_statement(dissolve)
 
+    def phone_typing_start(who):
+        if who.phone_mine:
+            store.phone_typing_me = True
+        else:
+            store.phone_typing_them = who.phone_bubble
+
+    def phone_typing_stop():
+        store.phone_typing_me = False
+        store.phone_typing_them = None
+
     class PhoneCharacter(ADVCharacter):
         """
-        A character whose lines appear as chat bubbles in the phone. Lines from
-        the other person are preceded by a short "..." typing bubble.
+        A character whose lines appear as chat bubbles in the phone, and in the
+        textbox below it. Lines from the other person are preceded by a short
+        "..." typing bubble.
         """
 
         def __init__(self, name, bubble, mine=False, **properties):
             properties.setdefault("screen", "phone_say")
             properties.setdefault("color", bubble)
-            # Without this the text gets the textbox's say_dialogue position.
-            properties.setdefault("what_style", "phone_bubble_text")
-            properties.setdefault("what_color", phone_text_color(bubble))
-            # Chat messages appear all at once rather than typing out.
-            properties.setdefault("what_suffix", "{fast}")
             ADVCharacter.__init__(self, name, show_mine=mine, show_bubble=bubble, **properties)
             self.phone_mine = mine
             self.phone_bubble = bubble
 
         def __call__(self, what, *args, **kwargs):
-            if not self.phone_mine and phone_typing_delay and not renpy.is_skipping():
-                # Hide the empty textbox while the "..." bubble shows.
+            if self.phone_mine:
+                store.phone_typing_me = False
+
+            elif phone_typing_delay and not renpy.is_skipping():
+                # Show "..." in the phone, and the sender's name with "..." in
+                # the textbox (replacing the empty textbox) while they type.
+                store.phone_typing_them = self.phone_bubble
                 window = store._window
                 store._window = False
-                store.phone_typing = self.phone_bubble
+                renpy.show_screen("phone_typing_say", who=renpy.substitute(self.name), color=self.phone_bubble)
                 renpy.pause(phone_typing_delay)
-                store.phone_typing = None
+                renpy.hide_screen("phone_typing_say")
                 store._window = window
+
+            if not self.phone_mine:
+                store.phone_typing_them = None
 
             rv = ADVCharacter.__call__(self, what, *args, **kwargs)
             store.phone_log.append((self.phone_mine, self.phone_bubble, what))
             return rv
 
 
-## The messages so far, plus the "..." bubble while the other person types.
-screen phone_history():
-
-    for mine, bubble, msg in phone_log[-15:]:
-        frame:
-            style "phone_bubble"
-            xalign (1.0 if mine else 0.0)
-            background phone_bubble_bg(bubble)
-            text msg style "phone_bubble_text" color phone_text_color(bubble)
-
-    if phone_typing:
-        frame:
-            style "phone_bubble"
-            background phone_bubble_bg(phone_typing)
-            hbox:
-                style "phone_typing_dots"
-                for i in range(3):
-                    add Transform("gui/chat/dot.png", matrixcolor=TintMatrix(phone_text_color(phone_typing))) at phone_dot(i * 0.15)
+## One chat bubble.
+screen phone_bubble(msg, mine, bubble):
+    frame:
+        style "phone_bubble"
+        xalign (1.0 if mine else 0.0)
+        background phone_bubble_bg(bubble)
+        text msg style "phone_bubble_text" color phone_text_color(bubble)
 
 
-## Shown for the whole conversation, behind the dialogue.
-screen phone_chat():
-    zorder -1
+## A "..." bubble.
+screen phone_typing_bubble(mine, bubble):
+    frame:
+        style "phone_bubble"
+        xalign (1.0 if mine else 0.0)
+        background phone_bubble_bg(bubble)
+        hbox:
+            style "phone_typing_dots"
+            for i in range(3):
+                add Transform("gui/chat/dot.png", matrixcolor=TintMatrix(phone_text_color(bubble))) at phone_dot(i * 0.15)
+
+
+## The phone with the chat so far. `current` is a message that is being said
+## right now, which goes after the others.
+screen phone_body(current=None, mine=False, bubble=None):
 
     fixed:
         style "phone"
@@ -112,32 +136,55 @@ screen phone_chat():
         fixed:
             style "phone_area"
             at phone_clip
+
             vbox:
                 style "phone_messages"
-                use phone_history
+
+                for m, b, msg in phone_log[-15:]:
+                    use phone_bubble(msg, m, b)
+
+                if current is not None:
+                    use phone_bubble(current, mine, bubble)
+
+                if phone_typing_them:
+                    use phone_typing_bubble(False, phone_typing_them)
+
+                if phone_typing_me:
+                    use phone_typing_bubble(True, p_txt.phone_bubble)
 
 
-## The say screen used by PhoneCharacter. It draws the same phone on top of
-## phone_chat, with the new message as the last bubble.
+## Shown for the whole conversation, behind the dialogue.
+screen phone_chat():
+    zorder -1
+    use phone_body
+
+
+## The say screen used by PhoneCharacter: the phone with the new message as
+## its last bubble, on top of phone_chat, plus the usual textbox.
 screen phone_say(who, what, mine=False, bubble="#888888"):
 
-    fixed:
-        style "phone"
-        add "gui/chat/phone_frame.png"
-        text "[phone_contact]" style "phone_contact"
+    use phone_body(what, mine, bubble)
 
-        fixed:
-            style "phone_area"
-            at phone_clip
-            vbox:
-                style "phone_messages"
-                use phone_history
+    window:
+        id "window"
 
-                frame:
-                    style "phone_bubble"
-                    xalign (1.0 if mine else 0.0)
-                    background phone_bubble_bg(bubble)
-                    text what id "what" style "phone_bubble_text" color phone_text_color(bubble)
+        if who is not None:
+            window:
+                id "namebox"
+                style "namebox"
+                text who id "who"
+
+        text what id "what"
+
+
+## The textbox while the other person is typing.
+screen phone_typing_say(who, color):
+    window:
+        style "window"
+        window:
+            style "namebox"
+            text who style "say_label" color color
+        text "…" style "say_dialogue"
 
 
 transform phone_clip:
@@ -155,7 +202,7 @@ transform phone_dot(delay):
 style phone is fixed:
     xysize (490, 805)
     xalign 0.5
-    ypos -45
+    ypos 20
 
 style phone_area is fixed:
     pos (77, 130)

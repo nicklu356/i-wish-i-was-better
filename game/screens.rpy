@@ -159,6 +159,11 @@ style say_dialogue:
     xsize gui.dialogue_width
     ypos gui.dialogue_ypos
 
+    # TaipeiSans draws above and below its line box, which the typewriter
+    # effect would clip. Leading pads the top, overlap_split the bottom.
+    line_leading 12
+    line_overlap_split 8
+
     adjust_spacing False
 
 ## Input screen ################################################################
@@ -639,7 +644,11 @@ screen file_slots(title):
                     $ slot = i + 1
 
                     button:
-                        action FileAction(slot)
+                        # When saving, ask for a name first (see save_name_prompt).
+                        if CurrentScreenName() == "save":
+                            action Show("save_name_prompt", slot=slot)
+                        else:
+                            action FileAction(slot)
 
                         has vbox
 

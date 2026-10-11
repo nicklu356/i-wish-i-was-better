@@ -31,3 +31,13 @@
 
     old "What should you write?"
     new "你要寫些什麼？"
+
+    # game/extras.rpy
+    old "Name this save:"
+    new "為這個存檔命名："
+
+    old "Click to replay"
+    new "點擊重溫"
+
+    old "Not reached yet"
+    new "尚未達成"
