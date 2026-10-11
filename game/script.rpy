@@ -12,8 +12,9 @@ define lv = Character(None,what_color="#6e4f82")
 
 define m = Character("[player_name2]",  who_color="#867294", what_color="#867294")
 define p = Character("[player_name]", color="#7d00ae")
-# The player in the endings told from Elena's or Emma's point of view: no name.
-define pv = Character(None)
+# The player in the endings told from Elena's or Emma's point of view. He is
+# just "He" there, never the player's name.
+define pv = Character(_("He"), color="#7d00ae")
 define x = Character("Zane", color="#B5B9FF")
 define z = Character("Gus", color="#5C492A")
 
@@ -34,7 +35,7 @@ label start:
     jump day1
 
 label day1:
-    $ player_name = renpy.input(__("Please enter your name:"), length=12)
+    $ player_name = renpy.input(__("Please enter your name:"), length=12, exclude="[]{}")
     $ player_name = player_name.strip()
     if player_name == "":
         $ player_name = "Zack"
@@ -43,7 +44,7 @@ label day1:
     with dissolve
     play music "audio/peace.mp3" fadein 1.0
     "Not knowing exactly what you're doing, you drive down a highway with no destination in mind."
-    $ player_name2 = renpy.input(__("Please enter your dream girl's name:"), length=12)
+    $ player_name2 = renpy.input(__("Please enter your dream girl's name:"), length=12, exclude="[]{}")
     $ player_name2 = player_name2.strip()
     if player_name2 == "":
         $ player_name2 = "dream girl"
@@ -101,7 +102,7 @@ label day1:
     "Trying to choose the right song for the vibe, you don't notice someone walking up to you."
     q "Excuse me, can you give me a little help?"
     "Hearing someone call out, you look up and see a girl waving at you."
-    show elena at Position(xalign=0.75, yalign=0.8)
+    show elena at pos_right
     with dissolve
     q "Do you know how to get to the bus station?"
     "Having lived here for so long, you know exactly where the bus station is."
@@ -129,7 +130,7 @@ label day1:
     "Then you feel someone tap your shoulder from behind."
     q "Hey, glad to meet you again!"
     "You look up and realize she's the girl who asked you for directions earlier."
-    show elenaclassroom at center
+    show elenaclassroom at pos_center
     with dissolve
     p "Hey! I didn't know you were in this class, too."
     q "Well, who would have known, right? HAHA."
@@ -150,7 +151,7 @@ label day1:
     t "You should know who your partner is now. Let me know if you have any questions."
     "You realize you'll be in the same group as Elena."
     scene back
-    show elenaclassroom at center
+    show elenaclassroom at pos_center
     with dissolve
     a "What are the odds!"
     p "Yeah!"
@@ -212,7 +213,7 @@ label day2:
     with dissolve
     "Since you're all in the same group, you figure you should take the initiative and greet your teammates."
     "You exchange your social accounts and learn each other's names."
-    show emmabus at center
+    show emmabus at pos_center
     with dissolve
     b "My name is Emma, nice to meet you."
     p "Nice to meet you too."
@@ -269,7 +270,7 @@ label day3:
 
     scene library
     play music "audio/cozylofirelax.mp3" fadein 1.0
-    show emma at center
+    show emma at pos_center
     with dissolve
     "Emma is exactly as you expected (at least for now):"
     "She's polite to strangers (which is you currently)."
@@ -300,8 +301,8 @@ label day3:
     z "Bye!"
     b "Bye!"
     "Since the group work is done, you figure you should leave too."
-    show gus at center
-    show emma at right 
+    show gus at pos_center
+    show emma at pos_right
     with dissolve
     z "Hey man, wait up!"
     "You stop."
@@ -315,8 +316,8 @@ label day3:
     with fade
     "Some time later..."
     scene street
-    show gus at center
-    show emma at right 
+    show gus at pos_center
+    show emma at pos_right
     with dissolve
     "The three of you walk home, and Gus does most of the talking."
     z "So, [player_name], what makes you want to study [major]?"
@@ -325,8 +326,8 @@ label day3:
     p "I think so, but when you put it this way..."
     b "I think both ways have their ups and downs, right?"
     "Emma suddenly speaks up."
-    show gus at right
-    show emma at center
+    show gus at pos_right
+    show emma at pos_center
     with dissolve
     p "Yeah, I agree."
     p "So what about you two, why study [major]?"
@@ -349,7 +350,7 @@ label day3:
     "You guys just chat about these things, nothing personal, just casual conversation."
     "Then Emma reaches her home and says goodbye."
     hide emma
-    show gus at center
+    show gus at pos_center
     with dissolve
     "You and Gus then continue on your way."
     "And of course, somehow the conversation turns NSFW."
@@ -378,7 +379,7 @@ label day4:
     play music "audio/joyful.mp3" fadein 1.0
     a "Hey, we meet again!"
     "You find someone sitting down next to you."
-    show elena at center
+    show elena at pos_center
     with dissolve
     p "Oh hi, Elena!"
     "To your surprise, Elena is a lot earlier than last time."
@@ -417,13 +418,13 @@ label day4:
     with fade
     "Some time later..."
     scene classroom4
-    show elena at center
+    show elena at pos_center
     with dissolve
     "Class is over, and Elena says goodbye."
 
     scene basketball
     play music "audio/bowling.mp3" fadein 1.0
-    show gus at right
+    show gus at pos_right
     with dissolve
     "To your surprise, even though you were hoping to get along with Emma, you end up getting along with Gus pretty well."
     "He asks you to hang out after class, and you guys have a great time."
@@ -448,6 +449,7 @@ label day4:
     p "(Kind of sounds like me.)"
     p "Yeah, I hope."
     z "Don't worry man, I'll help break the ice."
+    play sound "audio/sfx/vibrate.ogg"
     "Gus's phone buzzes, and he picks it up."
     z "...And speak of the devil!"
     z "She just asked me when we're working on the project again."
@@ -463,7 +465,7 @@ label day4:
     stop music fadeout 1.5
 
     scene restaurant
-    show zane at center
+    show zane at pos_center
     with dissolve
     play music "audio/restaurant.mp3" fadein 1.0
     "You have lunch with Zane."
@@ -522,7 +524,7 @@ label day5:
     "Then you head to the place where the group agreed to meet."
     scene library
     play music "audio/cozylofirelax.mp3" fadein 1.0
-    show emma at center
+    show emma at pos_center
     with dissolve
     "Everything is basically the same."
     "Emma is still polite and still takes the project seriously."
@@ -537,7 +539,7 @@ label day5:
     with fade
     "Some time later..."
     scene library
-    show gus at center
+    show gus at pos_center
     with dissolve
     z "I think we're done!"
     z "That took a while."
@@ -572,8 +574,8 @@ label day5:
     "You used to go to places like this a lot."
     "But for no real reason, you just stopped."
     p "Nice place!"
-    show gus at center
-    show emma at right
+    show gus at pos_center
+    show emma at pos_right
     with dissolve
     z "I know, right?"
     z "Enough talking, let's play!"
@@ -642,8 +644,8 @@ label day5:
     with dissolve
     play music "audio/awalkonasummerevening.mp3" fadein 1.0
     "Every show has to end, and so does this hangout."
-    show gus at left
-    show emma at right
+    show gus at pos_left
+    show emma at pos_right
     with dissolve
     "The three of you walk home together again, chatting and laughing."
     "This time, Gus reaches his house first."
@@ -651,7 +653,7 @@ label day5:
     hide gus
     with dissolve
     "Yes, only the two of you."
-    show emma at center
+    show emma at pos_center
     with dissolve
     "You can already feel the awkwardness in the air, and that feels like shit."
     p "(God damn it, Gus, why are you the first to leave?)"
@@ -696,6 +698,7 @@ label day6:
     "You got home exhausted yesterday."
     "So much has happened in just a few days."
     "You're pretty sure more has happened this week than in all of high school."
+    play sound "audio/sfx/message.ogg"
     "As you drown in your thoughts, your phone chimes."
     $ phone_open("Emma")
     "It's a message and it's from Emma."
@@ -730,6 +733,7 @@ label day6:
     scene bedroom
     with dissolve
     $ phone_open("Elena")
+    play sound "audio/sfx/message.ogg"
     "You get another message."
     "But this time, it's Elena."
     a_txt "What are you doing right now?"
@@ -837,7 +841,7 @@ label day6:
             with dissolve
             play music "audio/aquiettime.mp3" fadein 1.0
             "After some time, you finally arrive at the destination."
-            show elena at center
+            show elena at pos_center
             with dissolve
             a "This is the place!"
             "You get out of the car and find yourself at a beach."
@@ -901,6 +905,7 @@ label day7:
                 "Since you messaged Elena, you wonder whether you should message Emma, too."
             "Don't text, that's kind of weird.":
                 $ phone_open("Elena")
+                play sound "audio/sfx/message.ogg"
                 "You got a text from Elena:"
                 a_txt "Thanks for last night, I enjoy the good company."
                 p_txt "No problem, I enjoy it, too."
@@ -919,6 +924,7 @@ label day7:
         "Today you actually have nothing to do."
         "(At least until someone suddenly invites you somewhere again.)"
         "But for now, you just lie on your bed and play with your phone."
+        play sound "audio/sfx/message.ogg"
         "Then, you get a message."
         $ phone_open("Elena")
         a_txt "Hey!"
@@ -1058,7 +1064,7 @@ label day8:
     "But so is Elena."
     "She really meant what she said about coming earlier."
     "So you sit next to her."
-    show elenaclassroom
+    show elenaclassroom at pos_center
     with dissolve
     play music "audio/joyful.mp3" fadein 1.0
     a "Oh hey, surprised to see me this early again?"
@@ -1092,7 +1098,7 @@ label day8:
     "The class is over."
     "So you head to the cafeteria."
     scene lunch
-    show elena
+    show elena at pos_center
     with dissolve
     a "So, what happened?"
     p "Gus happened."
@@ -1141,7 +1147,7 @@ label day8:
     "Some time later..."
     scene restaurant
     play music "audio/bowling.mp3" fadein 1.0
-    show gus
+    show gus at pos_center
     with dissolve
     z "I think Elena really likes you, bro."
     p "(God damn it, how the hell are we talking about this!?)"
@@ -1198,7 +1204,7 @@ label day9:
     "And unlike last time, you get up and sit next to her."
     play music "audio/ilikeyoualot.mp3" fadein 1.0
     p "Hey, Emma!"
-    show emmabus at center
+    show emmabus at pos_center
     with dissolve
     b "Hey, [player_name]!"
     "She greets you with a sweet smile."
@@ -1249,7 +1255,7 @@ label day10:
     "And you guys talk about whatever you can think of."
     play music "audio/ilikeyoualot.mp3" fadein 1.0
     p "So, how many new friends did you make?"
-    show emmabus at center
+    show emmabus at pos_center
     with dissolve
     b "Yeah! I met a few interesting people, there's Claire, Cathy, Xavier..."
     b "Oh, and of course, you."
@@ -1264,7 +1270,7 @@ label day10:
     "You don't know what to say to conclude the interaction, so you just pretend to be busy and pack up your bag slowly."
     "And it works."
     "Emma's already done."
-    show emmabus at center
+    show emmabus at pos_center
     with dissolve
     b "Hey, what are your plans for the weekend?"
     p "Nothing at the moment. What's up?"
@@ -1282,7 +1288,7 @@ label day10:
     with fade
     "Some time later..."
     scene restaurant
-    show zane at center
+    show zane at pos_center
     with dissolve
     play music "audio/restaurant.mp3" fadein 1.0
     "You have dinner with Zane."
@@ -1324,7 +1330,7 @@ label day11:
     "For a girl that is so random, she sure seems fixed on this."
     p "Hey."
     play music "audio/joyful.mp3" fadein 1.0
-    show elena
+    show elena at pos_center
     with dissolve
     a "Hey to you!"
     "Elena looks at you, shocked."
@@ -1366,9 +1372,11 @@ label day12:
     "Yes, you still didn't sleep well last night, and you still look like a piece of shit right now."
     "You spent another night thinking about the endless possibilities for the date."
     "You feel even worse now."
+    play sound "audio/sfx/ringtone.ogg" loop
     "Then your phone rings."
     p "(Who would be calling me now?)"
     "Kind of annoyed, you don't even check the name on the screen and just pick up."
+    stop sound fadeout 0.2
     p "Hello?"
     play music "audio/joyful.mp3" fadein 1.0
     a "Hey, sleepy head, time to wake up!"
@@ -1525,6 +1533,7 @@ label day12:
     a "Do you... wanna try this?"
     p "What?"
     a "You and me?"
+    play sound "audio/sfx/heartbeat.ogg"
     "You kind of saw this coming, but you're still in shock when it happens."
     a "Don't worry, take your time to think about it. No pressure."
     "She drives away before you can say anything."
@@ -1591,7 +1600,7 @@ label day13:
     "And this time, you're actually earlier than her."
     "You wonder what happened."
     "Then she shows up carrying two packages."
-    show emma at center
+    show emma at pos_center
     with dissolve
     b "Hey! Hope I didn't keep you waiting for so long."
     p "Nah, I just got here."
@@ -1663,7 +1672,7 @@ label day13:
     b "It's a secret! No peeking!"
     p "Fine, fine!"
     "You get back to your lantern."
-    $ player_wish = renpy.input(__("What should you write?"), length=40)
+    $ player_wish = renpy.input(__("What should you write?"), length=40, exclude="[]{}")
     if player_wish == "":
         $ player_wish = "Become someone you like."
     "You hope it comes true."
@@ -1685,7 +1694,7 @@ label day13:
     with fade
     "Some time later..."
     scene bus
-    show emmabus at Position(xalign=0.7, yalign=1.2) 
+    show emmabus at pos_bus_seat
     with dissolve
     "Pretty tired, neither of you says much on the way home. You just rest."
     "Then Emma speaks."
@@ -1694,6 +1703,7 @@ label day13:
     "She opens her mouth, then closes it."
     "Then she opens her mouth again."
     b "You know I like you a lot, right?"
+    play sound "audio/sfx/heartbeat.ogg"
     p "(Oh shit!)"
     "She can definitely tell you're overthinking."
     b "Hey, don't overthink this, okay?"
@@ -1718,8 +1728,8 @@ label theday:
     daycard "THE DAY"
     scene bedroom
     play music "audio/choice.mp3" fadein 1.0
-    show zane at Position(xalign=-0.25, yalign=1.05) 
-    show gus at Position(xalign=1.25, yalign=1.1)
+    show zane at pos_farleft
+    show gus at pos_farright
     with dissolve
     "After you tell Zane and Gus what happened, they come to your place ASAP."
     z "Look at my boy here, he's becoming the real winner here!"
@@ -1796,6 +1806,7 @@ label elena_ending:
     scene black
     with fade
     play music "audio/elena.mp3" fadein 1.0
+    daycard "ELENA"
     lv "You suddenly realize something."
     scene place
     with dissolve
@@ -1807,7 +1818,7 @@ label elena_ending:
     l "Yeah, coming!"
     scene black
     with fade
-    "You get in the car."
+    lv "You get in the car."
     scene playercar
     with dissolve
     stop music fadeout 1.5
@@ -1832,7 +1843,7 @@ label elena_ending:
     pv "You'll see."
     scene black
     with fade
-    "Some time later..."
+    lv "Some time later..."
     scene stairs
     with dissolve
     play music "audio/elena.mp3" fadein 1.0
@@ -1928,6 +1939,7 @@ label emma_ending:
     scene black
     with fade
     play music "audio/emma.mp3" fadein 1.0
+    daycard "EMMA"
     lv "You realize something."
     scene cafe 
     with dissolve
@@ -2148,7 +2160,7 @@ label reject_emma:
     "She looks so happy and so innocent, with no idea what's coming."
     b "Hey!"
     "You finally notice her."
-    show emma at center
+    show emma at pos_center
     with dissolve
     p "Oh hey!"
     "You hug each other and then sit on the bench."
@@ -2212,7 +2224,7 @@ label reject_elena:
     "You asked Elena to meet you at the beach."
     "This is gonna suck, but you still have to do it."
     "You see Elena."
-    show elena at center
+    show elena at pos_center
     with dissolve
     "She's waving at you."
     "You have the urge to say nothing and pretend it's all right."

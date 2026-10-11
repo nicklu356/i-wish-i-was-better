@@ -7380,6 +7380,12 @@ translate zh_tw elena_ending_eaad25b6:
     # "Time to do what you've been waiting to do for a long time."
     ""
 
+# game/script.rpy:1800
+translate zh_tw elena_ending_e69e56f2:
+
+    # daycard "ELENA"
+    daycard "ELENA"
+
 # game/script.rpy:1799
 translate zh_tw elena_ending_5515dd8c:
 
@@ -7422,11 +7428,11 @@ translate zh_tw elena_ending_401be677:
     # l "Yeah, coming!"
     l ""
 
-# game/script.rpy:1810
-translate zh_tw elena_ending_60007823:
+# game/script.rpy:1812
+translate zh_tw elena_ending_0f9d6425:
 
-    # "You get in the car."
-    ""
+    # lv "You get in the car."
+    lv ""
 
 # game/script.rpy:1814
 translate zh_tw elena_ending_a1b660e3:
@@ -7530,11 +7536,11 @@ translate zh_tw elena_ending_11beb861:
     # pv "You'll see."
     pv ""
 
-# game/script.rpy:1835
-translate zh_tw elena_ending_33a46fdf:
+# game/script.rpy:1837
+translate zh_tw elena_ending_331d34f0:
 
-    # "Some time later..."
-    "一段時間過後..."
+    # lv "Some time later..."
+    lv "一段時間過後..."
 
 # game/script.rpy:1839
 translate zh_tw elena_ending_a59de0ca:
@@ -7991,6 +7997,12 @@ translate zh_tw emma_ending_eaad25b6:
 
     # "Time to do what you've been waiting to do for a long time."
     ""
+
+# game/script.rpy:1933
+translate zh_tw emma_ending_7ed4e397:
+
+    # daycard "EMMA"
+    daycard "EMMA"
 
 # game/script.rpy:1931
 translate zh_tw emma_ending_5732ca19:

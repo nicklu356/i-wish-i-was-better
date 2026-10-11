@@ -24,6 +24,15 @@ define p_txt = PhoneCharacter("[player_name]", "#7d00ae", mine=True)
 ## How long the "..." typing bubble shows before an incoming message.
 define phone_typing_delay = 0.7
 
+## Sounds for a message arriving and for the player sending one. They play on
+## their own channel (under the sound effects volume) so they don't cut off
+## other sounds.
+define phone_receive_sound = "audio/sfx/pop.ogg"
+define phone_send_sound = "audio/sfx/send.ogg"
+
+init python:
+    renpy.music.register_channel("phone", "sfx", loop=False)
+
 default phone_contact = ""
 default phone_log = []
 
@@ -95,6 +104,10 @@ init -1 python:
 
             if not self.phone_mine:
                 store.phone_typing_them = None
+
+            if not renpy.is_skipping():
+                sound = phone_send_sound if self.phone_mine else phone_receive_sound
+                renpy.sound.play(sound, channel="phone")
 
             rv = ADVCharacter.__call__(self, what, *args, **kwargs)
             store.phone_log.append((self.phone_mine, self.phone_bubble, what))
