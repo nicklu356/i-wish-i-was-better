@@ -16,12 +16,14 @@
 ##     $ phone_close()                  # hide the phone
 
 ## Characters that talk through the phone.
-define a_txt = PhoneCharacter("Elena", "#E31B61")
-define b_txt = PhoneCharacter("Emma", "#0e719e")
+## Elena replies almost instantly; Emma takes her time.
+define a_txt = PhoneCharacter("Elena", "#E31B61", typing_delay=0.35)
+define b_txt = PhoneCharacter("Emma", "#0e719e", typing_delay=1.3)
 define x_txt = PhoneCharacter("Zane", "#B5B9FF")
 define p_txt = PhoneCharacter("[player_name]", "#7d00ae", mine=True)
 
-## How long the "..." typing bubble shows before an incoming message.
+## How long the "..." typing bubble shows before an incoming message, unless
+## the character sets its own typing_delay.
 define phone_typing_delay = 0.7
 
 ## Sounds for a message arriving and for the player sending one. They play on
@@ -80,25 +82,31 @@ init -1 python:
         "..." typing bubble.
         """
 
-        def __init__(self, name, bubble, mine=False, **properties):
+        def __init__(self, name, bubble, mine=False, typing_delay=None, **properties):
             properties.setdefault("screen", "phone_say")
             properties.setdefault("color", bubble)
             ADVCharacter.__init__(self, name, show_mine=mine, show_bubble=bubble, **properties)
             self.phone_mine = mine
             self.phone_bubble = bubble
+            self.phone_delay = typing_delay
+
+        def get_typing_delay(self):
+            if self.phone_delay is None:
+                return phone_typing_delay
+            return self.phone_delay
 
         def __call__(self, what, *args, **kwargs):
             if self.phone_mine:
                 store.phone_typing_me = False
 
-            elif phone_typing_delay and not renpy.is_skipping():
+            elif self.get_typing_delay() and not renpy.is_skipping():
                 # Show "..." in the phone, and the sender's name with "..." in
                 # the textbox (replacing the empty textbox) while they type.
                 store.phone_typing_them = self.phone_bubble
                 window = store._window
                 store._window = False
                 renpy.show_screen("phone_typing_say", who=renpy.substitute(self.name), color=self.phone_bubble)
-                renpy.pause(phone_typing_delay)
+                renpy.pause(self.get_typing_delay())
                 renpy.hide_screen("phone_typing_say")
                 store._window = window
 
