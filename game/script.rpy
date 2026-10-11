@@ -539,8 +539,8 @@ label day4:
     p "Relax, there's nothing going on at all, and I suspect nothing will."
     x "Dude, you've got to give yourself some credit, man."
     x "If you were such a bad person, no one would approach you at all."
-    x "I bet that's why you've been single your whole life."
     x "You don't have the confidence and never take the initiative, huh?"
+    x "I bet that's why you've been single your whole life."
     p "Bro, what the fuck is that supposed to mean? And get out of my head!"
     x "HAHA, you're like an open book. Way too easy to read."
     x "But seriously, have some faith."
@@ -1018,7 +1018,7 @@ label day7:
         p_txt "Yeah, I'm sorry. I had things to do at the time."
         a_txt "It's fine."
         a_txt "But just want to make sure."
-        a_txt "Are you free next Saturday?"
+        a_txt "Are you free next Friday?"
         p_txt "Maybe. Why?"
         a_txt "Just checking. Making sure you'll come out next time."
         menu:
@@ -2354,8 +2354,9 @@ label reject_elena:
     "You shake her hand."
     p "Of course, friends."
     a "Friends."
-    "Then she hugs you and leaves."
-    a "Let me know if you wanna hang out or something. Don't just ghost me because of this."
+    "Then she hugs you and shouts when she's on the way of leaving."
+    a "Let me know if you wanna hang out or something."
+    a "Don't just ghost me because of this."
     p "Never!"
     hide elena
     with dissolve
