@@ -28,8 +28,7 @@ define config.version = "1.0"
 ## Text that is placed on the game's about screen. Place the text between the
 ## triple-quotes, and leave a blank line between paragraphs.
 
-define gui.about = _p("""
-""")
+define gui.about = _("{b}Sound effects{/b}\nThe phone notification, chat message, ringtone, vibration and heartbeat sounds were synthesized from scratch for this game (see tools/make_sfx.py) and are released under CC0 (public domain). No third-party samples or recordings were used.")
 
 
 ## A short name for the game used for executables and directories in the built

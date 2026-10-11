@@ -41,3 +41,8 @@
 
     old "Not reached yet"
     new "尚未達成"
+
+    # game/script.rpy (the player's name in the endings told from Elena's or
+    # Emma's point of view)
+    old "He"
+    new "他"
