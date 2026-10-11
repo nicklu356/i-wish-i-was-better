@@ -355,15 +355,15 @@ translate zh_tw day1_673a4ff7:
     "你非常專注地聆聽課程，儘管有時你還是恍神了。"
 
 # game/script.rpy:146
-translate zh_tw day1_b1d4bea0:
+translate zh_tw day1_d91e0751:
 
-    # t "Alright class, before the lecture ends, I want you to know that this lecture will have a group assignment."
+    # t "Alright class, before the lecture ends, I want you to know that this course will have a group assignment."
     t "好了同學們，在下課之前，這堂課有分組作業。"
 
 # game/script.rpy:147
-translate zh_tw day1_50e2de27:
+translate zh_tw day1_37dc95fd:
 
-    # t "Since you're all freshmen, I will assign the group myself."
+    # t "Since you're all freshmen, I will assign the groups myself."
     t "而既然你們都是新生，就由我來分配組別。"
 
 # game/script.rpy:148
@@ -589,9 +589,9 @@ translate zh_tw day2_dc5641a8:
     t "所以我推薦你們盡早開始討論報告。"
 
 # game/script.rpy:206
-translate zh_tw day2_50e2de27:
+translate zh_tw day2_37dc95fd:
 
-    # t "Since you're all freshmen, I will assign the group myself."
+    # t "Since you're all freshmen, I will assign the groups myself."
     t "而既然你們都是新生，就由我來分配組別。"
 
 # game/script.rpy:207
@@ -811,9 +811,9 @@ translate zh_tw day3_4f919b31:
     "Emma跟你想像的一模一樣(至少現在為止)："
 
 # game/script.rpy:275
-translate zh_tw day3_59a59885:
+translate zh_tw day3_bf7d36df:
 
-    # "She's polite to strangers (which is you currently)."
+    # "She's polite to strangers (which is currently you)."
     "她對陌生人(目前就是你)很有禮貌。"
 
 # game/script.rpy:276
@@ -1633,9 +1633,9 @@ translate zh_tw day4_39e63f82:
     "你們相處得不錯，你們有共同興趣:"
 
 # game/script.rpy:473
-translate zh_tw day4_97fcec5f:
+translate zh_tw day4_cdd11509:
 
-    # "You like to play video games and share the same taste in movies."
+    # "You both like video games and share the same taste in movies."
     "你們喜歡打電動，你們在電影方面有相同的品味。"
 
 # game/script.rpy:474
@@ -1717,9 +1717,9 @@ translate zh_tw day4_72e54173:
     p "好啦。有Emma，Gus，Chris。"
 
 # game/script.rpy:487
-translate zh_tw day4_7806fd45:
+translate zh_tw day4_cfa6cc3e:
 
-    # p "Just happen to be in the same group by accident."
+    # p "We just happened to end up in the same group."
     p "這是隨便被分配到的組別。"
 
 # game/script.rpy:488
@@ -1777,9 +1777,9 @@ translate zh_tw day4_25b6e35d:
     "而且，一切都尚未成定局。"
 
 # game/script.rpy:497
-translate zh_tw day4_42988ef5:
+translate zh_tw day4_6f0469b5:
 
-    # "But Zane already noticed."
+    # "But Zane has already noticed."
     "然而，Zane注意到你的行為了。"
 
 # game/script.rpy:498
@@ -2023,9 +2023,9 @@ translate zh_tw day5_d6c889ea:
     "果然Gus又走過來了。"
 
 # game/script.rpy:556
-translate zh_tw day5_c66ae6f4:
+translate zh_tw day5_81a30ea4:
 
-    # z "Hey man, though Chris is gone, we still think we should celebrate, you will join us, right?"
+    # z "Hey man, even though Chris is gone, we still think we should celebrate. You're joining us, right?"
     z "嘿老兄，我們還是想慶祝一下，儘管Chris走了。你會加入我們，對吧？"
 
 # game/script.rpy:557
@@ -2059,9 +2059,9 @@ translate zh_tw day5_344e4b0f:
     z "根本不需要擔心啦！"
 
 # game/script.rpy:562
-translate zh_tw day5_4cb58b90:
+translate zh_tw day5_10966e5e:
 
-    # "Clock is ticking, so is your mind."
+    # "The clock is ticking, and so is your mind."
     "時間正在繼續，你的思考也是。"
 
 # game/script.rpy:563
@@ -2467,9 +2467,9 @@ translate zh_tw day5_52986d47:
     p ""
 
 # game/script.rpy:666
-translate zh_tw day5_873ad55f:
+translate zh_tw day5_9095a5c4:
 
-    # p "I used to play them with my high school friends a lot."
+    # p "I used to play darts with my high school friends a lot."
     p ""
 
 # game/script.rpy:667
@@ -2515,9 +2515,9 @@ translate zh_tw day5_1f4eb2aa:
     p ""
 
 # game/script.rpy:674
-translate zh_tw day5_0e0570a9:
+translate zh_tw day5_413b6747:
 
-    # p "Not trying to be ungrateful, I know there are definitely people that lived worse than me there."
+    # p "Not trying to be ungrateful. I know there were definitely people who had it worse than me there."
     p ""
 
 # game/script.rpy:675
@@ -2533,9 +2533,9 @@ translate zh_tw day5_2cc482a4:
     b ""
 
 # game/script.rpy:677
-translate zh_tw day5_bea386f5:
+translate zh_tw day5_b86bd540:
 
-    # b "At least you have some good time before and now, right?"
+    # b "At least you had some good times back then, and now, right?"
     b ""
 
 # game/script.rpy:678
@@ -2803,9 +2803,9 @@ translate zh_tw day6_a0e1af41:
     ""
 
 # game/script.rpy:741
-translate zh_tw day6_494b9ff4:
+translate zh_tw day6_6fdb0d66:
 
-    # "If you're socially capable, this could be that kind of good night you won't forget."
+    # "If you were socially capable, this could be the kind of night you'd never forget."
     ""
 
 # game/script.rpy:742
@@ -3469,9 +3469,9 @@ translate zh_tw day7_c610f180:
     ""
 
 # game/script.rpy:904
-translate zh_tw day7_3363cdcb:
+translate zh_tw day7_a39e198b:
 
-    # "You got a text from Elena:"
+    # "You get a text from Elena:"
     ""
 
 # game/script.rpy:905
@@ -4033,9 +4033,9 @@ translate zh_tw emma_message_201c509d:
     b_txt ""
 
 # game/script.rpy:1035
-translate zh_tw emma_message_0cf9322b:
+translate zh_tw emma_message_25587274:
 
-    # "You're not so sure but you think she's happy."
+    # "You're not so sure, but you think she's happy."
     ""
 
 # game/script.rpy:1038
@@ -4051,9 +4051,9 @@ translate zh_tw emma_message_201c509d_1:
     b_txt ""
 
 # game/script.rpy:1040
-translate zh_tw emma_message_0cf9322b_1:
+translate zh_tw emma_message_25587274_1:
 
-    # "You're not so sure but you think she's happy."
+    # "You're not so sure, but you think she's happy."
     ""
 
 # game/script.rpy:1041
@@ -4069,9 +4069,9 @@ translate zh_tw emma_message_fb3733a2:
     p_txt ""
 
 # game/script.rpy:1043
-translate zh_tw emma_message_9512b60e:
+translate zh_tw emma_message_70a315d1:
 
-    # b_txt "Happy to get bothered, and Bye!"
+    # b_txt "Happy to be bothered. Bye!"
     b_txt ""
 
 # game/script.rpy:1045
@@ -4099,15 +4099,15 @@ translate zh_tw day8_a6eda24e:
     daycard ""
 
 # game/script.rpy:1056
-translate zh_tw day8_57580236:
+translate zh_tw day8_f0b5a859:
 
-    # "Another day for you to be in school."
+    # "Another day of school."
     ""
 
 # game/script.rpy:1057
-translate zh_tw day8_40f97122:
+translate zh_tw day8_0a4c5241:
 
-    # "And yes you're still early."
+    # "And yes, you're still early."
     ""
 
 # game/script.rpy:1058
@@ -4711,9 +4711,9 @@ translate zh_tw day8_5ab1db51:
     p ""
 
 # game/script.rpy:1177
-translate zh_tw day8_4a83aaf1:
+translate zh_tw day8_343d5ba2:
 
-    # "You actually believe a little about what he said."
+    # "Deep down, you actually believe him a little."
     ""
 
 # game/script.rpy:1178
@@ -5233,9 +5233,9 @@ translate zh_tw day10_d34170de:
     p ""
 
 # game/script.rpy:1304
-translate zh_tw day10_d3b19695:
+translate zh_tw day10_fa3c7f32:
 
-    # p "How about we talk about 'that game' ?"
+    # p "How about we talk about 'that game'?"
     p ""
 
 # game/script.rpy:1305
@@ -5377,9 +5377,9 @@ translate zh_tw day11_14b899c8:
     p ""
 
 # game/script.rpy:1340
-translate zh_tw day11_96405ec9:
+translate zh_tw day11_f93dec8c:
 
-    # p "Besides, I know he didn't mean to do that on purpose, his intention was... kind of good?"
+    # p "Besides, I know he didn't do it on purpose. His intentions were... kind of good?"
     p ""
 
 # game/script.rpy:1341
@@ -5575,9 +5575,9 @@ translate zh_tw day12_95770207:
     a ""
 
 # game/script.rpy:1385
-translate zh_tw day12_5051a74c:
+translate zh_tw day12_ff7e36a2:
 
-    # "You just wake up, your head is buzzing."
+    # "You just woke up, and your head is buzzing."
     ""
 
 # game/script.rpy:1386
@@ -5695,9 +5695,9 @@ translate zh_tw day12_d0ba53e6:
     ""
 
 # game/script.rpy:1410
-translate zh_tw day12_026e72cc:
+translate zh_tw day12_543b76f6:
 
-    # "Then you see a car approaches, and you basically know it's Elena."
+    # "Then you see a car approaching, and you already know it's Elena."
     ""
 
 # game/script.rpy:1411
@@ -5719,9 +5719,9 @@ translate zh_tw day12_09d84580:
     ""
 
 # game/script.rpy:1417
-translate zh_tw day12_ec92e1c0:
+translate zh_tw day12_2fa44133:
 
-    # "Then you see a car approaches, and the driver rolls down the window."
+    # "Then you see a car approaching, and the driver rolls down the window."
     ""
 
 # game/script.rpy:1418
@@ -5809,15 +5809,15 @@ translate zh_tw day12_6c60b4f0:
     p ""
 
 # game/script.rpy:1441
-translate zh_tw day12_51d41552:
+translate zh_tw day12_cc39db2a:
 
-    # "Since you know she likes the surprises indie music can bring,"
+    # "You know she likes the surprises indie music can bring."
     ""
 
 # game/script.rpy:1442
-translate zh_tw day12_9118f0a5:
+translate zh_tw day12_00638cff:
 
-    # "You just sit on the seat and enjoy the music and the view."
+    # "So you just sit back and enjoy the music and the view."
     ""
 
 # game/script.rpy:1443
@@ -5881,9 +5881,9 @@ translate zh_tw day12_636ffd12:
     p ""
 
 # game/script.rpy:1454
-translate zh_tw day12_f01d3641:
+translate zh_tw day12_ae9e66c0:
 
-    # "Lost in thought, you don't notice you're arriving."
+    # "Lost in thought, you don't notice you've arrived."
     ""
 
 # game/script.rpy:1455
@@ -6073,9 +6073,9 @@ translate zh_tw day12_17e438a6:
     ""
 
 # game/script.rpy:1499
-translate zh_tw day12_0e30c5eb:
+translate zh_tw day12_4c46f429:
 
-    # "You laugh when you're suppose to laugh."
+    # "You laugh when you're supposed to laugh."
     ""
 
 # game/script.rpy:1500
@@ -6103,21 +6103,21 @@ translate zh_tw day12_202f9dd1:
     a ""
 
 # game/script.rpy:1505
-translate zh_tw day12_cf2b5984:
+translate zh_tw day12_c801ff0d:
 
-    # p "(At this point, she has taken me way too many places that she hasn't taken anyone with.)"
+    # p "(At this point, she's taken me to way too many places she's never taken anyone else.)"
     p ""
 
 # game/script.rpy:1506
-translate zh_tw day12_5556908d:
+translate zh_tw day12_a184d062:
 
-    # p "(I would be very fucking stupid if I think this means nothing.)"
+    # p "(I'd be fucking stupid to think this means nothing.)"
     p ""
 
 # game/script.rpy:1507
-translate zh_tw day12_7a22254f:
+translate zh_tw day12_0c3e4d4f:
 
-    # p "(If there's a next time, I definitely should take her to my special place, too.)"
+    # p "(If there's a next time, I should definitely take her to my special place, too.)"
     p ""
 
 # game/script.rpy:1509
@@ -6127,9 +6127,9 @@ translate zh_tw day12_f4242285:
     p ""
 
 # game/script.rpy:1510
-translate zh_tw day12_7a22254f_1:
+translate zh_tw day12_0c3e4d4f_1:
 
-    # p "(If there's a next time, I definitely should take her to my special place, too.)"
+    # p "(If there's a next time, I should definitely take her to my special place, too.)"
     p ""
 
 # game/script.rpy:1511
@@ -6223,9 +6223,9 @@ translate zh_tw day12_7165c912:
     ""
 
 # game/script.rpy:1539
-translate zh_tw day12_c143092d:
+translate zh_tw day12_3be50be4:
 
-    # "Shocked by what Elena said, you know you're destined to be awake for the whole night."
+    # "Shocked by what Elena said, you know you're destined to stay awake all night."
     ""
 
 # game/script.rpy:1540
@@ -6319,9 +6319,9 @@ translate zh_tw day12_244e987f:
     p_txt ""
 
 # game/script.rpy:1557
-translate zh_tw day12_2f993c74:
+translate zh_tw day12_5af7459f:
 
-    # x_txt "Yeah, and I am the president of the United States, I'm not that stupid."
+    # x_txt "Yeah, and I'm the president of the United States. I'm not that stupid."
     x_txt ""
 
 # game/script.rpy:1558
@@ -6613,15 +6613,15 @@ translate zh_tw day13_24b38911:
     ""
 
 # game/script.rpy:1625
-translate zh_tw day13_3e8a2795:
+translate zh_tw day13_fdf6df3f:
 
-    # b "I used to come here a lot when I was a kid, I like the width of the lake in my eyes."
+    # b "I used to come here a lot when I was a kid. I loved how wide the lake looked."
     b ""
 
 # game/script.rpy:1626
-translate zh_tw day13_ed012ed7:
+translate zh_tw day13_9c21eb63:
 
-    # b "It's so big and sparkling for me when I was young."
+    # b "It seemed so big and sparkling when I was young."
     b ""
 
 # game/script.rpy:1627
@@ -6655,9 +6655,9 @@ translate zh_tw day13_644e2dcf:
     ""
 
 # game/script.rpy:1632
-translate zh_tw day13_a6d05579:
+translate zh_tw day13_9c3cd4ed:
 
-    # "You wonder what it will be like if they're friends."
+    # "You wonder what it would be like if they were friends."
     ""
 
 # game/script.rpy:1633
@@ -6685,9 +6685,9 @@ translate zh_tw day13_4978d05c:
     ""
 
 # game/script.rpy:1637
-translate zh_tw day13_3e0f252f:
+translate zh_tw day13_0846e036:
 
-    # "And the mystery reveals..."
+    # "And the mystery is revealed..."
     ""
 
 # game/script.rpy:1638
@@ -6859,9 +6859,9 @@ translate zh_tw day13_e5d58d81:
     ""
 
 # game/script.rpy:1675
-translate zh_tw day13_6455a17a:
+translate zh_tw day13_eadd1a87:
 
-    # "You don't play around or speak, you just simply go to the lake and release the lantern."
+    # "You don't play around or talk. You just walk to the lake and release the lantern."
     ""
 
 # game/script.rpy:1676
@@ -6889,9 +6889,9 @@ translate zh_tw day13_4cefac71:
     ""
 
 # game/script.rpy:1680
-translate zh_tw day13_35c0038c:
+translate zh_tw day13_7acd0f61:
 
-    # "Or places that you never cared or noticed."
+    # "And seen places you never cared about or even noticed."
     ""
 
 # game/script.rpy:1681
@@ -6901,9 +6901,9 @@ translate zh_tw day13_c5d09927:
     ""
 
 # game/script.rpy:1682
-translate zh_tw day13_6414de86:
+translate zh_tw day13_0ef0681b:
 
-    # p "(Next time, I should leave my book opened.)"
+    # p "(Next time, I should leave my book open.)"
     p ""
 
 # game/script.rpy:1683
@@ -6931,9 +6931,9 @@ translate zh_tw day13_24b38911_1:
     ""
 
 # game/script.rpy:1692
-translate zh_tw day13_6906004a:
+translate zh_tw day13_502c3ce9:
 
-    # b "Hey, I really appreciate you doing these with me."
+    # b "Hey, I really appreciate you doing this with me."
     b ""
 
 # game/script.rpy:1693
@@ -7015,9 +7015,9 @@ translate zh_tw day13_39036f7b:
     ""
 
 # game/script.rpy:1711
-translate zh_tw day13_7da566b8:
+translate zh_tw day13_8f25da5f:
 
-    # "And the worst of all, you have feelings toward both of them."
+    # "And worst of all, you have feelings for both of them."
     ""
 
 # game/script.rpy:1712
@@ -7045,9 +7045,9 @@ translate zh_tw theday_576f1caa:
     ""
 
 # game/script.rpy:1725
-translate zh_tw theday_256855d1:
+translate zh_tw theday_553b9c56:
 
-    # z "Look at my boy here, he's becoming the real winner here!"
+    # z "Look at my boy here, he's becoming the real winner!"
     z ""
 
 # game/script.rpy:1726
@@ -7099,9 +7099,9 @@ translate zh_tw theday_cd802b59:
     x ""
 
 # game/script.rpy:1734
-translate zh_tw theday_fdc94abf:
+translate zh_tw theday_d7b1cf39:
 
-    # x "You are a good guy, nothing wrong for two girls to fall for you at the same time."
+    # x "You're a good guy. There's nothing wrong with two girls falling for you at the same time."
     x ""
 
 # game/script.rpy:1735
@@ -7183,9 +7183,9 @@ translate zh_tw theday_39f892b3:
     x ""
 
 # game/script.rpy:1748
-translate zh_tw theday_b437873e:
+translate zh_tw theday_4161595a:
 
-    # x "After all this time, who can you imagine to have a relationship with?"
+    # x "After all this time, who can you imagine being in a relationship with?"
     x ""
 
 # game/script.rpy:1749
@@ -7435,9 +7435,9 @@ translate zh_tw elena_ending_a1b660e3:
     l ""
 
 # game/script.rpy:1815
-translate zh_tw elena_ending_9e9d4ccb:
+translate zh_tw elena_ending_47798643:
 
-    # pv "Well, you never ask."
+    # pv "Well, you never asked."
     pv ""
 
 # game/script.rpy:1816
@@ -7507,9 +7507,9 @@ translate zh_tw elena_ending_a75ea30c:
     pv ""
 
 # game/script.rpy:1829
-translate zh_tw elena_ending_75b2afef:
+translate zh_tw elena_ending_b80bb7c9:
 
-    # lv "He winks, and you don't expect that."
+    # lv "He winks, and you didn't see that coming."
     lv ""
 
 # game/script.rpy:1830
@@ -7705,9 +7705,9 @@ translate zh_tw elena_ending_b5535767:
     lv ""
 
 # game/script.rpy:1871
-translate zh_tw elena_ending_cfd38107:
+translate zh_tw elena_ending_76daf69f:
 
-    # l "Hey, It's not stupid."
+    # l "Hey, it's not stupid."
     l ""
 
 # game/script.rpy:1872
@@ -7855,9 +7855,9 @@ translate zh_tw elena_ending_4e3bcb5b:
     pv ""
 
 # game/script.rpy:1896
-translate zh_tw elena_ending_26c7be23:
+translate zh_tw elena_ending_bdf1c8e3:
 
-    # l "Though you never answer my question..."
+    # l "Though you never answered my question..."
     l ""
 
 # game/script.rpy:1897
@@ -8599,9 +8599,9 @@ translate zh_tw emma_ending_0c8d46b7:
     pv ""
 
 # game/script.rpy:2049
-translate zh_tw emma_ending_0c49e804:
+translate zh_tw emma_ending_e02d1569:
 
-    # l "Hey, I'm sure you're a wonderful guy in high school, too!"
+    # l "Hey, I'm sure you were a wonderful guy in high school, too!"
     l ""
 
 # game/script.rpy:2050
@@ -9223,9 +9223,9 @@ translate zh_tw reject_emma_92a0444d:
     b ""
 
 # game/script.rpy:2199
-translate zh_tw reject_emma_2637cec7:
+translate zh_tw reject_emma_7a0fe767:
 
-    # "You were about to ask if you can still be friends, but you know that's too much to ask right now."
+    # "You want to ask if you can still be friends, but you know that's too much to ask right now."
     ""
 
 # game/script.rpy:2200
@@ -9475,9 +9475,9 @@ translate zh_tw reject_elena_9fcc8907:
     ""
 
 # game/script.rpy:2250
-translate zh_tw reject_elena_65223d2b:
+translate zh_tw reject_elena_54db2de1:
 
-    # a "Hey, but we still can be friends, right?"
+    # a "Hey, but we can still be friends, right?"
     a ""
 
 # game/script.rpy:2251
