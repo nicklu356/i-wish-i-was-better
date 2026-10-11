@@ -1369,7 +1369,7 @@ label day10:
     b "I was thinking maybe we could hang out?"
     p "Sure!"
     p "(Does she mean just the two of us?)"
-    b "How about the day after tomorrow, afternoon?"
+    b "How about Saturday afternoon?"
     p "Sure!"
     b "Great! I guess we'll... keep in touch?"
     p "No problem!"
@@ -2263,7 +2263,7 @@ label reject_emma:
     b "What is it?"
     "Once again, you brace yourself for what you're about to say."
     p "I really like you, Emma. I do."
-    p "But we shouldn't be dating."
+    p "But we shouldn't be together."
     "You watch Emma's smile fade as confusion sets in."
     "She tries to process what you're saying."
     b "Okay... but why? Did I do something wrong?"
@@ -2311,7 +2311,8 @@ label reject_elena:
     scene beach
     with dissolve
     "Here you are."
-    "You asked Elena to meet you at the beach."
+    "You asked Elena to meet."
+    "She asked you to meet at the beach."
     "This is gonna suck, but you still have to do it."
     "You see Elena."
     show elena at pos_center
