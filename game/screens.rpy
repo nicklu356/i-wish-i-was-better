@@ -309,6 +309,8 @@ screen navigation():
 
         textbutton _("Load") action ShowMenu("load")
 
+        textbutton _("Endings") action ShowMenu("endings")
+
         textbutton _("Preferences") action ShowMenu("preferences")
 
         if _in_replay:
@@ -741,21 +743,9 @@ screen preferences():
             label _("Language")
 
             hbox:
-                textbutton _("English"):
-                    action [
-                        SetField(renpy.game.preferences, "language", "english"),
-                        Function(renpy.change_language, "english"),
-                        renpy.restart_interaction
-                    ]
-                    selected renpy.game.preferences.language == "english"
-
-                textbutton _("繁體中文"):
-                    action [
-                        SetField(renpy.game.preferences, "language", "zh_tw"),
-                        Function(renpy.change_language, "zh_tw"),
-                        renpy.restart_interaction
-                    ]
-                    selected renpy.game.preferences.language == "zh_tw"
+                style_prefix "radio"
+                textbutton "English" action Language(None)
+                textbutton "繁體中文" action Language("zh_tw")
 
 
             # 其他設定區
