@@ -203,12 +203,12 @@ label day2:
     scene black
     "Some time later..."
     scene emmasits
-    with emmasits
+    with dissolve
     "You notice a guy coming towards the girl."
     "Guy sit next to her and they are having a chat."
     "You can hear the girl laughing out loud, which kind of suprises you since you thought she's the shy type."
     "At the same time, you can feel yourself so lonely as well."
-    p "Guy must be her boyfriend, I mean of course, the girl does look beautiful, it is normal for her to have a boyfriend."
+    p "(Guy must be her boyfriend, I mean of course, the girl does look beautiful, it is normal for her to have a boyfriend.)"
     "You're drowning with thoughts until the professor comes in and have the class."
     scene black
     "Some time later..."
@@ -408,6 +408,8 @@ label day4:
     "Trying to let yourself drown in your thoughts."
     scene black
     "Some time later..."
+    scene classroom4
+    with dissolve
     play music "audio/joyful.mp3" fadein 1.0
     a "Hey, good morning!"
     "You find someone sitting down next to you."
@@ -704,16 +706,21 @@ label day5:
     p "Like video games, movies that kind of stuff."
     b "Oh what kind of movies do you like?"
     p "Most of the genre are fine by me, but I do have a favorite movie."
-        $ favorite_movie = renpy.input(__("What's your favorite movie:"), length=50, exclude="[]{}")
-        $ favorite_movie = favorite_movie.strip()
-        if favorite_movie == "":
-            $ player_name = "Portrait Of A Lady On Fire"
+    $ favorite_movie = renpy.input(__("What's your favorite movie:"), length=50, exclude="[]{}")
+    $ favorite_movie = favorite_movie.strip()
+    if favorite_movie == "":
+        $ favorite_movie = "Portrait Of A Lady On Fire"
+    p "It's [favorite_movie]."
     b "NO WAY! I love that movie as well!"
     b "Not my favorite but I do love it!"
     b "I mean the movie just did a very great job on..."
     "You're kind of surprised Emma suddenly have a lot to say."
     scene black
     "Some time later..."
+    scene walk
+    show emma at pos_center
+    with dissolve
+    b "Till this day this movie still make a huge impact on me!"
     p "Yeah I agree! That's why I've watched it around 10 time now haha."
     b "Not that much for me but agree!"
     "You guys laugh and keep walking."
@@ -725,7 +732,7 @@ label day5:
     b "What happened in high school, if I may ask?"
     p "Nothing."
     b "Nothing?"
-    p "I think that's the point. Nothing happened. 
+    p "I think that's the point. Nothing happened." 
     p "I didn't know a lot of people, and I didn't join many activities."
     p "I was just... there."
     p "So I'm really thankful for my friends there."
@@ -924,6 +931,8 @@ label day6:
             "The two of you just sit on the beach and enjoy the view."
             scene black
             "Some time later..."
+            show elenabeach
+            with dissolve
             "You don't know how long you've been watching the ocean"
             "You're both just drawn in."
             "Then Elena speaks."
@@ -968,7 +977,7 @@ label day7:
             "Text Elena: 'Thanks for last night, I really appreciate it.'":
                 $ phone_open("Elena")
                 $ elena_affection += 1
-                p_txt "Thanks for last night, it was great!"
+                p_txt "Thanks for last night, I really appreciate it.!"
                 a_txt "No problem, I enjoy the company, too."
                 "You can't help smiling, and you try to hide it like an idiot."
                 "You hope whatever this is, it better not end badly."
@@ -1071,7 +1080,7 @@ label emma_message:
     b_txt "Why? You need to find him?"
     p_txt "Just asking."
     $ phone_typing_start(b_txt)
-    "Then Emma types for a while."\
+    "Then Emma types for a while."
     "It looks like she's typing and deleting over and over."
     "Like she's thinking whether she should write this or not."
     b_txt "Is this about the never-in-a-relationship thing?"
@@ -1098,14 +1107,14 @@ label emma_message:
         p "(That might explain some of Emma's nice gestures. She was probably just being friendly, or taking pity on me.)"
         p "(Fuck you and your lousy mouth, Gus.)"
     b_txt "Hey, don't worry, it's fine."
-    b_txt "Nothing wrong with never having dated anyone."
+    b_txt "Nothing wrong with never been in a relationship."
     p_txt "Yeah, easy for you to say."
     p_txt " I bet you've had a lot of boyfriends before."
     b_txt "Well, I don't have a boyfriend now."
     play music "audio/ilikeyoualot.mp3" fadein 1.0
     p "(Really?)"
     $ phone_typing_start(b_txt)
-    "Emma types for a while again."\
+    "Emma types for a while again."
     "Like she's thinking whether she should write this or not."
     b_txt "And second,"
     b_txt "I've never been in a relationship, either."
@@ -1165,7 +1174,6 @@ label day8:
     a "Trying to find mine, just like you."
     p "Guess we're alike in that way, then."
     a "Yeah, yeah I think so."
-    "You think she's only just noticed that, too."
     a "So how are you these days?"
     p "Good, I think?"
     "Then you remember that asshole Gus."
@@ -1198,19 +1206,19 @@ label day8:
         p "No, it's fine, I don't wanna bother you."
         p "And I think I would do better if I handle it myself."
     else:
-        a "Gus? Wait, big guy, brown eyes, kind of dumb, the one who told me you've never dated anyone?"
+        a "Gus? Wait, big guy, brown eyes, kind of dumb, the one who told me you've never been in a relatioship?"
         p "Yeah..."
         p "..."
         p "......"
         p "........."
-        p "Wait, WHAT THE FUCK!"
+        p "Wait, WHAT THE FUCK!?"
         p "YOU KNOW TOO!?"
         a "Yeah, HAHA."
         a "His issue is that he spills too much."
         a "I was only asking if he knew you or not, he just said everything like a fucking novel or something."
         p "God damn it."
         a "It's okay, HAHA."
-        a "So what if you've never dated anyone?"
+        a "So what if you've never been in a relationship?"
         a "Everyone starts out single."
         a "You've just been at it... a little longer."
         p "Thanks, that definitely makes me feel better."
@@ -1237,7 +1245,7 @@ label day8:
     p "(God damn it, how the hell are we talking about this!?)"
     p "(I should be pissed at him.)"
     p "That's not relevant now."
-    p "Jesus fucking Christ, why would you tell Elena and Emma that I've never dated anyone?"
+    p "Jesus fucking Christ, why would you tell Elena and Emma that I've never been in a realtionship?"
     p "In fact, how many people did you tell?"
     p "You know what? I don't want to know the answer."
     z "Whoa bro, chill."
@@ -1290,10 +1298,10 @@ label day9:
     p "Hey, Emma!"
     show emmabus at pos_center
     with dissolve
-    b "Hey, [player_name]!"
+    b "Good morning, [player_name]!"
     "She greets you with a sweet smile."
     p "So how did your family hangout go?"
-    b "You know, okay? It's basically like any family hangout, I guess?"
+    b "Okay? It's basically like any family hangout, I guess?"
     p "You mean not wanting to go in the first place, and sulking about it?"
     b "Then finding out later that it wasn't that bad, and it becomes one of your good memories?"
     p "Yeah, HAHA!"
@@ -1308,7 +1316,7 @@ label day9:
     p "Yeah, sure. Let me get my stuff first."
     "So you go grab your stuff and sit next to her."
     p "Hello again!"
-    b "Hello to you, too."
+    b "Hello to you, too haha"
     "She smiles."
     hide emmabus
     scene professor
@@ -1441,9 +1449,9 @@ label day11:
     a "Hey, I got something to do, gotta go."
     a "Talk to you soon?"
     p "No problem."
-    "You already had a feeling she'd disappear and pop up again out of nowhere."
-    "So you don't feel sad or angry or anything."
-    "You're kind of getting used to her flexible vibe."
+    "You already had a feeling she'd disappear and have her own adventure and pop up again out of nowhere."
+    "So you don't feel sad or angry anymore."
+    "You're kind of getting used to her vibe."
     "Which is good?"
     stop music fadeout 1.5
 
@@ -1453,7 +1461,7 @@ label day12:
     daycard "DAY 12"
     scene bedroom
     with dissolve
-    "Yes, you still didn't sleep well last night, and you still look like a piece of shit right now."
+    "Yep, you still didn't sleep well last night, and you still look like a piece of shit right now."
     "You spent another night thinking about the endless possibilities for the date."
     "You feel even worse now."
     play sound "audio/sfx/ringtone.ogg" loop
@@ -1467,7 +1475,7 @@ label day12:
     p "Oh shit, Elena!?"
     a "Yeah, it's me in the flesh."
     a "Why are you so surprised, you're having sex right now or something?"
-    p "What?"
+    p "WHAT?"
     a "Just kidding! HAHA!"
     a "So what're you doing now?"
     p "Just woke up and getting myself a cup of tea."
@@ -1575,7 +1583,7 @@ label day12:
     a "You don't like being scared your ass off?"
     p "HAHA, very funny."
     a "Don't worry, if it's a horror film, you have my permission to hold my hand."
-    "She says it while holding out her hand."
+    "She says it while showing her hand."
     "You laugh."
     p "You'd better keep your word."
     a "Of course I will!"
