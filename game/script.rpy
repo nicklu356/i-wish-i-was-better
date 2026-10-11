@@ -18,17 +18,21 @@ define z = Character("Gus", color="#5C492A")
 define l = Character("You",color= "#550072")
 define q = Character("???")
 define s = Character("Both")
-define t = Character("teacher")
+define t = Character("Teacher")
 define y = Character("Chris")
 
 # Big centered title card used for "DAY 1", "THE DAY", etc.
 define daycard = Character(None, kind=centered, what_size=72, what_color="#ffffff")
 
 label start:
+    scene black
+    $ quick_menu = False
+    call screen content_warning
+    $ quick_menu = True
     jump day1
 
 label day1:
-    $ player_name = renpy.input("Please enter your name:")
+    $ player_name = renpy.input(__("Please enter your name:"), length=12)
     $ player_name = player_name.strip()
     if player_name == "":
         $ player_name = "Zack"
@@ -37,7 +41,7 @@ label day1:
     with dissolve
     play music "audio/peace.mp3" fadein 1.0
     "Not knowing exactly what you're doing, you drive down a highway with no destination in mind."
-    $ player_name2 = renpy.input("Please enter your dream girl's name:")
+    $ player_name2 = renpy.input(__("Please enter your dream girl's name:"), length=12)
     $ player_name2 = player_name2.strip()
     if player_name2 == "":
         $ player_name2 = "dream girl"
@@ -689,42 +693,44 @@ label day6:
     "So much has happened in just a few days."
     "You're pretty sure more has happened this week than in all of high school."
     "As you drown in your thoughts, your phone chimes."
-    show phone
-    with dissolve
+    $ phone_open("Emma")
     "It's a message and it's from Emma."
-    b "Thanks for last night, I enjoyed that."
-    p "No problem."
+    b_txt "Thanks for last night, I enjoyed that."
+    p_txt "No problem."
     menu:
         "We should do that more often.":
             $emma_affection+=1
+            p_txt "We should do that more often."
             "You realize that sentence can have multiple meanings."
             p "(Fuck!)"
             "Then a message comes in."
-            b "Can't agree with you more!"
+            b_txt "Can't agree with you more!"
             p "(Wait, does she mean she likes hanging out, or the walk?)"
             p "(Dumbass! Why make a statement even yourself can't understand?)"
         "You know where to find me.":
             "Not knowing exactly what to write, you type the first thing that comes to mind."
             "Send."
+            p_txt "You know where to find me."
             p "(Shit, why would I say that? That's so fucking cliche.)"
             "Emma replies."
-            b "HAHA! I might take you up on that offer."
+            b_txt "HAHA! I might take you up on that offer."
     p "(Wait, is she flirting?)"
     p "(Hold your horses, el tigre. You don't even know if she's single.)"
     p "(Maybe she's just being polite, or wants to be friends.)"
     p "(Yeah, that's gotta be it.)"
+    $ phone_close()
     "Then you turn off your phone."
     scene black
     with fade
     "A few moments later..."
     scene bedroom
-    show phone
     with dissolve
+    $ phone_open("Elena")
     "You get another message."
     "But this time, it's Elena."
-    a "What are you doing right now?"
-    p "Nothing currently."
-    a "Wanna hang out?"
+    a_txt "What are you doing right now?"
+    p_txt "Nothing currently."
+    a_txt "Wanna hang out?"
     p "(What's with people and their sudden invitations?)"
     p "(Thank god I don't have a life.)"
     "Your brain goes into overdrive."
@@ -736,7 +742,9 @@ label day6:
         "Yeah, sure!":
             $go_with_elena = True
             $ elena_affection += 3
-            a "Meet me in 30 minutes."
+            p_txt "Yeah, sure!"
+            a_txt "Meet me in 30 minutes."
+            $ phone_close()
             scene place
             with dissolve
             "You go to the place Elena told you about and wait."
@@ -855,7 +863,9 @@ label day6:
 
         "Maybe next time.":
             $go_with_elena = False
-            a "It's alright, catch you later!"
+            p_txt "Maybe next time."
+            a_txt "It's alright, catch you later!"
+            $ phone_close()
     stop music fadeout 1.5
 
 
@@ -874,24 +884,25 @@ label day7:
         play music "audio/joyful.mp3" fadein 1.0
         menu:
             "Text Elena: 'Thanks for last night, it was great!'":
-                show phone
-                with dissolve
+                $ phone_open("Elena")
                 $ elena_affection += 1
-                a "No problem, I enjoy the company, too."
+                p_txt "Thanks for last night, it was great!"
+                a_txt "No problem, I enjoy the company, too."
                 "You can't help smiling, and you try to hide it like an idiot."
                 "You hope whatever this is, it better not end badly."
+                $ phone_close()
                 scene black
                 with fade
                 "Some time later..."
                 "Since you messaged Elena, you wonder whether you should message Emma, too."
             "Don't text, that's kind of weird.":
-                show phone
-                with dissolve
+                $ phone_open("Elena")
                 "You got a text from Elena:"
-                a "Thanks for last night, I enjoy the good company."
-                p "No problem, I enjoy it, too."
+                a_txt "Thanks for last night, I enjoy the good company."
+                p_txt "No problem, I enjoy it, too."
                 "You can't help smiling, and you try to hide it like an idiot."
                 "You hope whatever this is, it doesn't end badly."
+                $ phone_close()
                 scene black
                 with fade
                 "Some time later..."
@@ -905,32 +916,32 @@ label day7:
         "(At least until someone suddenly invites you somewhere again.)"
         "But for now, you just lie on your bed and play with your phone."
         "Then, you get a message."
-        show phone
-        with dissolve
-        a "Hey!"
+        $ phone_open("Elena")
+        a_txt "Hey!"
         play music "audio/joyful.mp3" fadein 1.0
         "It's Elena."
-        a "Remember when I asked you out and you said maybe next time?"
+        a_txt "Remember when I asked you out and you said maybe next time?"
         "Ouch."
-        p "Yeah, I'm sorry. I had things to do at the time."
-        a "It's fine."
-        a "But just want to make sure."
-        a "Are you free next Saturday?"
-        p "Maybe. Why?"
-        a "Just checking. Making sure you'll come out next time."
+        p_txt "Yeah, I'm sorry. I had things to do at the time."
+        a_txt "It's fine."
+        a_txt "But just want to make sure."
+        a_txt "Are you free next Saturday?"
+        p_txt "Maybe. Why?"
+        a_txt "Just checking. Making sure you'll come out next time."
         menu:
             "Promise":
                 $ elena_affection += 1
-                p "Hey, I promise next time you ask me to hang out, I'll say yes no matter what, okay?"
-                p "Unless my family dies or something."
-                a "HAHA, you're stupid!"
-                a "You better keep that promise though."
+                p_txt "Hey, I promise next time you ask me to hang out, I'll say yes no matter what, okay?"
+                p_txt "Unless my family dies or something."
+                a_txt "HAHA, you're stupid!"
+                a_txt "You better keep that promise though."
             "Don't promise":
-                p "Not so sure, probably will have things to do."
-                p "But I'll try to make room for you."
-                a "HAHA!"
-                a "You better keep that promise!"
-        a "I'm keeping my eyes on you."
+                p_txt "Not so sure, probably will have things to do."
+                p_txt "But I'll try to make room for you."
+                a_txt "HAHA!"
+                a_txt "You better keep that promise!"
+        a_txt "I'm keeping my eyes on you."
+        $ phone_close()
         "You put your phone down, smiling."
         p "(She really wants to hang out with me that bad?)"
         p "(Weird.)"
@@ -944,8 +955,8 @@ label day7:
 
 label emma_message:
     scene bedroom
-    show phone
     with dissolve
+    $ phone_open("Emma")
     "You open your chat with Emma and try typing whatever comes to mind."
     "But none of them feels good enough."
     "Then you see the typing indicator pop up."
@@ -955,74 +966,75 @@ label emma_message:
     p "(Fuck, she definitely knew I was online.)"
     p "(I need to type in something ASAP to make sure I don't look like a weirdo.)"
     "So you do."
-    p "Hey, so do you think the project is okay or do we need to fix it?"
+    p_txt "Hey, so do you think the project is okay or do we need to fix it?"
     p "(That's the best you got??)"
-    b "I think it's good."
-    b "Why? You think there's something wrong?"
-    p "No! I think it's all good, just double checking."
-    b "Ok."
+    b_txt "I think it's good."
+    b_txt "Why? You think there's something wrong?"
+    p_txt "No! I think it's all good, just double checking."
+    b_txt "Ok."
     p "(This doesn't look good.)"
-    p "So how's your day?"
-    b "Nothing much, just hanging out with my family."
-    p "That's okay, I'm just playing with my phone alone here, HAHA."
-    b "Then why don't you hang out with Gus or other friends?"
-    p "Well, I think I just want to have a me-day today."
-    p "Speaking of which, where do you think Gus is?"
-    p "Partying or something?"
-    b "Not sure."
-    b "Why? You need to find him?"
-    p "Nope, just asking."
+    p_txt "So how's your day?"
+    b_txt "Nothing much, just hanging out with my family."
+    p_txt "That's okay, I'm just playing with my phone alone here, HAHA."
+    b_txt "Then why don't you hang out with Gus or other friends?"
+    p_txt "Well, I think I just want to have a me-day today."
+    p_txt "Speaking of which, where do you think Gus is?"
+    p_txt "Partying or something?"
+    b_txt "Not sure."
+    b_txt "Why? You need to find him?"
+    p_txt "Nope, just asking."
     "Then Emma types for a while. It looks like she's typing and deleting over and over."
-    b "Is this about the never-dated-anyone thing?"
+    b_txt "Is this about the never-dated-anyone thing?"
     stop music
     $ renpy.music.play("audio/djdrop.mp3", channel="music", loop=0)
     if go_with_elena:
-        p "GOD DAMN IT!"
+        p_txt "GOD DAMN IT!"
         p "(So he did tell Emma!)"
-        p "How many people did he tell?"
-        b "Judging by your reaction, I guess you didn't give him permission to say that?"
-        p "The hell I did!"
+        p_txt "How many people did he tell?"
+        b_txt "Judging by your reaction, I guess you didn't give him permission to say that?"
+        p_txt "The hell I did!"
         p "(Fuck you and your lousy mouth again, Gus!)"
     else:
         "You almost choke."
-        p "How did you know that?"
-        b "Gus told me."
-        b "Though I figured he probably didn't have your permission."
-        p "HELL NO, HE DIDN'T!"
-        p "Sorry, I'm just kind of pissed off right now."
+        p_txt "How did you know that?"
+        b_txt "Gus told me."
+        b_txt "Though I figured he probably didn't have your permission."
+        p_txt "HELL NO, HE DIDN'T!"
+        p_txt "Sorry, I'm just kind of pissed off right now."
         p "(What the fuck, Gus!)"
         p "(Damn it. I can't even remember when I told him that.)"
         "Then you understand something."
         p "(That might explain some of Emma's nice gestures. She was probably just being friendly, or taking pity on me.)"
         p "(Fuck you and your lousy mouth, Gus.)"
-    b "Hey, don't worry, it's fine."
-    b "Nothing wrong with never having dated anyone."
-    p "Yeah, easy for you to say. I bet you've had a lot of boyfriends."
-    b "Well, first. I don't have a boyfriend now."
+    b_txt "Hey, don't worry, it's fine."
+    b_txt "Nothing wrong with never having dated anyone."
+    p_txt "Yeah, easy for you to say. I bet you've had a lot of boyfriends."
+    b_txt "Well, first. I don't have a boyfriend now."
     play music "audio/ilikeyoualot.mp3" fadein 1.0
     p "(Really?)"
-    b "And second,"
-    b "I've never dated anyone, either."
-    p "Wait, really?"
-    b "Yeah, and don't tell anyone about it. I will deny."
+    b_txt "And second,"
+    b_txt "I've never dated anyone, either."
+    p_txt "Wait, really?"
+    b_txt "Yeah, and don't tell anyone about it. I will deny."
     "In shock, you once again type without thinking."
-    p "Wow, I never would have thought a beautiful girl like you has never had a boyfriend."
+    p_txt "Wow, I never would have thought a beautiful girl like you has never had a boyfriend."
     "You quickly realize what you just typed, and you feel very, very embarrassed and nervous at the same time."
-    b "You think I'm beautiful?"
+    b_txt "You think I'm beautiful?"
     menu:
         "Yes, of course!":
             $ emma_affection += 2
-            p "I think you look good both inside and outside, at least from what I know so far. HAHA."
-            b "Well, thank you!"
+            p_txt "I think you look good both inside and outside, at least from what I know so far. HAHA."
+            b_txt "Well, thank you!"
             "You're not so sure but you think she's happy."
         "Why wouldn't I?":
             $ emma_affection += 1
-            p "I mean you're definitely prettier than lots of girls."
-            b "Well, thank you!"
+            p_txt "I mean you're definitely prettier than lots of girls."
+            b_txt "Well, thank you!"
             "You're not so sure but you think she's happy."
     "Embarrassed by what you just did, you wrap up the conversation quickly."
-    p "I'll stop bothering you. I'm gonna get some rest now. Bye!"
-    b "Happy to get bothered, and Bye!"
+    p_txt "I'll stop bothering you. I'm gonna get some rest now. Bye!"
+    b_txt "Happy to get bothered, and Bye!"
+    $ phone_close()
     "You turn off your phone."
     "You think you're done for now."
     "So you spend the rest of the day playing video games."
@@ -1523,32 +1535,32 @@ label day12:
     "Which kind of feels wrong now."
     "Not knowing what to do, you text Zane for advice."
     "Since Gus's credibility isn't exactly high right now."
-    show phone
-    with dissolve
-    x "Hey man, What's up?"
+    $ phone_open("Zane")
+    x_txt "Hey man, What's up?"
     play music "audio/lahth.mp3" fadein 1.0
-    p "Hypothetical question, does it count as cheating if I go on two dates?"
-    x "'Hypothetical', huh?"
-    x "I'll have to get the full picture of the situation first."
-    x "Did they put a label on it, like you're officially dating?"
-    p "No, I don't think so. But I think they're really getting to that point."
-    x "If that's the case, I think two dates are fine."
-    x "BUT."
-    x "The fact that you're wondering if it's cheating means that deep down, a small part of you already feels it's wrong."
-    p "Hey, I didn't say it was me."
-    x "Yeah, and I am the president of the United States, I'm not that stupid."
-    x "My suggestion: go on both dates, and you'd better make up your mind after that."
-    x "Because you're getting to the point where someone might get their heart broken."
-    p "Thanks, dude. Now I feel SO relaxed, and not under SO much pressure that I'm going to freak out."
-    x "Dude, you asked for my advice, not my comfort."
-    x "I'm being genuine here."
-    p "Yeah, I get it."
-    p "I really appreciate the help."
-    x "Hey, cut yourself some slack. Just play it cool for now."
-    x "Nothing has happened yet."
-    x "Before that crucial point, you're still safe."
-    p "Thanks, man. I needed that."
-    x "No problem."
+    p_txt "Hypothetical question, does it count as cheating if I go on two dates?"
+    x_txt "'Hypothetical', huh?"
+    x_txt "I'll have to get the full picture of the situation first."
+    x_txt "Did they put a label on it, like you're officially dating?"
+    p_txt "No, I don't think so. But I think they're really getting to that point."
+    x_txt "If that's the case, I think two dates are fine."
+    x_txt "BUT."
+    x_txt "The fact that you're wondering if it's cheating means that deep down, a small part of you already feels it's wrong."
+    p_txt "Hey, I didn't say it was me."
+    x_txt "Yeah, and I am the president of the United States, I'm not that stupid."
+    x_txt "My suggestion: go on both dates, and you'd better make up your mind after that."
+    x_txt "Because you're getting to the point where someone might get their heart broken."
+    p_txt "Thanks, dude. Now I feel SO relaxed, and not under SO much pressure that I'm going to freak out."
+    x_txt "Dude, you asked for my advice, not my comfort."
+    x_txt "I'm being genuine here."
+    p_txt "Yeah, I get it."
+    p_txt "I really appreciate the help."
+    x_txt "Hey, cut yourself some slack. Just play it cool for now."
+    x_txt "Nothing has happened yet."
+    x_txt "Before that crucial point, you're still safe."
+    p_txt "Thanks, man. I needed that."
+    x_txt "No problem."
+    $ phone_close()
     "You turn off your phone and try to go to sleep."
     "And of course, it doesn't work."
     stop music fadeout 1.5
@@ -1644,7 +1656,7 @@ label day13:
     b "It's a secret! No peeking!"
     p "Fine, fine!"
     "You get back to your lantern."
-    $ player_wish = renpy.input("What should you write:")
+    $ player_wish = renpy.input(__("What should you write?"), length=40)
     if player_wish == "":
         $ player_wish = "Become someone you like."
     "You hope it comes true."
@@ -1894,6 +1906,7 @@ label elena_ending:
     lv "But you don't give a fuck."
     lv "You just want to kiss him like there's no tomorrow."
     stop music fadeout 1.5
+    $ mark_ending("elena")
     jump tomorrow
 
 label emma_ending:
@@ -2054,6 +2067,7 @@ label emma_ending:
     lv "You both stand up, still holding hands."
     lv "Then you go for a walk, and yes, still holding hands like there's no tomorrow."
     stop music fadeout 1.5
+    $ mark_ending("emma")
     jump tomorrow
 
 label none_ending:
@@ -2088,6 +2102,7 @@ label none_ending:
     "There's no point looking back now. Only forward."
     "There's always tomorrow."
     stop music fadeout 1.5
+    $ mark_ending("none")
 
 label tomorrow:
     scene black
