@@ -8,15 +8,15 @@ default go_with_elena = False
 define b = Character("Emma", color="#0e719e")
 default emma_affection = 0
 default try_talk_emaa = False
-define lv = Character(None,what_color="#6e4f82")
+define lv = Character(None, what_color="#db81ff")
 
-define m = Character("[player_name2]",  who_color="#867294", what_color="#867294")
+define m = Character("[player_name2]",  color="#db81ff")
 define p = Character("[player_name]", color="#7d00ae")
 define pv = Character(_("He"), color="#7d00ae")
 define x = Character("Zane", color="#B5B9FF")
 define z = Character("Gus", color="#5C492A")
 
-define l = Character("You",color= "#550072")
+define l = Character("You",color= "#db81ff")
 define q = Character("???")
 define s = Character("Both")
 define t = Character("Teacher")
@@ -136,10 +136,15 @@ label day1:
     with dissolve
     p "Oh hi! I didn't know you were in this class, too."
     q "Well, who would have known, right? HAHA."
-    q "I should give you a proper thanks though, I was in a hurry earlier."
-    p "It's fine, I could tell. HAHA."
-    a "I'm Elena, you?"
-    p "[player_name]."
+    q "I should give you a proper thanks!" 
+    q "Though, you know you actually give me the wrong directio?"
+    p "(Crab!)"
+    p "Oh shoot, I'm so sorry about that."
+    q "It's all good haha."
+    q "Your intention were good."
+    "You still feel a bit awkward and sorry at the same time, and perhaps she notices as well."
+    a "Anyway... I'm Elena, and you?"
+    p "Oh! I'm [player_name]."
     "She sits down next to you as soon as you finish."
     a "Well, [player_name], nice to meet you."
     scene teacher
@@ -1075,9 +1080,16 @@ label emma_message:
     b_txt "ok"
     p "(This doesn't look good.)"
     p_txt "So how's your day?"
-    b_txt "not much, just out with my family"
-    p_txt "That's nice, I'm just playing with my phone here, haha."
-    b_txt "why not hang out with gus or something?"
+    b_txt "nothing much"
+    "Then you see her typing for a while, like she's deciding if she should type this."
+    b_txt "Actually, I'm writing a script now"
+    b_txt "what about you?"
+    "You don't expect that."
+    p_txt "That's so cool! What is it about?"
+    p_txt "I'm just playing with my phone here, haha."
+    b_txt "it's a fantasy one, the plot is talking about what if you're the only one on earth?"
+    b_txt "it's still in early age, but I'll keep you posted!"
+    b_txt "why not hang out with gus or something then?"
     "You know she didn't mean it that way, but somehow you feel kind of offended."
     p_txt "Well, I think I just want to have a me-day today."
     p_txt "Speaking of which, do you know where Gus is?"
@@ -1148,7 +1160,7 @@ label emma_message:
             b_txt "thank you :)"
             "You're not so sure, but you think she's happy."
     "Embarrassed by what you just did, you wrap up the conversation quickly."
-    p_txt "I'll let you get back to your family."
+    p_txt "I'll let you get back to your writing."
     p_txt "I'm gonna get some rest now. Bye!"
     b_txt "you weren't bothering me btw"
     b_txt "bye :)"
@@ -1312,12 +1324,9 @@ label day9:
     with dissolve
     b "Good morning, [player_name]!"
     "She greets you with a sweet smile."
-    p "So how did your family hangout go?"
-    b "Okay? It's basically like any family hangout, I guess?"
-    p "You mean not wanting to go in the first place, and sulking about it?"
-    b "Then finding out later that it wasn't that bad, and it becomes one of your good memories?"
-    p "Yeah, HAHA!"
-    p "Family, you know it!"
+    p "So how did your script go?"
+    b "It's on the way, I actually have a lot of ideas after we talked about it!"
+    p "That's great!"
     "And, once again, class is about to begin."
     p "Well, I should get back to my seat. Nice talking to you, though."
     "You're about to stand up and leave."
@@ -1768,7 +1777,7 @@ label day13:
     with dissolve
     "After some struggling, some laughing at your expense, and even some help, you finally finish."
     p "All right, I think we're good to go!"
-    p "Though I remember you can write things on the lantern, right?"
+    p "Though I remember you can write wishes on the lantern, right?"
     b "Impressive! Indeed we should!"
     b "Just write something that comes to your mind."
     "You see Emma has already started writing something."
@@ -1776,7 +1785,8 @@ label day13:
     b "It's a secret! No peeking!"
     p "Fine, fine!"
     "You get back to your lantern."
-    $ player_wish = renpy.input(__("What should you write?"), length=40, exclude="[]{}")
+    $ player_wish = renpy.input(__("What should you wish for?"), length=40, exclude="[]{}")
+    $ player_wish = player_wish.strip()
     if player_wish == "":
         $ player_wish = "Become someone you like."
     "You hope it comes true."
@@ -1899,6 +1909,131 @@ label theday:
             jump none_ending
     stop music fadeout 1.5
 
+label reject_emma:
+    scene parkafternoon
+    with dissolve
+    "You wait for Emma at the park."
+    "You keep rehearsing what to say."
+    "You don't even notice Emma arriving."
+    "She looks so happy and so innocent, with no idea what's coming."
+    b "Hey!"
+    "You finally notice her."
+    show emma at pos_center
+    with dissolve
+    p "Oh hey!"
+    "You hug each other and then sit on the bench."
+    b "So, what are we doing today?"
+    p "Nothing."
+    b "Nothing?"
+    "You can't keep stalling. The longer you wait, the worse it'll be!"
+    p "Actually, I have something to say."
+    "Emma turns to face you."
+    b "What is it?"
+    "Once again, you brace yourself for what you're about to say."
+    p "I really like you, Emma. I do."
+    p "But we shouldn't be together."
+    "You watch Emma's smile fade as confusion sets in."
+    "She tries to process what you're saying."
+    b "Okay... but why? Did I do something wrong?"
+    p "No, no, no. It's not because of anything you did."
+    p "And I like you, I really do."
+    p "And you're a good person, you are."
+    p "But the problem is me."
+    p "What I feel right now isn't strong enough to make me sure we should be together."
+    p "I hesitate."
+    p "You are fully prepared, but I'm not."
+    p "And I certainly can't ask you to wait."
+    p "What if I still said no after all that?"
+    p "That would hurt you even more."
+    p "I don't want to leave you hanging in uncertainty."
+    "She stays quiet for a while."
+    b "It's okay, I kind of get what you're saying."
+    b "And I'm glad you told me."
+    "Tears start to fall."
+    b "But it's just not fair."
+    b "You don't know how much I like you."
+    "You look at her."
+    "There's no one to blame but yourself for making her feel this way."
+    b "At least I tried, right?"
+    p "Yes, yes you did."
+    p "And I'll always remember that."
+    "You know she's way too mature for her age."
+    "You know exactly what you're giving up."
+    "You say nothing and just hold her."
+    "You let her cry until she's done."
+    "You feel like you're the biggest piece of shit in the world."
+    "Finally, Emma pulls herself together."
+    b "Well, this sucks."
+    b "At least you let me know sooner."
+    b "Now I have time to heal."
+    "You want to ask if you can still be friends, but you know that's too much to ask right now."
+    b "I'll see you around, [player_name]."
+    "Then she stands up and leaves."
+    hide emma
+    with dissolve
+    "It hurts to make such a wonderful girl cry like that. This is one of the hardest decisions you've ever made."
+    "But you know it's the right thing to do."
+    return
+
+label reject_elena:
+    scene beach
+    with dissolve
+    "Here you are."
+    "You asked Elena if you could talk."
+    "She told you to meet her at the beach."
+    "This is gonna suck, but you still have to do it."
+    "You see Elena."
+    show elena at pos_center
+    with dissolve
+    "She's waving at you."
+    "You have the urge to say nothing and pretend it's all right."
+    "But your moral compass wins."
+    a "Hey, how are you doing?"
+    p "Yeah, I'm fine."
+    a "Really?"
+    p "Actually no, I feel like shit."
+    a "Why? What happened?"
+    "You stay silent for a while."
+    "You think she already knows where this is going."
+    "She waits for you to continue."
+    "You take one big fucking breath."
+    p "I don't think we should date each other."
+    "Elena pauses for a second, like she's thinking it all through."
+    "Then she speaks."
+    a "You really sure about this?"
+    p "Yes."
+    a "Okay then."
+    p "Okay?"
+    a "Yeah."
+    "You're surprised her reaction is way calmer than you expected, and YOU had imagined EVERY possibility."
+    a "What? You thought I was gonna give you a hard time or something?"
+    p "Actually, yes."
+    a "Well, I'm not that type of person."
+    a "It's clear you've thought this through and made up your mind."
+    a "And you even told me in person, which is already better than a lot of people."
+    a "If this is what you want, I won't stop you."
+    "This is going way too well."
+    a "Though you might regret what you'll miss."
+    "She winks at you."
+    p "I'm sure this decision will haunt me every day."
+    "You smile."
+    "Silence falls, until Elena holds out her hand."
+    a "Hey, but we can still be friends, right?"
+    "You shake her hand."
+    p "Of course, friends."
+    a "Friends."
+    "Then she hugs you and shouts when she's on the way of leaving."
+    a "Let me know if you wanna hang out or something."
+    a "Don't just ghost me because of this."
+    p "Never!"
+    hide elena
+    with dissolve
+    "You shout after her as she walks farther and farther away."
+    "You then sigh."
+    "It actually went better than you expected, but you still feel sad inside."
+    "But you know this is the right thing to do."
+    return
+
 label elena_ending:
     "Before you go to Elena, there are still things you need to do."
     "And one of them is painful."
@@ -1910,7 +2045,7 @@ label elena_ending:
     scene black
     with fade
     play music "audio/elena.mp3" fadein 1.0
-    lv "You suddenly realize something."
+    lv "YOU SUDDENLY REALIZE SOMETHING."
     scene place
     with dissolve
     lv "It's the first time you've had to wait at this spot."
@@ -1924,7 +2059,6 @@ label elena_ending:
     lv "You get in the car."
     scene playercar
     with dissolve
-    stop music fadeout 1.5
     l "If I'd known you had a car, I wouldn't have been driving you around this whole time."
     pv "Well, you never asked."
     l "Fair enough."
@@ -1949,7 +2083,6 @@ label elena_ending:
     lv "Some time later..."
     scene stairs
     with dissolve
-    play music "audio/elena.mp3" fadein 1.0
     lv "You follow him into a building."
     l "What's this place?"
     pv "It's actually my apartment."
@@ -2243,137 +2376,15 @@ label tomorrow:
     "And before it happens, anything is possible."
     "Anything."
     scene black
+    with dissolve
+    "Who knows?"
+    "Maybe what you wish for will come true:"
+    "[player_wish]."
+    scene black
     with fade
     daycard "TOMORROW."
     scene black
     with fade
     pause
     pause
-    return
-
-# Rejection scenes shared by elena_ending, emma_ending and none_ending.
-
-label reject_emma:
-    scene parkafternoon
-    with dissolve
-    "You wait for Emma at the park."
-    "You keep rehearsing what to say."
-    "You don't even notice Emma arriving."
-    "She looks so happy and so innocent, with no idea what's coming."
-    b "Hey!"
-    "You finally notice her."
-    show emma at pos_center
-    with dissolve
-    p "Oh hey!"
-    "You hug each other and then sit on the bench."
-    b "So, what are we doing today?"
-    p "Nothing."
-    b "Nothing?"
-    "You can't keep stalling. The longer you wait, the worse it'll be!"
-    p "Actually, I have something to say."
-    "Emma turns to face you."
-    b "What is it?"
-    "Once again, you brace yourself for what you're about to say."
-    p "I really like you, Emma. I do."
-    p "But we shouldn't be together."
-    "You watch Emma's smile fade as confusion sets in."
-    "She tries to process what you're saying."
-    b "Okay... but why? Did I do something wrong?"
-    p "No, no, no. It's not because of anything you did."
-    p "And I like you, I really do."
-    p "And you're a good person, you are."
-    p "But the problem is me."
-    p "What I feel right now isn't strong enough to make me sure we should be together."
-    p "I hesitate."
-    p "You are fully prepared, but I'm not."
-    p "And I certainly can't ask you to wait."
-    p "What if I still said no after all that?"
-    p "That would hurt you even more."
-    p "I don't want to leave you hanging in uncertainty."
-    "She stays quiet for a while."
-    b "It's okay, I kind of get what you're saying."
-    b "And I'm glad you told me."
-    "Tears start to fall."
-    b "But it's just not fair."
-    b "You don't know how much I like you."
-    "You look at her."
-    "There's no one to blame but yourself for making her feel this way."
-    b "At least I tried, right?"
-    p "Yes, yes you did."
-    p "And I'll always remember that."
-    "You know she's way too mature for her age."
-    "You know exactly what you're giving up."
-    "You say nothing and just hold her."
-    "You let her cry until she's done."
-    "You feel like you're the biggest piece of shit in the world."
-    "Finally, Emma pulls herself together."
-    b "Well, this sucks."
-    b "At least you let me know sooner."
-    b "Now I have time to heal."
-    "You want to ask if you can still be friends, but you know that's too much to ask right now."
-    b "I'll see you around, [player_name]."
-    "Then she stands up and leaves."
-    hide emma
-    with dissolve
-    "It hurts to make such a wonderful girl cry like that. This is one of the hardest decisions you've ever made."
-    "But you know it's the right thing to do."
-    return
-
-label reject_elena:
-    scene beach
-    with dissolve
-    "Here you are."
-    "You asked Elena if you could talk."
-    "She told you to meet her at the beach."
-    "This is gonna suck, but you still have to do it."
-    "You see Elena."
-    show elena at pos_center
-    with dissolve
-    "She's waving at you."
-    "You have the urge to say nothing and pretend it's all right."
-    "But your moral compass wins."
-    a "Hey, how are you doing?"
-    p "Yeah, I'm fine."
-    a "Really?"
-    p "Actually no, I feel like shit."
-    a "Why? What happened?"
-    "You stay silent for a while."
-    "You think she already knows where this is going."
-    "She waits for you to continue."
-    "You take one big fucking breath."
-    p "I don't think we should date each other."
-    "Elena pauses for a second, like she's thinking it all through."
-    "Then she speaks."
-    a "You really sure about this?"
-    p "Yes."
-    a "Okay then."
-    p "Okay?"
-    a "Yeah."
-    "You're surprised her reaction is way calmer than you expected, and YOU had imagined EVERY possibility."
-    a "What? You thought I was gonna give you a hard time or something?"
-    p "Actually, yes."
-    a "Well, I'm not that type of person."
-    a "It's clear you've thought this through and made up your mind."
-    a "And you even told me in person, which is already better than a lot of people."
-    a "If this is what you want, I won't stop you."
-    "This is going way too well."
-    a "Though you might regret what you'll miss."
-    "She winks at you."
-    p "I'm sure this decision will haunt me every day."
-    "You smile."
-    "Silence falls, until Elena holds out her hand."
-    a "Hey, but we can still be friends, right?"
-    "You shake her hand."
-    p "Of course, friends."
-    a "Friends."
-    "Then she hugs you and shouts when she's on the way of leaving."
-    a "Let me know if you wanna hang out or something."
-    a "Don't just ghost me because of this."
-    p "Never!"
-    hide elena
-    with dissolve
-    "You shout after her as she walks farther and farther away."
-    "You then sigh."
-    "It actually went better than you expected, but you still feel sad inside."
-    "But you know this is the right thing to do."
     return
