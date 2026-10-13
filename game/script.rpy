@@ -137,11 +137,11 @@ label day1:
     p "Oh hi! I didn't know you were in this class, too."
     q "Well, who would have known, right? HAHA."
     q "I should give you a proper thanks!" 
-    q "Though, you know you actually give me the wrong directio?"
-    p "(Crab!)"
+    q "Though, you know you actually gave me the wrong direction?"
+    p "(Crap!)"
     p "Oh shoot, I'm so sorry about that."
     q "It's all good haha."
-    q "Your intention were good."
+    q "Your intentions were good."
     "You still feel a bit awkward and sorry at the same time, and perhaps she notices as well."
     a "Anyway... I'm Elena, and you?"
     p "Oh! I'm [player_name]."
@@ -1028,7 +1028,7 @@ label day7:
         p_txt "Yeah, I'm sorry. I had things to do at the time."
         a_txt "nah it's fine HAHA"
         a_txt "but i need to make sure of something"
-        a_txt "are u free next saturday?"
+        a_txt "are u free next friday?"
         p_txt "Maybe. Why?"
         a_txt "just checking"
         a_txt "making sure u actually show up next time"
@@ -1082,13 +1082,13 @@ label emma_message:
     p_txt "So how's your day?"
     b_txt "nothing much"
     "Then you see her typing for a while, like she's deciding if she should type this."
-    b_txt "Actually, I'm writing a script now"
+    b_txt "actually, I'm writing a script now"
     b_txt "what about you?"
     "You don't expect that."
     p_txt "That's so cool! What is it about?"
     p_txt "I'm just playing with my phone here, haha."
     b_txt "it's a fantasy one, the plot is talking about what if you're the only one on earth?"
-    b_txt "it's still in early age, but I'll keep you posted!"
+    b_txt "it's still in the early stages, but i'll keep you posted!"
     b_txt "why not hang out with gus or something then?"
     "You know she didn't mean it that way, but somehow you feel kind of offended."
     p_txt "Well, I think I just want to have a me-day today."
@@ -2175,7 +2175,7 @@ label emma_ending:
     scene black
     with fade
     play music "audio/emma.mp3" fadein 1.0
-    lv "You realize something."
+    lv "YOU REALIZE SOMETHING."
     scene cafe 
     with dissolve
     lv "This is the first time he's asked you out since you told him how you feel."
