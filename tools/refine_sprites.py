@@ -1,22 +1,24 @@
 """
-Turns the hand-drawn character sprites into a cleaner "digital" look so they
+Turns the hand-drawn character sprites into clean "digital" line art so they
 sit better on the painted backgrounds, without changing anyone's proportions,
-face or hair.
+pose, face or hair.
 
 For each character it reads the full-size drawing (game/images/*_original.png,
 which stays untouched) and:
 
-  1. separates the ink lines from the colour fills,
-  2. traces every line, fits a smooth curve through it (this takes the shake
-     out of long strokes but keeps them on the drawn path) and redraws it
-     thinner, with even width and tapered ends. Fine details (eyes, eyebrows,
-     noses, mouths, hair strands) are kept exactly as drawn,
+  1. separates the ink lines from the colour fills, and cleans the fills up
+     into flat areas of colour with smooth edges,
+  2. traces every line, fits a smooth curve through it that stays on the
+     drawn path, and redraws it at a fixed weight with tapered ends. Every
+     character uses the same three weights: the outline, lines between two
+     areas, and fine lines inside one (hair strands, folds, seams). Lines on
+     the face keep their drawn shape with the shaky edges smoothed,
   3. colours the lines with a dark shade of the colour next to them instead of
      pure black,
-  4. adds two-tone cel shading and a soft rim light to each painted area, lit
-     from the upper left (faces only get the soft shading, so they stay as
-     drawn), and
-  5. saves the in-game sprite (game/images/<name>.png), and the waist-up
+  4. redraws the shoes (see shoes.py next to this file),
+  5. adds two-tone cel shading and a soft rim light to each painted area, lit
+     from the upper left (faces only get the soft shading), and
+  6. saves the in-game sprite (game/images/<name>.png), and the waist-up
      close-ups cut from it, at the same size and framing as before, so nothing
      in the scripts needs to change.
 
@@ -37,17 +39,21 @@ from scipy import ndimage as ndi
 from scipy.interpolate import splev, splprep
 from skimage.morphology import skeletonize
 
+sys.path.insert(0, os.path.dirname(__file__))
+import shoes  # noqa: E402
+
 IMAGES = os.path.join(os.path.dirname(__file__), "..", "game", "images")
 
 ## Working resolution. The originals are 8192 square; half of that is plenty.
 WORK = 4096
 
-## Which drawing makes which sprite, and the sprite's canvas size.
+## Which drawing makes which sprite, the sprite's canvas size, and how tall that
+## canvas is on screen (see sprites.rpy), which sets how thick lines come out.
 SPRITES = {
-    "elena": ("Elena_original.png", 900),
-    "emma": ("Emma_original.png", 1000),
-    "gus": ("Gus_original.png", 1000),
-    "zane": ("Zane_original.png", 1000),
+    "elena": ("Elena_original.png", 900, 940),
+    "emma": ("Emma_original.png", 1000, 940),
+    "gus": ("Gus_original.png", 1000, 1000),
+    "zane": ("Zane_original.png", 1000, 1000),
 }
 
 ## The waist-up close-ups are crops of the full drawings: which sprite, the
@@ -57,6 +63,23 @@ CLOSEUPS = {
     "emmabus": ("emma", (2064, 0, 6272, 4208), 1000),
 }
 
+## Line weights, in pixels on a 1920x1080 screen: the outline, lines between
+## two areas, and fine lines inside an area (hair strands, folds, seams). Every
+## character gets the same ones. Lines on the face keep their drawn thickness.
+OUTLINE_WEIGHT = 3.2
+INNER_WEIGHT = 2.1
+FINE_WEIGHT = 1.1
+
+## A drawn line thinner than this fraction of the drawing's usual heavy line
+## is fine detail (face, hair strands, folds, seams).
+FINE_FRACTION = 0.55
+
+## Separate little drawings smaller than this across (working pixels) are
+## details such as eyes, mouths and buttons, and keep their drawn shape. So do
+## the lines on skin. FACE_SMOOTH is how much their edges get evened out.
+DETAIL_SIZE = 260
+FACE_SMOOTH = 1.2
+
 ## Ink is anything this dark (0-255 luminance).
 INK_LUMA = 32
 
@@ -64,24 +87,14 @@ INK_LUMA = 32
 ## filled black shape (hair, shoes), not a line.
 SOLID_FACTOR = 1.6 / 2
 
-## Lines thinner than this (working pixels) are details such as eyes, teeth
-## and hair strands. They are kept exactly as drawn, only recoloured. So is
-## every separate little drawing smaller than DETAIL_SIZE across: eyes,
-## eyebrows, noses, mouths, buttons.
-DETAIL_WIDTH = 9
-DETAIL_SIZE = 260
-
-## Lines get redrawn at this fraction of their drawn width (the outline round
-## the whole character keeps a bit more)...
-WIDTH_SCALE = 0.55
-OUTLINE_SCALE = 0.72
-## ...but never thinner than this many working pixels.
-MIN_WIDTH = 4.0
-
-## How far (as a fraction of the line width, plus a little) a smoothed line may
-## drift from the drawn one. Bigger is straighter.
+## How far (as a fraction of the drawn line's width) a smoothed line may drift
+## from the drawn one, with limits in working pixels. Long strokes may always
+## drift at least LONG_DRIFT. Bigger is straighter.
 DRIFT = 0.30
 DRIFT_MIN = 1.2
+DRIFT_MAX = 8.0
+LONG_STROKE = 250
+LONG_DRIFT = 3.0
 
 ## Light direction: x right, y down, z towards the viewer.
 LIGHT = np.array([-0.55, -0.65, 0.55])
@@ -103,36 +116,53 @@ def disk(r):
     return x * x + y * y <= r * r
 
 
+def is_skin(cols):
+    """Which colours look like skin: pale, warm, not very saturated."""
+
+    rgb = cols / 255.0
+    mx, mn = rgb.max(1), rgb.min(1)
+    sat = (mx - mn) / np.maximum(mx, 1e-6)
+    r, g, b = rgb[:, 0], rgb[:, 1], rgb[:, 2]
+    return (r >= g) & (r >= b) & (g >= b * 0.92) & (mx > 0.75) & (sat > 0.04) & (sat < 0.42)
+
+
 ## Step 1: lines and fills ####################################################
 
 def split_ink(rgba):
     """
-    Returns (ink, opaque). Ink is the line art; solid black areas (such as
-    black hair or shoes) are treated as fills, not lines.
+    Returns (ink, opaque, heavy). Ink is the line art; solid black shapes
+    (black hair or shoes) are left out of it and treated as fills. Heavy is
+    the width of the drawing's usual heavy line.
     """
 
     alpha = rgba[..., 3]
     opaque = alpha > 127
     ink = opaque & (luma(rgba[..., :3]) < INK_LUMA)
-    # Some strokes were drawn with a textured brush and are full of pinholes.
-    ink |= ndi.binary_closing(ink, structure=disk(2)) & opaque
-    ink = ndi.binary_opening(ink, structure=disk(1))
+    # Some strokes were drawn with a textured brush and are full of pinholes;
+    # fill the holes, but not real gaps such as between teeth.
+    holes, n = ndi.label(~ink)
+    ink |= (np.bincount(holes.ravel()) < 20)[holes] & opaque
+    # Specks of a few pixels are dirt, not lines.
+    lab, n = ndi.label(ink, structure=np.ones((3, 3)))
+    ink &= (np.bincount(lab.ravel()) >= 12)[lab]
+
+    dist = ndi.distance_transform_edt(ink)
+    widths = dist[skeletonize(ink)] * 2.0
+    heavy = float(np.percentile(widths, 90))
 
     # Anything that survives opening with a disk wider than the thickest line
-    # is a filled shape, not a line. How thick "thick" is depends on the
-    # drawing, so measure the lines first.
-    widths = ndi.distance_transform_edt(ink)[skeletonize(ink)] * 2.0
-    radius = int(np.ceil(np.percentile(widths, 90) * SOLID_FACTOR))
+    # is a filled shape, not a line.
+    radius = int(np.ceil(heavy * SOLID_FACTOR))
     solid = ndi.binary_opening(ink, structure=disk(radius))
     lab, n = ndi.label(solid)
     if n:
-        sizes = ndi.sum(solid, lab, range(1, n + 1))
+        idx = np.arange(1, n + 1)
+        sizes = ndi.sum(solid, lab, idx)
         keep = np.zeros(n + 1, bool)
         keep[1:] = sizes > 1500
         # Heavy black lines bunched up on skin (fingers drawn over each
         # other) are still lines.
         ring = ndi.grey_dilation(lab, footprint=disk(radius)) * (opaque & ~ink)
-        idx = np.arange(1, n + 1)
         ring_size = np.maximum(ndi.sum(ring > 0, ring, idx), 1)
         around = np.stack([ndi.sum(rgba[..., c].astype(float), ring, idx) / ring_size
                            for c in range(3)], 1)
@@ -142,31 +172,87 @@ def split_ink(rgba):
     # belong to the patch too.
     solid = ndi.binary_dilation(solid, structure=disk(radius * 3 // 2)) & ink
 
-    return ink & ~solid, opaque
+    return ink & ~solid, opaque, heavy
 
 
-def label_fills(rgba, ink, opaque):
+def palette_labels(rgba, ink, opaque, colours=28):
     """
-    Splits everything that isn't ink into painted areas. Label 1 is the
-    transparent outside, 2.. are areas enclosed by lines and 0 is not decided
-    yet (ink, and the fringe round it).
+    Splits everything that isn't ink into flat areas of one colour each.
+    Label 1 is the transparent outside, 2.. are the areas and 0 is not decided
+    yet (ink, and specks too small to keep).
     """
 
-    fill = opaque & ~ink
+    rgb = rgba[..., :3]
+    paint = opaque & ~ink
     # Drop the anti-aliased fringe next to lines, which is muddied with black.
-    fill &= ~ndi.binary_dilation(ink, iterations=2)
-    lab, n = ndi.label(fill)
-    lab = lab + 1
-    lab[~fill] = 0
+    paint &= ~ndi.binary_dilation(ink, iterations=2)
+
+    # A small palette for the whole drawing, then every pixel to its nearest
+    # colour through a lookup table.
+    rng = np.random.default_rng(0)
+    pix = rgb[paint]
+    sample = pix[rng.choice(len(pix), min(len(pix), 200000), replace=False)].astype(np.float32)
+    crit = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.5)
+    _, _, centres = cv2.kmeans(sample, colours, None, crit, 2, cv2.KMEANS_PP_CENTERS)
+    q = np.arange(0, 256, 8, dtype=np.float32) + 4
+    grid = np.stack(np.meshgrid(q, q, q, indexing="ij"), -1).reshape(-1, 3)
+    lut = ((grid[:, None, :] - centres[None]) ** 2).sum(-1).argmin(1).astype(np.int32)
+    qi = (rgb // 8).astype(np.int32)
+    index = lut[(qi[..., 0] * 32 + qi[..., 1]) * 32 + qi[..., 2]]
+
+    lab = np.zeros(ink.shape, np.int32)
+    nxt = 2
+    for c in range(colours):
+        part, n = ndi.label(paint & (index == c))
+        lab[part > 0] = part[part > 0] + nxt - 1
+        nxt += n
     lab[~opaque & ~ndi.binary_dilation(ink, iterations=2)] = 1
 
-    # Tiny specks of fill (gaps in hatching and so on) are dropped as well.
+    lab = smooth_labels(lab, 2.0)
     sizes = np.bincount(lab.ravel())
-    lab[(sizes[lab] < 40) & (lab > 1)] = 0
-    return lab
+    lab[(sizes[lab] < 30) & (lab > 1)] = 0
+    return relabel(lab)
 
 
-## Step 2: tracing and smoothing lines ########################################
+def smooth_labels(lab, sigma):
+    """
+    Rounds off the jagged edges between areas: every pixel goes to whichever
+    area covers most of its neighbourhood. Undecided pixels stay undecided.
+    """
+
+    out = lab.copy()
+    best = np.zeros(lab.shape, np.float32)
+    pad = int(3 * sigma) + 1
+    h, w = lab.shape
+    for i, sl in enumerate(ndi.find_objects(lab), 1):
+        if sl is None:
+            continue
+        y0, y1 = max(sl[0].start - pad, 0), min(sl[0].stop + pad, h)
+        x0, x1 = max(sl[1].start - pad, 0), min(sl[1].stop + pad, w)
+        m = (lab[y0:y1, x0:x1] == i).astype(np.float32)
+        # Small areas only get a light touch, or they'd melt away.
+        sg = float(np.clip(np.sqrt(m.sum()) / 12.0, 0.6, sigma))
+        b = cv2.GaussianBlur(m, (0, 0), sg)
+        sb = best[y0:y1, x0:x1]
+        win = b > sb
+        sb[win] = b[win]
+        out[y0:y1, x0:x1][win] = i
+    out[lab == 0] = 0
+    return out
+
+
+def relabel(lab):
+    """Renumbers labels 2.. so there are no gaps, keeping 0 and 1."""
+
+    used = np.unique(lab)
+    table = np.zeros(int(used.max()) + 1, np.int32)
+    table[1] = 1
+    rest = used[used > 1]
+    table[rest] = np.arange(2, 2 + len(rest))
+    return table[lab]
+
+
+## Step 2: tracing and redrawing lines ########################################
 
 NEIGHBOURS = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
 
@@ -246,16 +332,17 @@ def trace_paths(skel):
 def smooth_path(pts, widths, closed):
     """
     Fits a smoothing spline through a traced path, letting it drift a little
-    from the drawn line so the shake disappears. Returns resampled points and
-    widths.
+    from the drawn line so the shake disappears. Returns resampled points.
     """
 
     n = len(pts)
     w = float(np.median(widths))
-    tol = max(DRIFT_MIN, DRIFT * w)
+    tol = float(np.clip(DRIFT * w, DRIFT_MIN, DRIFT_MAX))
+    if n > LONG_STROKE:
+        tol = max(tol, LONG_DRIFT)
 
     if n < 6:
-        return pts, np.full(n, w)
+        return pts
 
     # Subsample long paths; a point every couple of pixels is enough.
     step = max(1, int(round(w / 6)))
@@ -265,7 +352,7 @@ def smooth_path(pts, widths, closed):
     p = pts[idx]
     m = len(p)
     if m < 4:
-        return pts, np.full(n, w)
+        return pts
 
     # Pin the ends so lines still meet where they did.
     weights = np.ones(m)
@@ -280,19 +367,12 @@ def smooth_path(pts, widths, closed):
         else:
             tck, _ = splprep([p[:, 1], p[:, 0]], w=weights, s=m * tol * tol, k=3)
     except Exception:
-        return pts, np.full(n, w)
+        return pts
 
     seg = np.sqrt((np.diff(pts, axis=0) ** 2).sum(1)).sum()
     k = max(8, int(seg / 1.5))
-    u = np.linspace(0, 1, k)
-    x, y = splev(u, tck)
-    out = np.stack([y, x], 1)
-
-    # Even width along the line, eased a little to follow the drawing.
-    wi = np.interp(np.linspace(0, len(widths) - 1, k), np.arange(len(widths)), widths)
-    wi = ndi.gaussian_filter1d(wi, max(2.0, k / 6), mode="nearest")
-    wi = 0.5 * wi + 0.5 * w
-    return out, wi
+    x, y = splev(np.linspace(0, 1, k), tck)
+    return np.stack([y, x], 1)
 
 
 def render_lines(shape, strokes):
@@ -352,76 +432,86 @@ def side_labels(pts, widths, near):
     return out
 
 
-def redraw_lines(ink, lab, skin):
+def redraw_lines(ink, lab, skin, heavy, weights):
     """
-    Traces the ink and redraws every line of at least DETAIL_WIDTH as a clean
-    stroke. Lines drawn inside skin (eyebrows, noses, knuckles) are left alone
-    so faces don't change. Returns (inner, outer, detail): coverage (0-1) of
-    the redrawn inner lines and outline, and the mask of drawn ink that is kept
-    as it is.
+    Traces the ink and redraws every line as a clean stroke; weights are the
+    line weights in working pixels. Returns coverage masks (0-1) for four
+    kinds of line:
+
+      outer  the outline round the character, at OUTLINE_WEIGHT,
+      inner  lines between two different areas, at INNER_WEIGHT,
+      fine   lines drawn inside one area (hair strands, folds, seams), at
+             FINE_WEIGHT,
+      face   lines on skin (eyes, brows, nose, mouth, fingers) and other small
+             separate drawings (buttons): these keep their drawn shape, with
+             the edges smoothed, so faces keep their character.
     """
 
-    # Small separate drawings are kept whole.
+    # Small separate drawings go to the face kind whole.
     parts, n = ndi.label(ink, structure=np.ones((3, 3)))
     small = np.zeros(n + 1, bool)
     for i, sl in enumerate(ndi.find_objects(parts), 1):
-        h = sl[0].stop - sl[0].start
-        w = sl[1].stop - sl[1].start
-        small[i] = np.hypot(h, w) < DETAIL_SIZE
+        small[i] = np.hypot(sl[0].stop - sl[0].start, sl[1].stop - sl[1].start) < DETAIL_SIZE
     kept = small[parts]
     ink = ink & ~kept
 
     dist = ndi.distance_transform_edt(ink)
     skel = skeletonize(ink)
     paths, junction = trace_paths(skel)
-
-    # The outline is anything running along the transparent outside.
-    outside = lab == 1
-    out_dist = ndi.distance_transform_edt(~outside)
     _, (ly, lx) = ndi.distance_transform_edt(lab == 0, return_indices=True)
     near = lab[ly, lx]
 
-    inner, outer = [], []
-    redrawn = np.zeros(ink.shape, bool)
+    strokes = {"outer": [], "inner": [], "fine": []}
+    face_skel = np.zeros(ink.shape, bool)
+
     for pts, js, je, closed in paths:
         iy, ix = pts[:, 0].astype(int), pts[:, 1].astype(int)
         widths = dist[iy, ix] * 2.0
         length = len(pts)
         mw = float(np.median(widths))
 
-        if mw < DETAIL_WIDTH:
+        # Skeleton spurs: short branches sticking off a junction into the
+        # thickness of a line, and specks.
+        if (js != je) and length < mw * 1.2:
+            continue
+        if not (js or je or closed) and length < 4:
             continue
 
         a, b = side_labels(pts, widths, near)
-        if a == b and skin[a]:
+        thin = mw < heavy * FINE_FRACTION
+        if 1 in (a, b):
+            kind = "outer"
+        elif (a == b and skin[a]) or (thin and (skin[a] or skin[b])):
+            face_skel[iy, ix] = True
             continue
+        elif a == b:
+            kind = "fine"
+        else:
+            kind = "inner"
 
-        redrawn[iy, ix] = True
-
-        # Skeleton spurs: short branches sticking off a junction into the
-        # thickness of a line.
-        if (js != je) and length < mw * 1.2:
-            continue
-
-        sp, sw = smooth_path(pts, widths, closed)
-        is_outer = (out_dist[iy, ix] < widths / 2 + 5).mean() > 0.5
-        sw = np.maximum(sw * (OUTLINE_SCALE if is_outer else WIDTH_SCALE), MIN_WIDTH)
+        sp = smooth_path(pts, widths, closed)
+        sw = np.full(len(sp), weights[kind])
         if not closed:
             sw = taper(sw, not js, not je)
-        (outer if is_outer else inner).append((sp, sw))
+        strokes[kind].append((sp, sw))
 
-    # Junction pixels go with the redrawn lines that end in them.
-    jl, nj = ndi.label(junction, structure=np.ones((3, 3)))
-    touched = np.zeros(nj + 1, bool)
-    touched[np.unique(jl[ndi.binary_dilation(redrawn & ~junction, structure=np.ones((3, 3)))])] = True
-    touched[0] = False
-    redrawn |= touched[jl]
+    lines = {k: render_lines(ink.shape, v) for k, v in strokes.items()}
 
-    # Every ink pixel belongs to the line whose middle is nearest to it.
+    # Face lines: the drawn ink that belongs to them (each ink pixel goes with
+    # the nearest line middle), edges smoothed.
+    face_skel |= junction & ndi.binary_dilation(face_skel, iterations=2)
     _, (ny, nx) = ndi.distance_transform_edt(~skel, return_indices=True)
-    detail = (ink & ~redrawn[ny, nx]) | kept
+    face_ink = (ink & face_skel[ny, nx]) | kept
+    lines["face"] = smooth_shape(face_ink, FACE_SMOOTH)
+    return lines
 
-    return render_lines(ink.shape, inner), render_lines(ink.shape, outer), detail
+
+def smooth_shape(mask, sigma):
+    """An anti-aliased version of a mask with its jagged, shaky edges evened."""
+
+    b = cv2.GaussianBlur(mask.astype(np.float32), (0, 0), sigma)
+    # A threshold a little under a half keeps thin lines from thinning out.
+    return np.clip((b - 0.45) * 4.0 + 0.5, 0, 1)
 
 
 ## Step 3: fills under the new lines ##########################################
@@ -448,11 +538,10 @@ def grow_labels(lab, walls, iterations):
     return lab
 
 
-def area_colours(rgba, lab, n, clean):
-    """
-    The flat colour of each area, from the pixels well away from any line.
-    """
+def area_colours(rgba, lab, clean):
+    """The flat colour of each area, from its pixels away from any line."""
 
+    n = int(lab.max()) + 1
     rgb = rgba[..., :3].astype(np.float64)
     cols = np.zeros((n, 3))
     idx = np.arange(n)
@@ -562,16 +651,6 @@ def inflate(lab, shaded_labels, scale=4):
     return cv2.GaussianBlur(height, (0, 0), scale)
 
 
-def is_skin(cols):
-    """Which area colours look like skin: pale, warm, not very saturated."""
-
-    rgb = cols / 255.0
-    mx, mn = rgb.max(1), rgb.min(1)
-    sat = (mx - mn) / np.maximum(mx, 1e-6)
-    r, g, b = rgb[:, 0], rgb[:, 1], rgb[:, 2]
-    return (r >= g) & (r >= b) & (g >= b * 0.92) & (mx > 0.75) & (sat > 0.04) & (sat < 0.42)
-
-
 def shade(lab, cols, outside_label=1):
     """
     Lights the inflated surface. Returns n.l per pixel, and how strongly each
@@ -592,6 +671,7 @@ def shade(lab, cols, outside_label=1):
     shaded[0] = False
 
     skin = is_skin(cols)
+    skin[:2] = False
     face = skin & (features >= 2)
     strength = np.where(face, 0.0, np.where(skin, 0.6, 1.0))[surf] * shaded[surf]
     soft_strength = np.where(skin, 0.6, 1.0)[surf] * shaded[surf]
@@ -613,42 +693,58 @@ def smoothstep(e0, e1, x):
 
 ## Putting it together ########################################################
 
-def refine(rgba):
-    """rgba: uint8 array at working resolution. Returns refined rgba float."""
+def line_colour(cols, lab, lines):
+    """
+    A dark shade of the colour beside each line; the outline darker still and
+    the fine lines inside an area softer, part way to the area's own colour.
+    """
 
-    ink, opaque = split_ink(rgba)
-    lab = label_fills(rgba, ink, opaque)
-    n = int(lab.max()) + 1
+    near = lab.copy()
+    near[lab == 1] = 0
+    _, (iy, ix) = ndi.distance_transform_edt(near == 0, return_indices=True)
+    beside = cols[near[iy, ix]]
+    dark = beside * 0.28 + np.array([12.0, 7.0, 16.0])
+    # Lines beside white would come out grey; keep every line properly dark.
+    lum = luma(dark)[..., None]
+    dark = dark * np.minimum(1.0, 62.0 / np.maximum(lum, 1))
+    dark = dark * (1 - lines["outer"][..., None] * 0.45)
+    soft = lines["fine"] * (1 - np.maximum.reduce([lines["outer"], lines["inner"], lines["face"]]))
+    # Only on light colours; on dark ones (dark hair, denim) they'd vanish.
+    soft = soft * 0.35 * np.clip((luma(beside) - 90.0) / 70.0, 0, 1)
+    return dark + (beside - dark) * soft[..., None]
 
-    old = rgba[..., :3].astype(np.float64)
+
+def refine(rgba, scale, name):
+    """
+    rgba: uint8 array at working resolution; scale: working pixels per screen
+    pixel. Returns the refined rgba as floats.
+    """
+
+    ink, opaque, heavy = split_ink(rgba)
+    lab = palette_labels(rgba, ink, opaque)
     clean = opaque & ~ndi.binary_dilation(ink, iterations=3)
     clean &= ~ndi.binary_dilation(~opaque, iterations=3)
-    cols = area_colours(rgba, lab, n, clean)
-    skin = is_skin(cols)
+    skin = is_skin(area_colours(rgba, lab, clean))
     skin[:2] = False   # undecided and outside
 
-    inner, outer, detail = redraw_lines(ink, lab, skin)
-    lines = np.maximum(inner, outer)
-    thick = ink & ~detail
+    # The shoes are redrawn from scratch.
+    weights = {"outer": OUTLINE_WEIGHT * scale, "inner": INNER_WEIGHT * scale,
+               "fine": FINE_WEIGHT * scale}
+    shoe = shoes.ShoeArt(name, rgba, lab, weights, heavy)
+    ink &= ~shoe.zone
+    lab = shoe.lab
+    skin = np.concatenate([skin, np.zeros(int(lab.max()) + 1 - len(skin), bool)])
 
-    lab = grow_labels(lab, lines > 0.5, iterations=40)
+    lines = redraw_lines(ink, lab, skin, heavy, weights)
+    for k, v in shoe.lines.items():
+        lines[k] = np.maximum(lines[k] * ~shoe.zone, v)
+    walls = np.maximum.reduce(list(lines.values())) > 0.5
+    lab = grow_labels(lab, walls, iterations=60)
+
+    cols = area_colours(rgba, lab, clean)
+    cols = shoe.colours(cols)
     cols[1] = 0
-    base = cols[lab]
-    # Keep the drawing's own colour wherever the lines haven't moved: that
-    # keeps painted details (lips, eye colour, textures) and the detail lines
-    # with their soft edges. Only what was under the redrawn lines gets the
-    # flat colour of its area.
-    keep = opaque & ~ndi.binary_dilation(thick, iterations=3)
-    keep &= ~ndi.binary_dilation(~opaque, iterations=3)
-    base[keep] = old[keep]
-    zone = opaque & ~thick & ndi.binary_dilation(detail, iterations=2)
-    base[zone] = old[zone]
-
-    # How much of each kept detail pixel is ink, so it can be recoloured.
-    detail_cov = np.clip((140.0 - luma(old)) / 110.0, 0, 1)
-    # Pinholes in textured strokes count as ink.
-    detail_cov = np.maximum(detail_cov, cv2.GaussianBlur(detail.astype(np.float32), (0, 0), 0.8))
-    detail_cov = detail_cov * zone
+    col = cols[lab]
 
     nl, strength, soft_strength = shade(lab, cols)
     # Two-tone cel shadow with a soft edge, plus a gentle overall gradient and
@@ -658,24 +754,19 @@ def refine(rgba):
     rim = smoothstep(0.90, 0.96, nl) * RIM_LIGHT * soft_strength
 
     tint = 1.0 - shadow[..., None] * (1.0 - SHADOW_TINT)
-    col = base * tint * (1.0 - soft[..., None])
+    col = col * tint * (1.0 - soft[..., None])
     col = col + (255.0 - col) * rim[..., None]
 
-    # Lines: a dark shade of the colour beside them; the outline darker still.
-    inside = lab != 1
-    near_lab = lab.copy()
-    near_lab[~inside] = 0
-    _, (iy, ix) = ndi.distance_transform_edt(near_lab == 0, return_indices=True)
-    beside = cols[near_lab[iy, ix]]
-    dark = beside * 0.30 + np.array([14.0, 8.0, 18.0])
-    line_col = dark * (1 - outer[..., None] * 0.45)
+    lcol = line_colour(cols, lab, lines)
+    cov = np.maximum.reduce(list(lines.values()))
 
-    cov = np.maximum(lines, detail_cov.astype(np.float32))[..., None]
+    inside = lab != 1
     alpha = inside.astype(np.float32)
     # Soften the silhouette edge, which is pixel-hard after labelling.
-    alpha = np.maximum(cv2.GaussianBlur(alpha, (0, 0), 1.0) * inside, lines)
+    alpha = np.maximum(cv2.GaussianBlur(alpha, (0, 0), 1.0) * inside, cov)
 
-    out_rgb = col * (1 - cov) + line_col * cov
+    out_rgb = col * (1 - cov[..., None]) + lcol * cov[..., None]
+    out_rgb, alpha = shoe.overlay(out_rgb, alpha)
     return np.dstack([np.clip(out_rgb, 0, 255), np.clip(alpha, 0, 1) * 255])
 
 
@@ -701,10 +792,11 @@ def save_sprite(work_img, size, path):
 
 def main(names):
     for name in names:
-        src, size = SPRITES[name]
+        src, size, screen = SPRITES[name]
         print("refining", name)
         rgba = load_work(src)
-        out = to_image(refine(rgba))
+        scale = WORK / float(screen)
+        out = to_image(refine(rgba, scale, name))
         save_sprite(out, size, os.path.join(IMAGES, name + ".png"))
 
         for close, (of, box, close_size) in CLOSEUPS.items():
