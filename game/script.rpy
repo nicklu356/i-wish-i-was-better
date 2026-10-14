@@ -164,7 +164,7 @@ label day1:
     with dissolve
     a "Guess that's you and me!"
     p "Yeah!"
-    a "We should exchange contact info to discuss the assignment, yeah?"
+    a "We should exchange contact and social media info to discuss the assignment, yeah?"
     p "Sure!"
     "While you're typing in her contact, Elena keeps talking."
     a "The universe really wants us together, huh?"
@@ -186,8 +186,15 @@ label day1:
     "You take out the phone and start looking at [player_name2]'s photos."
     "You might have had a chance to be with her, but none of it ever happened."
     "Sometimes you think it's the unknown possibility of that future that makes you regret it and dwell on it so much."
+    "As if this doesn't hurt you enough, you somehow decide to check Elena's social media as well."
+    "Concerts. Road trips." 
+    "Rooftop parties." 
+    "Friends laughing at a joke you'll never hear."
+    "Her life looks like a movie." 
+    "Yours looks like a loading screen."
+    p "(Fuck my life.)"
     "You take a shower, chat with your old friends, and get ready for bed."
-    p "Sweet dreams, I hope."
+    p "(Sigh) Sweet dreams, I hope."
     stop music fadeout 1.5
 
 label day2:
@@ -233,7 +240,7 @@ label day2:
     scene classroom2
     with dissolve
     "Since you're all in the same group, you figure you should take the initiative and greet your teammates."
-    "You exchange contact info and learn each other's names."
+    "You exchange contact, social media and learn each other's names."
     "The guy's name is Gus, the other one is Chris, and of course, the girl."
     show emmabus at pos_center
     with dissolve
@@ -248,7 +255,24 @@ label day2:
     play music "audio/happytosad.mp3" fadein 1.0
     "You get back home."
     "Today wasn't that bad."
-    "Time to freshen up and go to sleep."
+    "Out of curiosity, you decide to check Emma's social as well."
+    "There aren't many posts nor selfies."
+    "Just some sceneries like windows in the rain, a book page with one sentence underlinedand a lake at sunset, captioned only with a date."
+    "This is the type of contents that you feel more familiar with."
+    "You kind of like it."
+    "Then again, who gives a shit if you like it or not?"
+    play sound "audio/sfx/message.ogg"
+    "You get a meesage."
+    $ phone_open("Elena")
+    a_txt "PARTNER"
+    a_txt "did u read the assignment brief yet"
+    p_txt "Oh not yet, sorry about that."
+    a_txt "all good me neither"
+    a_txt "we're gonna be so good at this"
+    p_txt "I hope so haha"
+    $ phone_close()
+    "You laugh a bit."
+    "Better just go freshen up and go to sleep."
     "But this time, you don't feel like doing that yet."
     "You have an urge to just go out and go for a walk."
     "So you do."
@@ -275,6 +299,7 @@ label day2:
     "But that doesn't matter now."
     "In fact, nothing matters now."
     "All you feel is satisfied, spiritually."
+    "(And you also decide to post a story with all the pictures you took today.)"
     stop music fadeout 1.5
 
 label day3:
@@ -283,8 +308,23 @@ label day3:
     daycard "DAY 3"
     scene classroom3
     with dissolve
-    "Nothing interesting happens. You finish your classes."
-    "Then you remember you're working on the project with your group later."
+    "You're in classes."
+    "Then you get a message."
+    play sound "audio/sfx/message.ogg"
+    $ phone_open("Elena")
+    "Turns out it's Elena replying your story."
+    a_txt "niceee where did you go??"
+    a_txt "u a night walk person??"
+    p_txt "Kind of, haha. Just walking around after class."
+    a_txt "respect"
+    $ phone_close()
+    p "(Cool...?)"
+    "Since you didn't expect she would reply your story at all."
+    scene black
+    with fade
+    "Some time later..."
+    "Class just finished."
+    "You remember you're working on the project with your group later."
     "Gus messaged you last night asking when you're free."
     "In the end, you all decided to work on it this afternoon."
     "So you grab a quick meal at a restaurant."
@@ -408,6 +448,15 @@ label day4:
     "You slept pretty well last night."
     "You kept thinking about the promising start with Emma (and sure, Gus)."
     "You hope you'll become friends."
+    "Then you decide to check your social media again."
+    "Then you see Emma's story."
+    "A cup of tea balanced on her knee."
+    "You type 'Oh nice! Where's this?'"
+    "Delete."
+    "You type 'Is that green tea?'"
+    "Delete."
+    "You just like it."
+    p "(Pussy.)"
     "With a lot on your tiny brain, you head to school as soon as you're fully awake."
     "And of course you come to school early."
     "Maybe you should make coming to school early a habit."
@@ -705,13 +754,12 @@ label day5:
     "You can already feel the awkwardness in the air, and that feels like shit."
     p "(God damn it, Gus, why are you the first to leave?)"
     "You have two choices:"
-    "You can just make up an excuse like you have to take the metro to have an early exit to avoid awakrdness."
-    "Or you can get your shit together and try to have a chat."
+    "You could make up an excuse, say you need to catch the metro, and escape before it gets awkward."
     "So?"
     menu:
         "Try to have a chat":
             $emma_affection+=1
-            p "You decide to say something first to break the ice."
+            "You decide to say something first to break the ice."
             s "So..."
             s "Sorry, you go first."
             "Realizing you keep talking over each other, you make sure to speak first this time."
@@ -1906,10 +1954,10 @@ label theday:
         "Elena" if elena_affection >= 3:
             p "I have my answer, I'm gonna meet her now."
             jump elena_ending
-        "Emma" if emma_affection >= 6:
+        "Emma" if emma_affection >= 8:
             p "I have my answer, I'm gonna meet her now."
             jump emma_ending
-        "None" if emma_affection >= 6 or elena_affection >= 3:
+        "None" if emma_affection >= 8 or elena_affection >= 3:
             p "You know what? You're right."
             p "If I'm still sitting here thinking about it, it means I don't like either of them more."
             p "I'm not even sure either of them likes me that much."
@@ -1917,7 +1965,7 @@ label theday:
             z "I salute you my friend. You're a god damn legend."
             x "I trust your choice. This is gonna hurt, but it'll be worth it in time."
             jump none_ending
-        "None (score too low)" if emma_affection <= 5 and elena_affection <= 2:
+        "None (score too low)" if emma_affection <= 7 and elena_affection <= 2:
             p "You know what? You're right."
             p "If I'm still sitting here thinking about it, it means I don't like either of them more."
             p "Maybe my feelings for them are just not strong enough."
