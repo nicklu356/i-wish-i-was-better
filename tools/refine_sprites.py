@@ -104,14 +104,14 @@ INK_LUMA = 32
 ## Ink more than this many times as thick as the drawing's usual lines is a
 ## filled black shape (hair, shoes), not a line.
 SOLID_FACTOR = 1.6 / 2
-SOLID_AREA = 20000
+SOLID_AREA = 3000
 
 ## How far (as a fraction of the drawn line's width) a smoothed line may drift
 ## from the drawn one, with limits in working pixels. Long strokes may always
 ## drift at least LONG_DRIFT. Bigger is straighter.
-DRIFT = 0.30
+DRIFT = 0.20
 DRIFT_MIN = 1.2
-DRIFT_MAX = 8.0
+DRIFT_MAX = 5.0
 LONG_STROKE = 250
 LONG_DRIFT = 3.0
 
@@ -121,9 +121,18 @@ LONG_DRIFT = 3.0
 ## SKIN_TONES   the main skin colour to use instead of the drawn one,
 ## GLOSS        how shiny the skin below the face is,
 ## EXTRA_LINES  soft lines added on the body (knees, tummy),
-## WARPS        (centre, radius, (dx, dy)) nudges to the drawing's shape.
+## FEATURES     the part of the face holding the eyebrows, eyes, nose and
+##              mouth: these are kept exactly as drawn,
+## SHAPES       changes to the figure's outline: "mirror" makes the outline in
+##              region the mirror image of the other side about x = axis;
+##              "shape" replaces it in region with these closed curves,
+## REDRAWS      parts drawn again from scratch: the drawing in "erase" goes
+##              (painted with the colour at "fill", if given, or else with the
+##              colours round it) and these lines (curves through the points)
+##              are drawn instead; "closed" lines are loops.
 SKIN_TONES = {
     "emma": (247, 222, 204),
+    "elena": (244, 219, 196),
 }
 GLOSS_DEFAULT = 0.18
 GLOSS = {
@@ -136,9 +145,71 @@ EXTRA_LINES = {
         [(2094, 1548), (2098, 1600), (2102, 1645)],
     ],
 }
-WARPS = {
-    "emma": [((2650, 1130), 360, (-110, 22))],
+FEATURES = {
+    "gus": [(1848, 285), (2150, 285), (2150, 450), (2095, 600), (1905, 600), (1848, 450)],
+    "zane": [(1912, 300), (2185, 300), (2185, 420), (2135, 572), (1960, 572), (1912, 420)],
+    "emma": [(1912, 355), (2228, 355), (2228, 460), (2160, 655), (1985, 655), (1912, 460)],
+    "elena": [(2047, 280), (2352, 300), (2345, 395), (2290, 420), (2230, 600), (2060, 600),
+              (2030, 420), (2045, 330)],
 }
+SHAPES = {
+    # Emma's right shoulder, as wide as her left one.
+    "emma": [dict(mirror=2070, region=[(2330, 860), (2800, 860), (2800, 1290), (2330, 1290)])],
+    # Elena's hanging hand: two fingers and the thumb.
+    "elena": [dict(region=[(1395, 2100), (1625, 2100), (1625, 2345), (1395, 2345)],
+                   shape=[[(1420, 2090), (1600, 2090), (1590, 2120), (1560, 2140), (1530, 2155),
+                           (1514, 2180), (1510, 2240), (1506, 2292), (1495, 2314), (1479, 2314),
+                           (1470, 2302), (1461, 2316), (1444, 2315), (1432, 2297), (1425, 2240),
+                           (1425, 2160), (1428, 2110)],
+                          [(1545, 2100), (1600, 2095), (1597, 2180), (1589, 2230), (1571, 2249),
+                           (1551, 2242), (1544, 2205), (1548, 2160)]])],
+}
+REDRAWS = {
+    "gus": [
+        # The hairline, with its dip in the middle.
+        dict(erase=[(1810, 178), (2172, 172), (2172, 232), (1810, 238)],
+             lines=[[(1812, 248), (1828, 214), (1880, 204), (1955, 204), (1990, 222),
+                     (2025, 204), (2100, 199), (2150, 206), (2166, 230)]]),
+        # The ears.
+        dict(erase=[(1797, 300), (1772, 295), (1759, 315), (1761, 350), (1771, 384),
+                    (1791, 397), (1799, 378)],
+             fill=(1900, 420),
+             closed=[[(1797, 300), (1772, 295), (1759, 315), (1761, 350), (1771, 384),
+                      (1791, 397), (1799, 378)]],
+             lines=[[(1786, 322), (1777, 342), (1783, 366)]]),
+        dict(erase=[(2194, 300), (2215, 292), (2232, 311), (2232, 350), (2222, 385),
+                    (2200, 398), (2192, 378)],
+             fill=(2100, 420),
+             closed=[[(2194, 300), (2215, 292), (2232, 311), (2232, 350), (2222, 385),
+                      (2200, 398), (2192, 378)]],
+             lines=[[(2205, 322), (2215, 342), (2208, 366)]]),
+    ],
+    "elena": [
+        # The hand on her tummy: four fingers pointing left.
+        dict(erase=[(2195, 1598), (2385, 1596), (2442, 1622), (2470, 1676), (2445, 1758),
+                    (2412, 1797), (2195, 1802)],
+             fill=(2300, 1570),
+             lines=[[(2392, 1612), (2300, 1614), (2232, 1618), (2212, 1631), (2228, 1645),
+                     (2300, 1645), (2385, 1641)],
+                    [(2392, 1612), (2440, 1630), (2466, 1684)],
+                    [(2395, 1668), (2300, 1675), (2232, 1680), (2210, 1693), (2226, 1707),
+                     (2300, 1704), (2392, 1695)],
+                    [(2398, 1702), (2320, 1715), (2265, 1724), (2245, 1737), (2260, 1750),
+                     (2320, 1745), (2395, 1730)],
+                    [(2392, 1742), (2340, 1750), (2300, 1758), (2284, 1772), (2298, 1785),
+                     (2350, 1783), (2420, 1765), (2448, 1752)]]),
+        # The hanging hand (its outline is in SHAPES).
+        dict(erase=[(1395, 2100), (1625, 2100), (1625, 2345), (1395, 2345)],
+             fill=(1520, 2060),
+             lines=[[(1469, 2190), (1468, 2255), (1466, 2304)],
+                    [(1549, 2125), (1550, 2170)]]),
+    ],
+}
+
+## The figure's outline: notches narrower than twice NOTCH go, and the edge
+## is evened out by SHAPE_SMOOTH (working pixels).
+NOTCH = 5
+SHAPE_SMOOTH = 2.5
 
 ## Light direction: x right, y down, z towards the viewer.
 LIGHT = np.array([-0.55, -0.65, 0.55])
@@ -501,10 +572,10 @@ def side_labels(pts, widths, near):
 def redraw_lines(ink, lab, skin, heavy, weights, face_y):
     """
     Traces the ink and redraws every line as a clean stroke; weights are the
-    line weights in working pixels. Returns coverage masks (0-1) for four
-    kinds of line:
+    line weights in working pixels. The outline round the figure isn't drawn
+    here (see outline()). Returns coverage masks (0-1) for three kinds of
+    line:
 
-      outer  the outline round the character, at OUTLINE_WEIGHT,
       inner  lines between two different areas, at INNER_WEIGHT,
       fine   lines drawn inside one area (hair strands, folds, seams), at
              FINE_WEIGHT,
@@ -537,7 +608,7 @@ def redraw_lines(ink, lab, skin, heavy, weights, face_y):
     _, (ly, lx) = ndi.distance_transform_edt(lab == 0, return_indices=True)
     near = lab[ly, lx]
 
-    strokes = {"outer": [], "inner": [], "fine": []}
+    strokes = {"inner": [], "fine": []}
     face_skel = np.zeros(ink.shape, bool)
 
     for pts, js, je, closed in paths:
@@ -559,11 +630,12 @@ def redraw_lines(ink, lab, skin, heavy, weights, face_y):
         thin = mw < heavy * FINE_FRACTION
         in_face = pts[:, 0].mean() < face_y
         if 1 in (a, b):
-            kind = "outer"
+            # The outline is drawn from the figure's shape instead.
+            continue
         elif in_face and (skin[a] or skin[b]) and (thin or a == b):
             face_skel[iy, ix] = True
             continue
-        elif a == b or thin:
+        elif thin:
             kind = "fine"
         else:
             kind = "inner"
@@ -584,6 +656,9 @@ def redraw_lines(ink, lab, skin, heavy, weights, face_y):
             sw = np.full(len(sp), weights[kind])
             if not closed:
                 sw = taper(sw, not js, not je)
+        # Ends that join another line reach a little further, so they meet
+        # the outline (drawn along the edge now) without a gap.
+        sp, sw = extend_ends(sp, sw, js, je, heavy * 0.35)
         strokes[kind].append((sp, sw))
 
     lines = {k: render_lines(ink.shape, v) for k, v in strokes.items()}
@@ -595,6 +670,24 @@ def redraw_lines(ink, lab, skin, heavy, weights, face_y):
     face_ink = (ink & face_skel[ny, nx]) | kept
     lines["face"] = smooth_shape(face_ink, FACE_SMOOTH)
     return lines
+
+
+def extend_ends(pts, wid, start, end, by):
+    """Lengthens a stroke along its direction at the ends that are flagged."""
+
+    if len(pts) < 2 or by <= 0:
+        return pts, wid
+    if start:
+        d = pts[0] - pts[1]
+        d /= max(np.linalg.norm(d), 1e-6)
+        pts = np.vstack([pts[:1] + d * by, pts])
+        wid = np.concatenate([wid[:1], wid])
+    if end:
+        d = pts[-1] - pts[-2]
+        d /= max(np.linalg.norm(d), 1e-6)
+        pts = np.vstack([pts, pts[-1:] + d * by])
+        wid = np.concatenate([wid, wid[-1:]])
+    return pts, wid
 
 
 def smooth_shape(mask, sigma):
@@ -838,37 +931,11 @@ def clean_specks(lab, rgba):
     return lab
 
 
-def warp(rgba, moves):
-    """
-    Nudges parts of the drawing: each move is (centre, radius, (dx, dy)) in
-    working pixels, fading out smoothly to nothing at the radius.
-    """
-
-    h, w = rgba.shape[:2]
-    yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
-    mx, my = xx.copy(), yy.copy()
-    for (cx, cy), r, (dx, dy) in moves:
-        d2 = ((xx - cx) ** 2 + (yy - cy) ** 2) / float(r * r)
-        f = np.clip(1 - d2, 0, 1) ** 2
-        mx -= f * dx
-        my -= f * dy
-    # Premultiplied, so transparent pixels don't bleed colour.
-    a = rgba.astype(np.float32)
-    a[..., :3] *= a[..., 3:] / 255.0
-    out = cv2.remap(a, mx, my, cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)
-    al = out[..., 3:]
-    out[..., :3] = np.where(al > 0, out[..., :3] * 255.0 / np.maximum(al, 1), 0)
-    return np.clip(out, 0, 255).astype(np.uint8)
-
-
 def refine(rgba, scale, name):
     """
     rgba: uint8 array at working resolution; scale: working pixels per screen
     pixel. Returns the refined rgba as floats.
     """
-
-    if name in WARPS:
-        rgba = warp(rgba, WARPS[name])
 
     ink, opaque, heavy = split_ink(rgba)
     drawn_ink = ink.copy()
@@ -886,13 +953,41 @@ def refine(rgba, scale, name):
     weights = {"outer": OUTLINE_WEIGHT * scale, "inner": INNER_WEIGHT * scale,
                "fine": FINE_WEIGHT * scale}
     shoe = shoes.ShoeArt(name, rgba, lab, weights, heavy)
-    ink &= ~shoe.zone
     lab = shoe.lab
     skin = np.concatenate([skin, np.zeros(int(lab.max()) + 1 - len(skin), bool)])
 
+    # The figure's shape, from which the outline is drawn. Parts redrawn from
+    # scratch are cleared, and their areas grow back from round them.
+    inside, alpha = figure_shape(opaque, shoe, name)
+    canvas = shoes.Canvas(0, 0, lab.shape[1], lab.shape[0])
+    erase = np.zeros(lab.shape, bool)
+    fills = []
+    for r in REDRAWS.get(name, []):
+        m = canvas.polygon(shoes.spline(r["erase"], closed=True, per=6))
+        erase |= m
+        if "fill" in r:
+            x, y = r["fill"]
+            fills.append((m, lab[y, x]))
+    ink &= inside & ~shoe.zone & ~erase
+    lab[~inside] = 1
+    lab[inside & ((lab == 1) | erase)] = 0
+    for m, l in fills:
+        lab[m & inside] = l
+
     lines = redraw_lines(ink, lab, skin, heavy, weights, face_y)
-    for k, v in shoe.lines.items():
-        lines[k] = np.maximum(lines[k] * ~shoe.zone, v)
+    for k in ("inner", "fine"):
+        lines[k] = np.maximum(lines[k] * ~shoe.zone, shoe.lines[k])
+    lines["outer"] = outline(inside, weights["outer"])
+    redrawn = []
+    for r in REDRAWS.get(name, []):
+        for pts in r.get("lines", []):
+            p = shoes.spline(pts)[:, ::-1]
+            redrawn.append((p, taper(np.full(len(p), weights["inner"]), True, True)))
+        for pts in r.get("closed", []):
+            p = shoes.spline(pts, closed=True)[:, ::-1]
+            redrawn.append((p, np.full(len(p), weights["inner"])))
+    if redrawn:
+        lines["inner"] = np.maximum(lines["inner"], render_lines(lab.shape, redrawn))
     walls = np.maximum.reduce(list(lines.values())) > 0.5
     lab = grow_labels(lab, walls, iterations=60)
 
@@ -914,10 +1009,12 @@ def refine(rgba, scale, name):
 
     tint = 1.0 - shadow[..., None] * (1.0 - SHADOW_TINT)
     col = col * tint * (1.0 - soft[..., None])
-    col = col + (255.0 - col) * np.maximum(rim, gloss)[..., None]
+    # No rim light on near-black areas, which it would turn grey.
+    lit = smoothstep(40.0, 110.0, luma(cols[lab]))
+    col = col + (255.0 - col) * (np.maximum(rim, gloss) * lit)[..., None]
 
     # Extra lines on the body (knees, tummy): soft, in a deeper skin tone.
-    extra = [shoes.spline(pts) for pts in EXTRA_LINES.get(name, [])]
+    extra = [shoes.spline(pts)[:, ::-1] for pts in EXTRA_LINES.get(name, [])]
     if extra:
         strokes = [(p, taper(np.full(len(p), weights["fine"] * 0.9), True, True)) for p in extra]
         ecov = render_lines(lab.shape, strokes)[..., None]
@@ -926,14 +1023,96 @@ def refine(rgba, scale, name):
     lcol = line_colour(cols, lab, lines)
     cov = np.maximum.reduce(list(lines.values()))
 
-    inside = lab != 1
-    alpha = inside.astype(np.float32)
-    # Soften the silhouette edge, which is pixel-hard after labelling.
-    alpha = np.maximum(cv2.GaussianBlur(alpha, (0, 0), 1.0) * inside, cov)
-
     out_rgb = col * (1 - cov[..., None]) + lcol * cov[..., None]
     out_rgb, alpha = shoe.overlay(out_rgb, alpha)
+    if name in FEATURES:
+        out_rgb = restore_features(rgba, out_rgb, FEATURES[name])
     return np.dstack([np.clip(out_rgb, 0, 255), np.clip(alpha, 0, 1) * 255])
+
+
+def figure_shape(opaque, shoe, name):
+    """
+    The figure's silhouette: everything but the transparent area round it
+    (and gaps through it, such as between an arm and the body), with the
+    redrawn shoes in place of the old ones, small notches filled, the edits
+    in SHAPES applied and the edge evened out. Returns the mask and its
+    anti-aliased coverage.
+    """
+
+    parts, _ = ndi.label(~opaque)
+    big = np.bincount(parts.ravel()) >= 1500
+    big[0] = False
+    inside = ~big[parts]
+    inside = (inside & ~shoe.zone) | shoe.silhouette
+    # Where a shoe meets the leg, keep what was drawn between them, so no gap
+    # opens up.
+    leg = ndi.binary_dilation(inside & ~shoe.zone, structure=disk(28))
+    inside |= shoe.zone & opaque & leg & ndi.binary_dilation(shoe.silhouette, structure=disk(28))
+    inside |= ndi.binary_closing(inside, structure=disk(NOTCH))
+
+    h, w = inside.shape
+    canvas = shoes.Canvas(0, 0, w, h)
+    for edit in SHAPES.get(name, []):
+        region = canvas.polygon(edit["region"])
+        if "mirror" in edit:
+            xs = np.clip(2 * edit["mirror"] - np.arange(w), 0, w - 1)
+            new = inside[:, xs]
+        else:
+            new = np.zeros_like(inside)
+            for pts in edit["shape"]:
+                new |= canvas.polygon(shoes.spline(pts, closed=True, per=8))
+        inside = np.where(region, new, inside)
+
+    f = cv2.GaussianBlur(inside.astype(np.float32), (0, 0), SHAPE_SMOOTH)
+    inside = f > 0.5
+    alpha = np.clip((f - 0.5) * SHAPE_SMOOTH * 2.0 + 0.5, 0, 1)
+    return inside, alpha
+
+
+def outline(inside, weight):
+    """Coverage of a line of the given weight running just inside the edge."""
+
+    d = ndi.distance_transform_edt(inside)
+    return np.clip(weight + 0.5 - d, 0, 1).astype(np.float32) * (d > 0)
+
+
+def restore_features(rgba, out, polygon):
+    """
+    Puts the drawing's own eyebrows, eyes, nose and mouth back. Inside the
+    polygon, whatever isn't plain skin in the drawing is pasted over the
+    refined face, after the refined face's own features there are painted
+    out with the skin round them.
+    """
+
+    h, w = out.shape[:2]
+    pts = np.asarray(polygon, float)
+    x0, y0 = [max(int(v) - 20, 0) for v in pts.min(0)]
+    x1, y1 = int(pts[:, 0].max()) + 20, int(pts[:, 1].max()) + 20
+    win = (slice(y0, y1), slice(x0, x1))
+    region = shoes.Canvas(x0, y0, x1 - x0, y1 - y0).polygon(pts)
+
+    orig = rgba[win][..., :3].astype(np.float32)
+    new = out[win].astype(np.float32)
+
+    def skin_of(img):
+        px = img[region]
+        return np.median(px[luma(px) > np.percentile(luma(px), 40)], axis=0)
+
+    diff_o = np.linalg.norm(orig - skin_of(orig), axis=-1)
+    diff_n = np.linalg.norm(new - skin_of(new), axis=-1)
+    a = smoothstep(18.0, 80.0, diff_o) * region
+    a = np.maximum(a, cv2.GaussianBlur(a.astype(np.float32), (0, 0), 0.7) * region)
+
+    # Paint the refined features out.
+    gone = ((diff_n > 18) | (a > 0)) & region
+    gone = ndi.binary_dilation(gone, iterations=4) & region
+    base = cv2.inpaint(np.clip(new, 0, 255).astype(np.uint8), gone.astype(np.uint8), 7,
+                       cv2.INPAINT_TELEA).astype(np.float32)
+    base = np.where(gone[..., None], base, new)
+
+    result = out.copy()
+    result[win] = base * (1 - a[..., None]) + orig * a[..., None]
+    return result
 
 
 def keep_painted_details(rgba, flat, lab, ink, face_y):

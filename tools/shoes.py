@@ -377,7 +377,8 @@ class ShoeArt:
     working pixels for "outer", "inner" and "fine"; heavy: the width of the
     drawing's heavy lines.
 
-    After construction: zone is where the old shoes were cleared, lab the
+    After construction: zone is where the old shoes were cleared, silhouette
+    the new shoes' shape, lab the
     painted areas with the new shoe parts in, and lines the shoes' outline,
     inner and fine line coverage. colours() fills in the parts' colours and
     overlay() draws the laces on the finished sprite.
@@ -388,6 +389,7 @@ class ShoeArt:
         self.weights = weights
         shape = lab.shape
         self.zone = np.zeros(shape, bool)
+        self.silhouette = np.zeros(shape, bool)
         self.lab = lab.copy()
         self.part_colours = {}
         self.lines = {k: np.zeros(shape, np.float32) for k in ("outer", "inner", "fine")}
@@ -416,6 +418,7 @@ class ShoeArt:
 
             ins = spec.get("inset", inset)
             shoe = silhouette(zone & drawn, ins, zone)
+            self.silhouette[win] |= shoe
 
             # Where the shoe meets the leg, keep the drawing's edge so nothing
             # opens up between them; the leg's colour grows into what's left.
