@@ -131,8 +131,12 @@ LONG_DRIFT = 3.0
 ##              region the mirror image of the other side about x = axis;
 ##              "shape" replaces it in region with these closed curves,
 ## PATCHES      small fixes on top of ORIGINAL parts: "erase" is painted with
-##              the colour at "colour_at" and "lines" are drawn over it,
-## ORIGINAL     parts kept exactly as drawn, with only the line weights evened
+##              the colour at "colour_at" (and, with "shapes", cut down to
+##              those closed curves, outlined), "lines" are drawn over it and
+##              "nails" are small closed loops filled with a paler colour,
+## ORIGINAL     parts kept exactly as drawn (inside "polygon"; thick ink inside
+##              "hair" becomes the colour at "hair_colour_at", with a thin
+##              line where it meets the skin), with only the line weights evened
 ##              out to the same ones as everywhere else,
 ## REDRAWS      parts drawn again from scratch: the drawing in "erase" goes
 ##              (painted with the colour at "fill", if given, or else with the
@@ -166,22 +170,78 @@ SHAPES = {
 }
 REDRAWS = {}
 PATCHES = {
-    # Elena's ring finger, drawn again as a clean finger.
-    "elena": [dict(erase=[(2258, 1716), (2408, 1700), (2424, 1714), (2410, 1739),
-                          (2330, 1750), (2268, 1754), (2250, 1738)],
-                   colour_at=(2350, 1600),
-                   lines=[[(2414, 1702), (2330, 1715), (2272, 1724), (2256, 1736), (2272, 1748),
-                           (2330, 1746), (2408, 1736)]])],
+    "elena": [
+        # Her ring finger, drawn again as a clean finger with a nail like
+        # the others, and the stray knuckle marks next to it gone.
+        dict(erase=[(2258, 1716), (2408, 1700), (2424, 1714), (2410, 1739),
+                    (2330, 1750), (2268, 1754), (2250, 1738)],
+             colour_at=(2350, 1600),
+             lines=[[(2414, 1702), (2330, 1715), (2272, 1724), (2256, 1736), (2272, 1748),
+                     (2330, 1746), (2408, 1736)]],
+             nails=[[(2264, 1736), (2279, 1729), (2295, 1736), (2279, 1743)]]),
+        dict(erase=[(2380, 1676), (2449, 1676), (2449, 1718), (2380, 1718)],
+             colour_at=(2350, 1600)),
+    ],
+    "gus": [
+        # His fingertips: four rounded tips with nails, as long as drawn,
+        # between the hand's drawn edges.
+        dict(erase=[(2597, 2330), (2640, 2318), (2648, 2282), (2768, 2276), (2812, 2290),
+                    (2812, 2380), (2700, 2480), (2590, 2480)],
+             colour_at=(2680, 2250),
+             shapes=[[(2600, 2200), (2600, 2315), (2600, 2431), (2608, 2445), (2621, 2453), (2634, 2445), (2642, 2431), (2642, 2315), (2642, 2200)],
+                     [(2642, 2200), (2642, 2303), (2642, 2407), (2650, 2421), (2662, 2429), (2675, 2421), (2683, 2407), (2683, 2303), (2683, 2200)],
+                     [(2683, 2200), (2683, 2288), (2683, 2377), (2691, 2391), (2703, 2399), (2716, 2391), (2724, 2377), (2724, 2288), (2724, 2200)],
+                     [(2724, 2200), (2724, 2270), (2724, 2341), (2732, 2355), (2745, 2363), (2758, 2355), (2766, 2341), (2766, 2270), (2766, 2200)]],
+             nails=[[(2611, 2427), (2621, 2411), (2631, 2427), (2621, 2439)],
+                    [(2652, 2403), (2662, 2387), (2672, 2403), (2662, 2415)],
+                    [(2693, 2373), (2703, 2357), (2713, 2373), (2703, 2385)],
+                    [(2735, 2337), (2745, 2321), (2755, 2337), (2745, 2349)]],
+             nail_lines=False),
+        # His left ear, drawn clean, tucked under the hair.
+        dict(erase=[(1850, 296), (1730, 296), (1730, 350), (1740, 400), (1756, 424),
+                   (1782, 434), (1812, 440), (1850, 442)],
+             shapes=[dict(points=[(1736, 300), (1850, 300), (1850, 322), (1802, 318), (1772, 328),
+                                  (1748, 334)],
+                          colour_from="above"),
+                     dict(points=[(1850, 322), (1802, 318), (1772, 328), (1761, 358), (1762, 394),
+                                  (1772, 420), (1795, 438),
+                                  (1830, 448), (1850, 454)],
+                          colour_at=(1950, 420))],
+             lines=[[(1836, 322), (1833, 378), (1836, 430)],
+                    [(1806, 340), (1788, 364), (1797, 396)],
+                    [(1836, 321), (1802, 318), (1772, 328)]]),
+        # His right ear, drawn clean, tucked under the hair.
+        dict(erase=[(2150, 296), (2270, 296), (2270, 350), (2260, 400), (2244, 424),
+                   (2218, 434), (2188, 440), (2150, 442)],
+             shapes=[dict(points=[(2264, 300), (2150, 300), (2150, 322), (2198, 318), (2228, 328),
+                                  (2252, 334)],
+                          colour_from="above"),
+                     dict(points=[(2150, 322), (2198, 318), (2228, 328), (2239, 358), (2238, 394),
+                                  (2228, 420), (2205, 438),
+                                  (2170, 448), (2150, 454)],
+                          colour_at=(2050, 420))],
+             lines=[[(2164, 322), (2167, 378), (2164, 430)],
+                    [(2194, 340), (2212, 364), (2203, 396)],
+                    [(2164, 321), (2198, 318), (2228, 328)]]),
+        # His thumbnail.
+        dict(nails=[[(2527, 2306), (2558, 2304), (2560, 2337), (2529, 2339)]]),
+    ],
 }
 ORIGINAL = {
+    # Gus's face with the ears: the thick black beside and above the face
+    # is his sideburns and hairline, so it becomes hair.
+    "gus": [dict(polygon=[(1735, 185), (2265, 185), (2265, 450), (2180, 560), (2100, 612),
+                          (1900, 612), (1830, 560), (1735, 450)],
+                 hair=[(1740, 150), (2240, 150), (2240, 300), (2215, 332), (2185, 340),
+                       (2165, 330), (2165, 262), (1835, 262), (1835, 330), (1812, 342),
+                       (1785, 332), (1740, 300)],
+                 hair_colour_at=(1990, 120)),
+            # His right hand (the fingertips are redrawn in PATCHES).
+            dict(polygon=[(2515, 2120), (2840, 2120), (2840, 2445), (2515, 2445)])],
     # Elena's hands: the one on her tummy and the hanging one.
-    # Gus's right hand.
-    "gus": [[(1735, 185), (2265, 185), (2265, 450), (2180, 560), (2100, 612), (1900, 612),
-             (1830, 560), (1735, 450)],
-            [(2515, 2120), (2840, 2120), (2840, 2445), (2515, 2445)]],
-    "elena": [[(2190, 1590), (2390, 1585), (2450, 1615), (2478, 1680), (2450, 1765),
-               (2415, 1800), (2190, 1805)],
-              [(1385, 2080), (1640, 2080), (1640, 2350), (1385, 2350)]],
+    "elena": [dict(polygon=[(2190, 1590), (2390, 1585), (2450, 1615), (2478, 1680),
+                            (2450, 1765), (2415, 1800), (2190, 1805)]),
+              dict(polygon=[(1385, 2080), (1640, 2080), (1640, 2350), (1385, 2350)])],
 }
 
 ## The figure's outline: notches narrower than twice NOTCH go, and the edge
@@ -1028,16 +1088,10 @@ def refine(rgba, scale, name):
 
     lcol = line_colour(cols, lab, lines)
     cov = np.maximum.reduce(list(lines.values()))
-    for polygon in ORIGINAL.get(name, []):
-        keep_original(rgba, drawn_ink, inside, polygon, col, cov, heavy, weights)
+    for part in ORIGINAL.get(name, []):
+        keep_original(rgba, drawn_ink, inside, part, col, cov, heavy, weights)
     for patch in PATCHES.get(name, []):
-        m = canvas.polygon(shoes.spline(patch["erase"], closed=True, per=6))
-        x, y = patch["colour_at"]
-        col[m] = col[y, x]
-        cov[m] = 0
-        strokes = [(p, taper(np.full(len(p), weights["inner"]), True, True))
-                   for p in (shoes.spline(pts)[:, ::-1] for pts in patch["lines"])]
-        cov = np.maximum(cov, render_lines(cov.shape, strokes))
+        cov, alpha = apply_patch(patch, canvas, col, cov, alpha, weights)
 
     out_rgb = col * (1 - cov[..., None]) + lcol * cov[..., None]
     out_rgb, alpha = shoe.overlay(out_rgb, alpha)
@@ -1098,7 +1152,63 @@ def outline(inside, weight):
     return np.clip(weight + 0.5 - d, 0, 1).astype(np.float32) * (d > 0)
 
 
-def keep_original(rgba, ink, inside, polygon, col, cov, heavy, weights):
+def apply_patch(patch, canvas, col, cov, alpha, weights):
+    """Applies one PATCHES entry; col is changed in place."""
+
+    def stroke(pts, closed, weight):
+        p = shoes.spline(pts, closed=closed)[:, ::-1]
+        return render_lines(cov.shape, [(p, np.full(len(p), weight))])
+
+    if "erase" in patch:
+        m = canvas.polygon(np.asarray(patch["erase"], float))
+        if "colour_at" in patch:
+            x, y = patch["colour_at"]
+            col[m] = col[y, x]
+        cov = np.where(m, 0, cov)
+        if "shapes" in patch:
+            # The new shape there, with its own outline. A shape can be a
+            # dict with its own colour.
+            shape = np.zeros(m.shape, bool)
+            for sh in patch["shapes"]:
+                pts = sh["points"] if isinstance(sh, dict) else sh
+                piece = canvas.polygon(shoes.spline(pts, closed=True, per=8))
+                shape |= piece
+                if isinstance(sh, dict) and "colour_at" in sh:
+                    x, y = sh["colour_at"]
+                    col[piece & m] = col[y, x]
+                elif isinstance(sh, dict):
+                    # Carry on the colour just above the piece, column by
+                    # column, so shading continues without a seam.
+                    ys, xs = np.nonzero(piece & m)
+                    top = np.full(piece.shape[1], piece.shape[0], int)
+                    np.minimum.at(top, xs, ys)
+                    col[ys, xs] = col[np.maximum(top[xs] - 3, 0), xs]
+            # Outside the shapes is transparent only where it was already
+            # outside the figure or is clearly beyond the shapes' outer side.
+            gone = m & ~shape
+            f = cv2.GaussianBlur(shape.astype(np.float32), (0, 0), 1.0)
+            alpha = np.where(m, np.maximum(f, alpha * ~gone), alpha)
+            clear = alpha < 0.5
+            edge = outline(shape, weights["outer"])
+            edge *= ndi.distance_transform_edt(~clear) <= weights["outer"] + 2
+            for sh in patch["shapes"]:
+                if not isinstance(sh, dict):
+                    edge = np.maximum(edge, stroke(sh, False, weights["inner"]))
+            cov = np.where(m, np.maximum(cov, edge * shape), cov)
+    if patch.get("lines"):
+        strokes = [(p, taper(np.full(len(p), weights["inner"]), True, True))
+                   for p in (shoes.spline(pts)[:, ::-1] for pts in patch["lines"])]
+        cov = np.maximum(cov, render_lines(cov.shape, strokes))
+    for pts in patch.get("nails", []):
+        nail = canvas.polygon(shoes.spline(pts, closed=True, per=8))
+        col[nail] = col[nail] + (255 - col[nail]) * 0.4
+        cov = np.where(nail, 0, cov)
+        if patch.get("nail_lines", True):
+            cov = np.maximum(cov, stroke(pts, True, weights["fine"]))
+    return cov, alpha
+
+
+def keep_original(rgba, ink, inside, part, col, cov, heavy, weights):
     """
     Inside the polygon, puts the drawing back as it was, changing only the
     line weights: the outline becomes a band of the outline weight along the
@@ -1110,7 +1220,7 @@ def keep_original(rgba, ink, inside, polygon, col, cov, heavy, weights):
     coverage) are changed in place; the edge of the polygon is feathered.
     """
 
-    pts = np.asarray(polygon, float)
+    pts = np.asarray(part["polygon"], float)
     h, w = cov.shape
     x0, y0 = [max(int(v) - 40, 0) for v in pts.min(0)]
     x1 = min(int(pts[:, 0].max()) + 40, w)
@@ -1172,6 +1282,20 @@ def keep_original(rgba, ink, inside, polygon, col, cov, heavy, weights):
     f = cv2.GaussianBlur(region.astype(np.float32), (0, 0), 4.0) * region
     f = np.clip(f * 2.0, 0, 1)
     new_cov = np.maximum(keep_cov, cov[win] * edge)
+
+    if "hair" in part:
+        # Thick ink in the hair polygon is hair; it meets the skin with a
+        # thin line on its own side, so the skin keeps its size.
+        hp = shoes.Canvas(x0, y0, x1 - x0, y1 - y0).polygon(np.asarray(part["hair"], float))
+        thick = ndi.binary_opening(drawn, structure=disk(9))
+        hair = ndi.binary_dilation(thick, iterations=3) & drawn & hp
+        hx, hy = part["hair_colour_at"]
+        new_fill[hair] = col[hy, hx]
+        line = hair & (d_skin <= weights["inner"] + 5)
+        line_cov = np.clip((cv2.GaussianBlur(line.astype(np.float32), (0, 0), 0.9) - 0.3) * 2.5,
+                           0, 1)
+        new_cov = np.where(hair & ~edge, line_cov, new_cov)
+
     col[win] = fill * (1 - f[..., None]) + new_fill * f[..., None]
     cov[win] = cov[win] * (1 - f) + new_cov * f
 
