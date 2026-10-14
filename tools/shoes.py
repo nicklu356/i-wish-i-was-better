@@ -217,6 +217,11 @@ SHOES = {
     ],
 }
 
+## How much the shoe's outline and the edges between its parts are smoothed,
+## in working pixels.
+OUTLINE_SMOOTH = 30.0
+PART_SMOOTH = 24.0
+
 LACE_EDGE = (52, 46, 58)
 AGLET = (150, 150, 158)
 EYELET = (196, 196, 204)
@@ -300,23 +305,38 @@ def silhouette(mask, inset, zone):
     m = ndi.binary_fill_holes(mask)
     m = ndi.binary_opening(m, structure=disk(10))
     m = ndi.distance_transform_edt(m) > inset
-    out = np.zeros(m.shape, np.uint8)
-    contours, _ = cv2.findContours(m.astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-    for c in contours:
+    return smooth_outline(m, OUTLINE_SMOOTH) & zone
+
+
+def smooth_outline(mask, sigma, min_len=40):
+    """
+    A mask redrawn from its outlines, each evened out with a moving average of
+    sigma working pixels along it, so wobbly edges become smooth curves.
+    """
+
+    out = np.zeros(mask.shape, np.uint8)
+    contours, hier = cv2.findContours(mask.astype(np.uint8), cv2.RETR_CCOMP,
+                                      cv2.CHAIN_APPROX_NONE)
+    if hier is None:
+        return out.astype(bool)
+    for c, hh in zip(contours, hier[0]):
         c = c[:, 0, :].astype(float)
-        if len(c) < 40:
+        if len(c) < min_len:
             continue
-        # Even spacing, then a moving average round the loop.
         seg = np.sqrt((np.diff(np.vstack([c, c[:1]]), axis=0) ** 2).sum(1))
         u = np.concatenate([[0], np.cumsum(seg)])
         k = max(int(u[-1] / 2), 20)
         t = np.linspace(0, u[-1], k, endpoint=False)
         cc = np.vstack([c, c[:1]])
         res = np.stack([np.interp(t, u, cc[:, 0]), np.interp(t, u, cc[:, 1])], 1)
-        res = ndi.gaussian_filter1d(res, 7.0, axis=0, mode="wrap")
-        cv2.fillPoly(out, [np.round(res * (1 << SHIFT)).astype(np.int32).reshape(-1, 1, 2)],
-                     1, cv2.LINE_8, SHIFT)
-    return out.astype(bool) & zone
+        # Points are 2 pixels apart; never smooth away more than a third of
+        # a small loop.
+        sg = min(sigma / 2.0, k / 6.0)
+        res = ndi.gaussian_filter1d(res, sg, axis=0, mode="wrap")
+        poly = [np.round(res * (1 << SHIFT)).astype(np.int32).reshape(-1, 1, 2)]
+        # Outer outlines add, holes cut out.
+        cv2.fillPoly(out, poly, 0 if hh[3] >= 0 else 1, cv2.LINE_8, SHIFT)
+    return out.astype(bool)
 
 
 def smooth_mask(mask, sigma):
@@ -406,7 +426,10 @@ class ShoeArt:
             gap = zone & drawn & ~shoe & leg
             if gap.any():
                 above = (~zone) & (old > 1)
-                _, (iy, ix) = ndi.distance_transform_edt(~above, return_indices=True)
+                d, (iy, ix) = ndi.distance_transform_edt(~above, return_indices=True)
+                # Only the narrow seam right under the leg; anything further
+                # off is old outline and goes.
+                gap &= d < ins + 8
                 new[gap] = old[iy, ix][gap]
 
             masks, colours = [], []
@@ -452,9 +475,15 @@ class ShoeArt:
                     if i != rest:
                         claimed |= m
                 nearest[~claimed] = rest
-            soft = np.stack([cv2.GaussianBlur((nearest == i).astype(np.float32), (0, 0), 3.0)
-                             for i in range(len(masks))])
-            nearest = soft.argmax(0)
+            # Each part's edge becomes a smooth curve. Smaller parts (toe caps,
+            # soles) are laid over bigger ones, and what's left goes back to
+            # where it was.
+            order = sorted(range(len(masks)), key=lambda i: -(nearest == i).sum())
+            smoothed = nearest.copy()
+            for i in order:
+                m = smooth_outline(shoe & (nearest == i), PART_SMOOTH, min_len=20)
+                smoothed[m] = i
+            nearest = smoothed
             ids = []
             for i, colour in enumerate(colours):
                 new[shoe & (nearest == i)] = nxt
