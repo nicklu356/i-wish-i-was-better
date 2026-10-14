@@ -126,6 +126,8 @@ LONG_DRIFT = 3.0
 ## SHAPES       changes to the figure's outline: "mirror" makes the outline in
 ##              region the mirror image of the other side about x = axis;
 ##              "shape" replaces it in region with these closed curves,
+## ORIGINAL     parts kept exactly as drawn, with only the line weights evened
+##              out to the same ones as everywhere else,
 ## REDRAWS      parts drawn again from scratch: the drawing in "erase" goes
 ##              (painted with the colour at "fill", if given, or else with the
 ##              colours round it) and these lines (curves through the points)
@@ -146,7 +148,6 @@ EXTRA_LINES = {
     ],
 }
 FEATURES = {
-    "gus": [(1848, 285), (2150, 285), (2150, 450), (2095, 600), (1905, 600), (1848, 450)],
     "zane": [(1912, 300), (2185, 300), (2185, 420), (2135, 572), (1960, 572), (1912, 420)],
     "emma": [(1912, 355), (2228, 355), (2228, 460), (2160, 655), (1985, 655), (1912, 460)],
     "elena": [(2047, 280), (2352, 300), (2345, 395), (2290, 420), (2230, 600), (2060, 600),
@@ -155,55 +156,16 @@ FEATURES = {
 SHAPES = {
     # Emma's right shoulder, as wide as her left one.
     "emma": [dict(mirror=2070, region=[(2330, 860), (2800, 860), (2800, 1290), (2330, 1290)])],
-    # Elena's hanging hand: two fingers and the thumb.
-    "elena": [dict(region=[(1395, 2100), (1625, 2100), (1625, 2345), (1395, 2345)],
-                   shape=[[(1420, 2090), (1600, 2090), (1590, 2120), (1560, 2140), (1530, 2155),
-                           (1514, 2180), (1510, 2240), (1506, 2292), (1495, 2314), (1479, 2314),
-                           (1470, 2302), (1461, 2316), (1444, 2315), (1432, 2297), (1425, 2240),
-                           (1425, 2160), (1428, 2110)],
-                          [(1545, 2100), (1600, 2095), (1597, 2180), (1589, 2230), (1571, 2249),
-                           (1551, 2242), (1544, 2205), (1548, 2160)]])],
 }
-REDRAWS = {
-    "gus": [
-        # The hairline, with its dip in the middle.
-        dict(erase=[(1810, 178), (2172, 172), (2172, 232), (1810, 238)],
-             lines=[[(1812, 248), (1828, 214), (1880, 204), (1955, 204), (1990, 222),
-                     (2025, 204), (2100, 199), (2150, 206), (2166, 230)]]),
-        # The ears.
-        dict(erase=[(1797, 300), (1772, 295), (1759, 315), (1761, 350), (1771, 384),
-                    (1791, 397), (1799, 378)],
-             fill=(1900, 420),
-             closed=[[(1797, 300), (1772, 295), (1759, 315), (1761, 350), (1771, 384),
-                      (1791, 397), (1799, 378)]],
-             lines=[[(1786, 322), (1777, 342), (1783, 366)]]),
-        dict(erase=[(2194, 300), (2215, 292), (2232, 311), (2232, 350), (2222, 385),
-                    (2200, 398), (2192, 378)],
-             fill=(2100, 420),
-             closed=[[(2194, 300), (2215, 292), (2232, 311), (2232, 350), (2222, 385),
-                      (2200, 398), (2192, 378)]],
-             lines=[[(2205, 322), (2215, 342), (2208, 366)]]),
-    ],
-    "elena": [
-        # The hand on her tummy: four fingers pointing left.
-        dict(erase=[(2195, 1598), (2385, 1596), (2442, 1622), (2470, 1676), (2445, 1758),
-                    (2412, 1797), (2195, 1802)],
-             fill=(2300, 1570),
-             lines=[[(2392, 1612), (2300, 1614), (2232, 1618), (2212, 1631), (2228, 1645),
-                     (2300, 1645), (2385, 1641)],
-                    [(2392, 1612), (2440, 1630), (2466, 1684)],
-                    [(2395, 1668), (2300, 1675), (2232, 1680), (2210, 1693), (2226, 1707),
-                     (2300, 1704), (2392, 1695)],
-                    [(2398, 1702), (2320, 1715), (2265, 1724), (2245, 1737), (2260, 1750),
-                     (2320, 1745), (2395, 1730)],
-                    [(2392, 1742), (2340, 1750), (2300, 1758), (2284, 1772), (2298, 1785),
-                     (2350, 1783), (2420, 1765), (2448, 1752)]]),
-        # The hanging hand (its outline is in SHAPES).
-        dict(erase=[(1395, 2100), (1625, 2100), (1625, 2345), (1395, 2345)],
-             fill=(1520, 2060),
-             lines=[[(1469, 2190), (1468, 2255), (1466, 2304)],
-                    [(1549, 2125), (1550, 2170)]]),
-    ],
+REDRAWS = {}
+ORIGINAL = {
+    # Gus's whole face with the ears and hairline.
+    "gus": [[(1735, 185), (2265, 185), (2265, 450), (2180, 560), (2100, 612), (1900, 612),
+             (1830, 560), (1735, 450)]],
+    # Elena's hands: the one on her tummy and the hanging one.
+    "elena": [[(2190, 1590), (2390, 1585), (2450, 1615), (2478, 1680), (2450, 1765),
+               (2415, 1800), (2190, 1805)],
+              [(1385, 2080), (1640, 2080), (1640, 2350), (1385, 2350)]],
 }
 
 ## The figure's outline: notches narrower than twice NOTCH go, and the edge
@@ -1022,6 +984,8 @@ def refine(rgba, scale, name):
 
     lcol = line_colour(cols, lab, lines)
     cov = np.maximum.reduce(list(lines.values()))
+    for polygon in ORIGINAL.get(name, []):
+        keep_original(rgba, drawn_ink, inside, polygon, col, cov, heavy, weights)
 
     out_rgb = col * (1 - cov[..., None]) + lcol * cov[..., None]
     out_rgb, alpha = shoe.overlay(out_rgb, alpha)
@@ -1074,6 +1038,66 @@ def outline(inside, weight):
 
     d = ndi.distance_transform_edt(inside)
     return np.clip(weight + 0.5 - d, 0, 1).astype(np.float32) * (d > 0)
+
+
+def keep_original(rgba, ink, inside, polygon, col, cov, heavy, weights):
+    """
+    Inside the polygon, puts the drawing back as it was, changing only the
+    line weights: the outline becomes a band of the outline weight along the
+    edge, and every other line is thinned down to the inner weight round its
+    middle (lines already thinner stay as they are). Where the ink is taken
+    away, the colour next to it carries on. col (fills) and cov (line
+    coverage) are changed in place; the edge of the polygon is feathered.
+    """
+
+    pts = np.asarray(polygon, float)
+    h, w = cov.shape
+    x0, y0 = [max(int(v) - 40, 0) for v in pts.min(0)]
+    x1 = min(int(pts[:, 0].max()) + 40, w)
+    y1 = min(int(pts[:, 1].max()) + 40, h)
+    win = (slice(y0, y1), slice(x0, x1))
+    region = shoes.Canvas(x0, y0, x1 - x0, y1 - y0).polygon(pts)
+
+    drawn = ink[win]
+    d_out = ndi.distance_transform_edt(inside[win])
+    edge = d_out <= heavy * 1.2
+
+    # The middles of the lines, without the little spurs skeletons grow.
+    skel = skeletonize(drawn)
+    paths, junction = trace_paths(skel)
+    dist = ndi.distance_transform_edt(drawn)
+    mid = junction.copy()
+    for p, js, je, closed in paths:
+        iy, ix = p[:, 0].astype(int), p[:, 1].astype(int)
+        mw = float(np.median(dist[iy, ix])) * 2.0
+        if (js != je) and len(p) < mw * 1.2:
+            continue
+        mid[iy, ix] = True
+    near_mid = ndi.distance_transform_edt(~mid) <= weights["inner"] / 2.0
+    keep = drawn & np.where(edge, d_out <= weights["outer"], near_mid)
+    keep_cov = np.clip((cv2.GaussianBlur(keep.astype(np.float32), (0, 0), 0.9) - 0.3) * 2.5, 0, 1)
+
+    # Colours: the drawing's own wherever it differs from the refined fill
+    # (eyes, mouth, the drawn shape of the hair), with the ink filled from
+    # the colour beside it.
+    rgb = rgba[win][..., :3].astype(np.float32)
+    # Clear of the lines' soft edges too, which are muddied with black.
+    source = (rgba[win][..., 3] > 200) & ~ndi.binary_dilation(drawn, iterations=4)
+    _, (iy, ix) = ndi.distance_transform_edt(~source, return_indices=True)
+    plain = rgb[iy, ix]
+    fill = col[win]
+    # The refined fills may have been re-toned (skin); carry that over.
+    m = region & (np.linalg.norm(plain - fill, axis=-1) < 40)
+    if m.sum() > 100:
+        plain = plain * (np.median(fill[m], axis=0) / np.maximum(np.median(plain[m], axis=0), 1))
+    differs = np.linalg.norm(plain - fill, axis=-1) > 40
+    new_fill = np.where(differs[..., None], plain, fill)
+
+    f = cv2.GaussianBlur(region.astype(np.float32), (0, 0), 4.0) * region
+    f = np.clip(f * 2.0, 0, 1)
+    new_cov = np.maximum(keep_cov, cov[win] * edge)
+    col[win] = fill * (1 - f[..., None]) + new_fill * f[..., None]
+    cov[win] = cov[win] * (1 - f) + new_cov * f
 
 
 def restore_features(rgba, out, polygon):
