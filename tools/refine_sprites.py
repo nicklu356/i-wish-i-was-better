@@ -135,7 +135,8 @@ LONG_DRIFT = 3.0
 ##              those closed curves, outlined), "lines" are drawn over it and
 ##              "nails" are small closed loops filled with a paler colour,
 ## HEADS        faces drawn as a skin oval inside a thick line: rebuilt with
-##              the oval as drawn and one even line round it (rebuild_head),
+##              the oval as drawn and one even line round it (rebuild_head);
+##              the hair comes down the sides to "hair_to",
 ## ORIGINAL     parts kept exactly as drawn (inside "polygon"; thick ink inside
 ##              "hair" becomes the colour at "hair_colour_at", with a thin
 ##              line where it meets the skin), with only the line weights evened
@@ -173,6 +174,14 @@ SHAPES = {
 REDRAWS = {}
 PATCHES = {
     "elena": [
+        # Her index finger, drawn again: a clean nail, no stray tick, and
+        # its lower edge running smoothly into the top one by the palm.
+        dict(erase=[(2200, 1615), (2400, 1614), (2400, 1631), (2430, 1631), (2432, 1656),
+                    (2330, 1672), (2280, 1680), (2240, 1680), (2200, 1674)],
+             colour_at=(2350, 1600),
+             lines=[[(2436, 1625), (2405, 1626), (2330, 1627), (2260, 1628), (2228, 1632), (2212, 1645),
+                     (2224, 1660), (2260, 1664), (2330, 1655), (2400, 1643), (2428, 1632)]],
+             nails=[[(2217, 1645), (2227, 1636), (2241, 1645), (2227, 1654)]]),
         # Her middle and ring fingers, drawn again side by side where the
         # drawing has them as two solid black strokes, each with a nail.
         dict(erase=[(2198, 1678), (2245, 1670), (2275, 1676), (2320, 1675), (2365, 1665),
@@ -216,7 +225,7 @@ HEADS = {
     # Gus's face is drawn as a skin oval inside one thick black line, with
     # the ears as bumps on it. The face keeps its drawn shape and gets one
     # even line all the way round; the ears are drawn clean on the outside.
-    "gus": dict(face_at=(2000, 420), bottom=668,
+    "gus": dict(face_at=(2000, 420), bottom=668, hair_at=(1990, 120), hair_to=330,
                 ears=[[(1850, 290), (1800, 282), (1768, 300), (1758, 340), (1760, 394),
                        (1772, 420), (1795, 438), (1830, 448), (1850, 454)],
                       [(2150, 290), (2200, 282), (2232, 300), (2242, 340), (2240, 394),
@@ -1194,6 +1203,17 @@ def rebuild_head(rgba, spec, lab, col, cov, lcol, alpha, canvas, weights):
     alpha[fill] = np.round(alpha[sy, sx][fill])
     new_lab = lab.copy()
     new_lab[fill] = lab[sy, sx][fill]
+
+    # Down the sides of the head, the hair comes down over the old line to
+    # the tops of the ears.
+    if "hair_at" in spec:
+        hx, hy = spec["hair_at"]
+        hair_src = (lab == lab[hy, hx]) & ~redo & (cov < 0.3)
+        _, (ty, tx) = ndi.distance_transform_edt(~hair_src, return_indices=True)
+        down = fill & (yy < spec["hair_to"])
+        col[down] = col[ty, tx][down]
+        alpha[down] = 1.0
+        new_lab[down] = lab[hy, hx]
 
     # The face and ears in the face's skin colour, the line round the face.
     skin_col = np.median(col[face & (cov < 0.05) & ~ndi.binary_dilation(~face, iterations=8)],
