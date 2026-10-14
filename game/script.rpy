@@ -96,11 +96,11 @@ label day1:
     
     scene courtyard
     with dissolve
-    play music "audio/indiepop.mp3" fadein 1.0
+    play music "audio/indiefolkyears.mp3" fadein 1.0
     "Trying to choose the right song for the vibe, you don't notice someone walking up to you."
     q "Excuse me, can you give me a little help?"
     "Hearing someone call out, you look up and see a girl waving at you."
-    show elena at pos_right
+    show elena at pos_center
     with dissolve
     q "Do you know how to get to classroom 301B in Jordan Building?"
     "Given you're a new student, there's no way you would know the location."
@@ -112,7 +112,9 @@ label day1:
     "She thanks you and heads straight for the building before you can say anything."
     p "I'm not that sure though..."
     "Feeling stupid for thinking this simple interaction could turn into something more, you walk faster toward campus, trying to shake off the embarrassment."
-
+    scene black
+    with fade
+    "Some time later..."
     scene corridor
     with dissolve
     "It's your second class, and you're still thinking about the incident."
@@ -169,7 +171,7 @@ label day1:
     "Overthinking that sentence way too much, you freeze for a second."
     p "Yeah, I guess so. HAHA."
     p "(Idiot, get your shit together.)"
-    "Sometimes I wish I was better."
+    "SOMETIMES I WISH I WAS BETTER."
 
     scene black
     with fade
@@ -219,6 +221,7 @@ label day2:
     "Some time later..."
     scene professor
     with dissolve
+    stop music fadeout 1.5
     "You listen to the lecture with your full attention, though you zone out now and then."
     t "Alright class, before we finish, I want you to know that this course will have a group project, due the week after next."
     t "So you should probably start to discuss your project early."
@@ -234,6 +237,7 @@ label day2:
     "The guy's name is Gus, the other one is Chris, and of course, the girl."
     show emmabus at pos_center
     with dissolve
+    play music "audio/ilikeyoualot.mp3" fadein 1.0
     b "My name is Emma, nice to meet you."
     p "Nice to meet you too."
     p "I'm [player_name]."
@@ -700,61 +704,75 @@ label day5:
     with dissolve
     "You can already feel the awkwardness in the air, and that feels like shit."
     p "(God damn it, Gus, why are you the first to leave?)"
-    "You decide to say something first to break the ice."
-    s "So..."
-    s "Sorry, you go first."
-    "Realizing you keep talking over each other, you make sure to speak first this time."
-    p "It's alright, you can go first."
-    b "I don't mean this in a bad way, but you're kind of a different person when we're playing darts."
-    p "Yeah, I can certainly feel it myself, too. HAHA."
-    p "I think it's just because I really like darts, one of my interests."
-    p "Like video games, movies that kind of stuff."
-    b "Oh what kind of movies do you like?"
-    p "Most genres are fine by me, but I do have a favorite movie."
-    $ favorite_movie = renpy.input(__("What's your favorite movie:"), length=50, exclude="[]{}")
-    $ favorite_movie = favorite_movie.strip()
-    if favorite_movie == "":
-        $ favorite_movie = "Portrait Of A Lady On Fire"
-    p "It's [favorite_movie]."
-    b "NO WAY! I love that movie as well!"
-    b "Not my favorite but I do love it!"
-    b "I mean the movie just did a very great job on..."
-    "You're kind of surprised that Emma suddenly has so much to say."
-    scene black
-    "Some time later..."
-    scene walk
-    show emma at pos_center
-    with dissolve
-    b "To this day, that movie still has a huge impact on me!"
-    p "Yeah, I agree! That's why I've watched it around 10 times now, haha."
-    b "Not that many times for me, but agreed!"
-    "You guys laugh and keep walking."
-    p "Another reason I like the movie so much is that it has sentimental value, just like darts."
-    b "What do you mean?"
-    p "Like darts, it brings back some good memories from high school."
-    p "I used to play darts with my high school friends a lot."
-    p "This is gonna sound a little sad, but it's one of those rare memories that makes me feel happy when I think about high school."
-    b "What happened in high school, if I may ask?"
-    p "Nothing."
-    b "Nothing?"
-    p "I think that's the point. Nothing happened." 
-    p "I didn't know a lot of people, and I didn't join many activities."
-    p "I was just... there."
-    p "So I'm really thankful for my friends there."
-    p "They made my time in high school more meaningful."
-    p "Not trying to be ungrateful. I know there were definitely people who had it worse than me there."
-    p "It's just the thought of people living better than me sometimes really gets me."
-    b "I get it, I sometimes think about that, too."
-    b "At least you had some good times back then, and now, right?"
-    p "Yeah, I guess."
-    b "Hey, thanks for sharing this side of you."
-    p "What side?"
-    b "That you can be crazy fun and sentimental sometimes."
-    "You want to say something, but you don't know what."
-    "So you ask her questions to continue the conversation."
-    "You usually walk pretty fast, but this time, both of you walk a lot slower."
-    "Like the world is on fast-forward, or you just don't want to leave."
-    p "So what were you like in high school?..."
+    "You have two choices:"
+    "You can just make up an excuse like you have to take the metro to have an early exit to avoid awakrdness."
+    "Or you can get your shit together and try to have a chat."
+    "So?"
+    menu:
+        "Try to have a chat":
+            $emma_affection+=1
+            p "You decide to say something first to break the ice."
+            s "So..."
+            s "Sorry, you go first."
+            "Realizing you keep talking over each other, you make sure to speak first this time."
+            p "It's alright, you can go first."
+            b "I don't mean this in a bad way, but you're kind of a different person when we're playing darts."
+            p "Yeah, I can certainly feel it myself, too. HAHA."
+            p "I think it's just because I really like darts, one of my interests."
+            p "Like video games, movies that kind of stuff."
+            b "Oh what kind of movies do you like?"
+            p "Most genres are fine by me, but I do have a favorite movie."
+            $ favorite_movie = renpy.input(__("What's your favorite movie:"), length=50, exclude="[]{}")
+            $ favorite_movie = favorite_movie.strip()
+            if favorite_movie == "":
+                $ favorite_movie = "Portrait Of A Lady On Fire"
+            p "It's [favorite_movie]."
+            $emma_affection+=1
+            b "NO WAY! I love that movie as well!"
+            b "Not my favorite but I do love it!"
+            b "I mean the movie just did a very great job on..."
+            "You're kind of surprised that Emma suddenly has so much to say."
+            scene black
+            "Some time later..."
+            scene walk
+            show emma at pos_center
+            with dissolve
+            b "To this day, that movie still has a huge impact on me!"
+            p "Yeah, I agree! That's why I've watched it around 10 times now, haha."
+            b "Not that many times for me, but agreed!"
+            "You guys laugh and keep walking."
+            p "Another reason I like the movie so much is that it has sentimental value, just like darts."
+            b "What do you mean?"
+            p "Like darts, it brings back some good memories from high school."
+            p "I used to play darts with my high school friends a lot."
+            p "This is gonna sound a little sad, but it's one of those rare memories that makes me feel happy when I think about high school."
+            b "What happened in high school, if I may ask?"
+            p "Nothing."
+            b "Nothing?"
+            p "I think that's the point. Nothing happened." 
+            p "I didn't know a lot of people, and I didn't join many activities."
+            p "I was just... there."
+            p "So I'm really thankful for my friends there."
+            p "They made my time in high school more meaningful."
+            p "Not trying to be ungrateful. I know there were definitely people who had it worse than me there."
+            p "It's just the thought of people living better than me sometimes really gets me."
+            b "I get it, I sometimes think about that, too."
+            b "At least you had some good times back then, and now, right?"
+            p "Yeah, I guess." 
+            b "Hey, thanks for sharing this side of you."
+            p "What side?"
+            b "That you can be crazy fun and sentimental sometimes."
+            "You want to say something, but you don't know what."
+            "So you ask her questions to continue the conversation."
+            "You usually walk pretty fast, but this time, both of you walk a lot slower."
+            "Like the world is on fast-forward, or you just don't want to leave."
+            p "So what were you like in high school?..."
+            
+        "Make an excuse":
+            p "Hey, I actually have to catch the metro, here..."
+            p "So I'll see you later?"
+            b "Yeah sure, no problem!"
+            b "See you!"
     stop music fadeout 1.5
 
 label day6:
