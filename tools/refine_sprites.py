@@ -134,6 +134,7 @@ LONG_DRIFT = 3.0
 ##              the colour at "colour_at" (and, with "shapes", cut down to
 ##              those closed curves, outlined), "lines" are drawn over it and
 ##              "nails" are small closed loops filled with a paler colour,
+##              and "add" puts a new filled shape on top with its own line,
 ## HEADS        faces drawn as a skin oval inside a thick line: rebuilt with
 ##              the oval as drawn and one even line round it (rebuild_head);
 ##              the hair comes down the sides to "hair_to",
@@ -174,32 +175,41 @@ SHAPES = {
 REDRAWS = {}
 PATCHES = {
     "elena": [
-        # Her index, middle and ring fingers, drawn again side by side: the
-        # same width all along, each touching the next with no gap, rounded
-        # tips with nails. (The drawing has them as solid black strokes.)
+        # Her index, middle and ring fingers, drawn again side by side,
+        # each touching the next with no gap: a little narrower at the tip,
+        # the middle one the longest, rounded tips with nails. (The drawing
+        # has them as solid black strokes.)
         dict(erase=[(2200, 1612), (2405, 1612), (2405, 1631), (2432, 1631), (2432, 1740),
                     (2410, 1742), (2380, 1749), (2350, 1757), (2320, 1764), (2290, 1766),
                     (2265, 1766), (2240, 1760), (2200, 1740)],
              colour_at=(2350, 1600),
-             lines=[[(2412, 1624), (2300, 1628), (2242, 1630), (2224, 1636), (2214, 1650),
-                     (2224, 1664), (2242, 1670), (2300, 1667), (2412, 1662)],
-                    [(2252, 1670), (2232, 1673), (2219, 1691), (2232, 1709), (2252, 1712),
-                     (2300, 1709), (2412, 1700)],
-                    [(2272, 1712), (2254, 1715), (2241, 1733), (2254, 1751), (2272, 1754),
-                     (2330, 1747), (2412, 1738)]],
-             nails=[[(2231, 1650), (2237, 1641), (2252, 1640), (2259, 1650), (2252, 1660), (2237, 1659)],
-                    [(2236, 1691), (2242, 1682), (2257, 1681), (2264, 1691), (2257, 1701), (2242, 1700)],
-                    [(2258, 1733), (2264, 1724), (2279, 1723), (2286, 1733), (2279, 1743), (2264, 1742)]],
+             lines=[[(2432, 1627), (2412, 1624), (2330, 1627), (2262, 1631), (2236, 1636), (2222, 1648),
+                     (2232, 1662), (2262, 1667), (2330, 1666), (2412, 1662)],
+                    [(2262, 1670), (2236, 1674), (2220, 1680), (2209, 1692), (2218, 1705),
+                     (2238, 1710), (2262, 1712), (2310, 1710), (2412, 1700)],
+                    [(2276, 1712), (2254, 1716), (2240, 1725), (2234, 1736), (2244, 1748),
+                     (2262, 1753), (2290, 1754), (2335, 1747), (2412, 1738)]],
+             nails=[[(2229, 1649), (2235, 1641), (2248, 1641), (2255, 1649), (2248, 1657), (2235, 1657)],
+                    [(2215, 1692), (2222, 1683), (2235, 1683), (2243, 1692), (2235, 1701), (2222, 1701)],
+                    [(2240, 1736), (2246, 1728), (2259, 1728), (2266, 1736), (2259, 1744), (2246, 1744)]],
              nail_lines=False),
         # Her little finger, which the drawing has as a single thick line:
         # a finger like the others, a little shorter and narrower.
         dict(erase=[(2275, 1762), (2330, 1754), (2412, 1745), (2440, 1745), (2440, 1786),
                     (2350, 1794), (2290, 1794), (2268, 1782)],
              colour_at=(2350, 1600),
-             lines=[[(2308, 1748), (2295, 1752), (2288, 1763), (2298, 1775), (2315, 1779),
-                     (2360, 1775), (2410, 1764), (2442, 1764)]],
-             nails=[[(2298, 1763), (2303, 1755), (2316, 1755), (2322, 1763), (2316, 1771), (2303, 1771)]],
+             lines=[[(2312, 1750), (2301, 1754), (2293, 1763), (2302, 1773), (2318, 1777), (2360, 1774), (2410, 1764), (2442, 1764)]],
+             nails=[[(2300, 1763), (2306, 1756), (2317, 1756), (2324, 1763), (2317, 1770), (2306, 1770)]],
              nail_lines=False),
+        # Her thumb: the little loop where her waist line meets the hand, and
+        # the line from it down the back of the hand, so the hand has its own
+        # outline instead of running into her body.
+        dict(add=[dict(fill=[(2430, 1630), (2424, 1608), (2430, 1588), (2442, 1574),
+                             (2460, 1580), (2472, 1596), (2474, 1614), (2470, 1630)],
+                       line=[(2430, 1630), (2424, 1608), (2430, 1588), (2442, 1574),
+                             (2460, 1580), (2472, 1596), (2474, 1614), (2482, 1632),
+                             (2498, 1658), (2518, 1688)])],
+             colour_at=(2350, 1600)),
     ],
     "gus": [
         # His fingertips: four rounded tips with nails, as long as drawn,
@@ -1302,6 +1312,16 @@ def apply_patch(patch, canvas, col, cov, alpha, weights):
                 if not isinstance(sh, dict):
                     edge = np.maximum(edge, stroke(sh, False, weights["inner"]))
             cov = np.where(m, np.maximum(cov, edge * shape), cov)
+    for piece in patch.get("add", []):
+        # A new shape on top: filled, and outlined by its line (the old
+        # lines inside it go).
+        shape = canvas.polygon(shoes.spline(piece["fill"], closed=True, per=8))
+        x, y = patch["colour_at"]
+        col[shape] = col[y, x]
+        cov = np.where(shape, 0, cov)
+        f = cv2.GaussianBlur(shape.astype(np.float32), (0, 0), 1.0)
+        alpha = np.maximum(alpha, f)
+        cov = np.maximum(cov, stroke(piece["line"], False, weights["inner"]))
     if patch.get("lines"):
         strokes = [(p, taper(np.full(len(p), weights["inner"]), True, True))
                    for p in (shoes.spline(pts)[:, ::-1] for pts in patch["lines"])]
