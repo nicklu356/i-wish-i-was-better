@@ -214,7 +214,9 @@ label day1:
     "You have a match with Arielle!"
     "She didn't say anything so now it's up to you."
     p "(All right. How should I do this?)"
-    $ phone_open("Arielle")
+    $ phone_open("Arielle", app="dating")
+    $ phone_stamp(_("You matched with Arielle"))
+    $ phone_stamp(_("Mon 10:47 PM"))
     menu:
         "Wait for her to respond first.":
             "Waiting is also a virtue, right?"
@@ -222,14 +224,17 @@ label day1:
             $ arielle_gone = True
         "Say hi.":
             p_txt "Hey"
+            $ phone_note(_("Delivered"))
             "You stare at the screen for a while."
             "You just say hey."
             "Pretty much nothing."
             $ arielle_gone = True
         "Ask how her day is going?":
-            p_txt "Hi! How's your day going?"  
+            p_txt "Hi! How's your day going?"
+            $ phone_note(_("Delivered"))
     "Nothing."
     "Now there's nothing else you can do."
+    $ phone_close()
     "But before you go to bed, you somehow decide to check Elena's social media."
     "Concerts. Road trips." 
     "Rooftop parties." 
@@ -238,17 +243,25 @@ label day1:
     "Yours looks like a loading screen."
     p "(Fuck my life.)"
     "You decide to check the dating app one last time."
+    $ phone_open("Arielle", app="dating")
     if arielle_gone:
+        $ phone_stamp(_("This match is no longer available."))
         "The chat is gone."
         "Arielle unmatched you."
         p "(FUCK THIS SHIT)"
     else:
+        $ phone_stamp(_("You matched with Arielle"))
+        $ phone_stamp(_("Mon 10:47 PM"))
+        $ phone_add(p_txt, "Hi! How's your day going?")
+        $ phone_stamp(_("11:58 PM"))
         "To your surprise, you got a message."
         $ phone_typing_start(ar_txt)
         ar_txt "Just finish my classes, and I'm exhausted at the moment:("
         p_txt "I'm sure it will get better haha"
         p_txt "What degree are you in?"
+        $ phone_note(_("Delivered"))
         $ arielle_stage = 1
+    $ phone_close()
     "You close the app again."
     "You then have a video chat with your old friends, and get ready for bed."
     p "(Sigh) Sweet dreams, I hope."
@@ -321,6 +334,7 @@ label day2:
     play sound "audio/sfx/message.ogg"
     "You get a meesage."
     $ phone_open("Elena")
+    $ phone_stamp(_("Tue 9:41 PM"))
     a_txt "PARTNER"
     a_txt "did u read the assignment brief yet"
     p_txt "Oh not yet, sorry about that."
@@ -369,6 +383,7 @@ label day3:
     "Then you get a message."
     play sound "audio/sfx/message.ogg"
     $ phone_open("Elena")
+    $ phone_stamp(_("Wed 10:02 AM"))
     "Turns out it's Elena replying your story."
     a_txt "niceee where did you go??"
     a_txt "u a night walk person??"
@@ -500,7 +515,12 @@ label day3:
         with dissolve
         play sound "audio/sfx/message.ogg"
         "When you get home, there's a notification on the dating app again."
-        $ phone_open("Arielle")
+        $ phone_open("Arielle", app="dating")
+        $ phone_stamp(_("Mon 11:58 PM"))
+        $ phone_add(ar_txt, "Just finish my classes, and I'm exhausted at the moment:(")
+        $ phone_add(p_txt, "I'm sure it will get better haha")
+        $ phone_add(p_txt, "What degree are you in?")
+        $ phone_stamp(_("Wed 9:14 PM"))
         ar_txt "sorry i'm slow at replying btw, pottery class ate my whole week"
         ar_txt "I'm studying bachelor of art(as you can guess haha) at the moment!"
         ar_txt "and my bowl collapsed AGAIN"
@@ -525,10 +545,13 @@ label day3:
                 $ arielle_stage = 2
         $ phone_close()
         if arielle_gone:
+            $ phone_open("Arielle", app="dating")
+            $ phone_stamp(_("This match is no longer available."))
             "Ten minutes later, the chat is gone."
             "Arielle unmatched you."
             p "(Two days of waiting for that.)"
             p "(Great job, [player_name].)"
+            $ phone_close()
         "You go to sleep."
     
 label day4:
@@ -925,7 +948,13 @@ label day5:
         scene bedroomnight
         with dissolve
         "You get home and another notification on the dating app."
-        $ phone_open("Arielle")
+        $ phone_open("Arielle", app="dating")
+        $ phone_stamp(_("Wed 9:14 PM"))
+        $ phone_add(ar_txt, "No, I actually enjoy painting a lot better.")
+        $ phone_add(ar_txt, "I'm sure it's not that bad!")
+        $ phone_add(p_txt, "Oh really? Paintings are my favorite form of art as well, specially portraits and landscape!")
+        $ phone_add(p_txt, "I do try to draw from time to time, but it still needs practice :(")
+        $ phone_stamp(_("Fri 10:37 PM"))
         ar_txt "sorry again for the late reply, I don't turn on notifications most of the time"
         ar_txt "NO WAY Portraits are my favorite kind of painting!"
         ar_txt "If you don't mind I can be the judge of that lol"
@@ -950,10 +979,14 @@ label day5:
                 p_txt "Nice, just followed you!"
                 "A minute later, she follows you back."
                 "You decide to start the conversation in social."
+                $ phone_close()
+                $ phone_open("Arielle")
+                $ phone_stamp(_("Fri 10:58 PM"))
                 p_txt "This is [player_name] saying hi from another place now haha"
                 ar_txt "Hello to you from here as well!"
                 ar_txt "I'm going to sleep, we'll talk later?"
                 p_txt "Of course! Have a good night!"
+                $ phone_stamp(_("Arielle liked a message"))
                 "She liked the message."
                 $ arielle_stage = 3
             "Just agree with her.":
@@ -966,9 +999,12 @@ label day5:
                 "And just like that, the conversation stops."
                 $ arielle_gone = True
         if arielle_gone:
+            $ phone_close()
+            $ phone_open("Arielle", app="dating")
+            $ phone_stamp(_("This match is no longer available."))
             "Ten minutes later, the chat is gone."
             "Arielle unmatched you."
-            p "(Sometimes you really sucks, [player_name].)"        
+            p "(Sometimes you really sucks, [player_name].)"
         $ phone_close()
 
 label day6:
@@ -987,9 +1023,17 @@ label day6:
         "You think you should probably take some actions."
         "So you do."
         $ phone_open("Arielle")
+        $ phone_stamp(_("Fri 10:58 PM"))
+        $ phone_add(p_txt, "This is [player_name] saying hi from another place now haha")
+        $ phone_add(ar_txt, "Hello to you from here as well!")
+        $ phone_add(ar_txt, "I'm going to sleep, we'll talk later?")
+        $ phone_add(p_txt, "Of course! Have a good night!")
+        $ phone_stamp(_("Arielle liked a message"))
+        $ phone_stamp(_("Sat 9:03 AM"))
         p_txt "Hey do you wanna grab some coffee or do something together?"
-        $ phone_close()
+        $ phone_note(_("Delivered"))
         "You throw your phone away."
+        $ phone_close()
         "You really FUCKING DO IT."
         "Now it's all up to her now."
         "Still that doesn't make you feel better."
@@ -997,6 +1041,7 @@ label day6:
     play sound "audio/sfx/message.ogg"
     "As you drown in your thoughts, your phone chimes."
     $ phone_open("Emma")
+    $ phone_stamp(_("Sat 11:26 AM"))
     "It's a message and it's from Emma."
     b_txt "last night was really fun :)"
     p_txt "Yeah!"
@@ -1030,6 +1075,7 @@ label day6:
     scene bedroom
     with dissolve
     $ phone_open("Elena")
+    $ phone_stamp(_("Sat 7:12 PM"))
     play sound "audio/sfx/message.ogg"
     "You get another message."
     "But this time, it's Elena."
@@ -1211,6 +1257,7 @@ label day7:
         menu:
             "Text Elena: 'Thanks for last night, I really appreciate it.'":
                 $ phone_open("Elena")
+                $ phone_stamp(_("Sun 10:15 AM"))
                 $ elena_affection += 1
                 p_txt "Thanks for last night, I really appreciate it!"
                 a_txt "anytime!! i enjoyed the company too ngl"
@@ -1223,6 +1270,7 @@ label day7:
                 "Since you messaged Elena, you wonder whether you should message Emma, too."
             "Don't text, that's kind of weird.":
                 $ phone_open("Elena")
+                $ phone_stamp(_("Sun 10:15 AM"))
                 play sound "audio/sfx/message.ogg"
                 "You get a text from Elena:"
                 a_txt "heyyy thanks for last night!!"
@@ -1246,6 +1294,7 @@ label day7:
         play sound "audio/sfx/message.ogg"
         "Then, you get a message."
         $ phone_open("Elena")
+        $ phone_stamp(_("Sun 1:26 PM"))
         a_txt "HEYYY"
         play music "audio/joyful.mp3" fadein 1.0
         "It's Elena."
@@ -1288,6 +1337,7 @@ label emma_message:
     scene bedroom
     with dissolve
     $ phone_open("Emma")
+    $ phone_stamp(_("Sun 4:47 PM"))
     $ phone_typing_start(p_txt)
     "You open your chat with Emma and try typing whatever comes to mind."
     "But none of them feels good enough."
@@ -1406,8 +1456,16 @@ label day8:
     "Another day of school."
     "And yes, you're still early."
     if arielle_stage >= 3:
-        "Before class, you check Instagram. Arielle still hasn't opened your last message."
+        "Before class, you check Instagram."
+        $ phone_open("Arielle")
+        $ phone_stamp(_("Sat 9:03 AM"))
+        $ phone_add(p_txt, "Hey do you wanna grab some coffee or do something together?")
+        $ phone_note(_("Delivered"))
+        "Arielle still hasn't opened your last message."
         "It's been two days."
+        "Forty-seven hours, if anyone's counting."
+        "You are."
+        $ phone_close()
         "You started to wonder what you've done wrong along the way."
     "Then you notice Elena."
     "She really meant what she said about coming earlier."
@@ -1899,6 +1957,7 @@ label day12:
     "Not knowing what to do, you text Zane for advice."
     "Since Gus's credibility isn't exactly high right now."
     $ phone_open("Zane")
+    $ phone_stamp(_("Fri 11:38 PM"))
     x_txt "Hey man, What's up?"
     play music "audio/lahth.mp3" fadein 1.0
     p_txt "Hypothetical question, does it count as cheating if I go on two dates?"
@@ -2597,6 +2656,9 @@ label none_ending:
             "Then your phone buzzes."
             "IT'S Arielle."
             $ phone_open("Arielle")
+            $ phone_stamp(_("Sat 9:03 AM"))
+            $ phone_add(p_txt, "Hey do you wanna grab some coffee or do something together?")
+            $ phone_stamp(_("Today 11:41 PM"))
             ar_txt "omg hi"
             ar_txt "i'm SO sorry. my social got hacked and i lost literally everything"
             ar_txt "just restore it and remembered i never replied to you"
@@ -2605,6 +2667,7 @@ label none_ending:
             "You'll never know."
             ar_txt "anyway, are you still up for getting coffee sometime?"
             "HOW ABOUT TOMORROW?"
+            $ phone_close()
     else:
             "Out of habit, you open the dating app."
             "Swipe. Swipe."
