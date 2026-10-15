@@ -16,11 +16,12 @@
 ##     $ phone_close()                  # hide the phone
 
 ## Characters that talk through the phone.
-## Elena replies almost instantly; Emma takes her time.
+## Elena replies almost instantly; Emma takes her time; Arielle replies slowly. Very slowly.
 define a_txt = PhoneCharacter("Elena", "#E31B61", typing_delay=0.35)
 define b_txt = PhoneCharacter("Emma", "#0e719e", typing_delay=1.3)
 define x_txt = PhoneCharacter("Zane", "#B5B9FF")
 define p_txt = PhoneCharacter("[player_name]", "#7d00ae", mine=True)
+define ar_txt = PhoneCharacter("Arielle", "#e8a33d", typing_delay=2.0)
 
 ## How long the "..." typing bubble shows before an incoming message, unless
 ## the character sets its own typing_delay.

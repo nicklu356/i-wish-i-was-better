@@ -9,6 +9,8 @@ define b = Character("Emma", color="#0e719e")
 default emma_affection = 0
 default try_talk_emaa = False
 define lv = Character(None, what_color="#db81ff")
+default arielle_stage = 0     
+default arielle_gone = False  
 
 define m = Character("[player_name2]",  color="#db81ff")
 define p = Character("[player_name]", color="#7d00ae")
@@ -186,14 +188,50 @@ label day1:
     "You take out the phone and start looking at [player_name2]'s photos."
     "You might have had a chance to be with her, but none of it ever happened."
     "Sometimes you think it's the unknown possibility of that future that makes you regret it and dwell on it so much."
-    "As if this doesn't hurt you enough, you somehow decide to check Elena's social media as well."
+    "As if this doesn't hurt you enough, you open the dating app you downloaded over the summer."
+    "The one you've opened many times and never have a successful experience."
+    "To your surprise, there is a match!"
+    "Her name is Arielle."
+    p "(All right. How should I do this?)"
+    $ phone_open("Arielle")
+    menu:
+        "Wait for her to respond first.":
+            "Waiting is also a virtue, right?"
+            "So you did nothing."
+            $ arielle_gone = True
+        "Say hi.":
+            p_txt "Hey"
+            "You stare at the screen for a while."
+            "You just say hey."
+            "Pretty much nothing."
+            $ arielle_gone = True
+        "Ask how her day is going?":
+            p_txt "Hi! How's your day going?"  
+    "Nothing."
+    $ phone_close()
+    scene black
+    "Some time later..."
+    "Before you go to bed, you somehow decide to check Elena's social media."
     "Concerts. Road trips." 
     "Rooftop parties." 
     "Friends laughing at a joke you'll never hear."
     "Her life looks like a movie." 
     "Yours looks like a loading screen."
     p "(Fuck my life.)"
-    "You take a shower, chat with your old friends, and get ready for bed."
+    "You decide to check the dating app one last time."
+    if arielle_gone:
+        "The chat is gone."
+        "Arielle unmatched you."
+        p "(FUCK THIS SHIT)"
+    else:
+        "To your surprise, you got a message."
+        $ phone_typing_start(ar_txt)
+        ar_txt "Just finish my classes, and I'm exhausted at the moment:("
+        p_txt "I'm sure it will get better haha"
+        p_txt "What degree are you in?"
+        $ arielle_stage = 1
+    "You close your phone."
+    "You then take a shower, chat with your old friends, and get ready for bed."
     p "(Sigh) Sweet dreams, I hope."
     stop music fadeout 1.5
 
