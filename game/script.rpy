@@ -2154,10 +2154,6 @@ label day13:
     "There's definitely something wrong you just don't know what exacly happened."
     "You open your chat with Emma, thinking you should probably ask about it."
     $ phone_open("Emma")
-    $ phone_stamp(_("Sat 9:52 PM"))
-    $ phone_add(p_txt, _("Got home! Thanks again for today."))
-    $ phone_add(b_txt, _("me too :) get some rest"))
-    $ phone_stamp(_("1:47 AM"))
     $ phone_typing_start(b_txt)
     "Before you can type anything, the typing indicator pops up."
     p "(She's still awake?)"
