@@ -20,9 +20,11 @@
 ##     $ phone_stamp(_("Tue 9:41 PM"))  # small centered line in the chat
 ##     $ phone_note(_("Delivered"))     # small line under the last message,
 ##                                      # gone as soon as anything new arrives
-##     $ phone_add(p_txt, "Hey")        # put an earlier message in the chat
-##                                      # without showing it, e.g. when coming
-##                                      # back to a conversation
+##     $ phone_add(p_txt, _("Hey"))     # put a message in the chat without
+##                                      # showing it: earlier history when
+##                                      # coming back to a conversation, or
+##                                      # messages that came in before the
+##                                      # player opened the phone
 ##
 ## Chats in the dating app look different from normal messages:
 ##
@@ -78,6 +80,8 @@ default phone_note_text = None
 
 init -1 python:
 
+    import re
+
     def phone_text_color(color):
         """Dark text on light bubbles, white text on dark ones."""
         r, g, b = Color(color).rgb
@@ -85,6 +89,17 @@ init -1 python:
 
     def phone_bubble_bg(color):
         return Frame(Transform("gui/chat/bubble.png", matrixcolor=TintMatrix(color)), 22, 22)
+
+    def phone_wrappable(msg):
+        """
+        Lets long words like "@arielle.makes.paintings" wrap inside a bubble,
+        by allowing a line break after a ".", "@", "_" or "/". Leaves
+        [substitutions] and {text tags} alone.
+        """
+        parts = re.split(r"(\[[^\]]*\]|\{[^}]*\})", msg)
+        for i in range(0, len(parts), 2):
+            parts[i] = re.sub(r"(?<=[.@_/])(?=\w)", u"\u200b", parts[i])
+        return "".join(parts)
 
     def phone_bubble_color(mine, bubble):
         """In the dating app everyone gets the app's colors."""
@@ -117,7 +132,7 @@ init -1 python:
         store.phone_note_text = __(what)
 
     def phone_add(who, what):
-        phone_log_add(who.phone_mine, phone_bubble_color(who.phone_mine, who.phone_bubble), what)
+        phone_log_add(who.phone_mine, phone_bubble_color(who.phone_mine, who.phone_bubble), __(what))
 
     def phone_typing_start(who):
         if who.phone_mine:
@@ -185,7 +200,7 @@ screen phone_bubble(msg, mine, bubble):
         style "phone_bubble"
         xalign (1.0 if mine else 0.0)
         background phone_bubble_bg(bubble)
-        text msg style "phone_bubble_text" color phone_text_color(bubble)
+        text phone_wrappable(msg) style "phone_bubble_text" color phone_text_color(bubble)
 
 
 ## A "..." bubble.
