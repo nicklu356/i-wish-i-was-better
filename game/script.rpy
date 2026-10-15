@@ -2607,13 +2607,16 @@ label none_ending:
             ar_txt "anyway, are you still up for getting coffee sometime?"
             "HOW ABOUT TOMORROW?"
     else:
-            "Out of habit, you open the dating app."
-            "Swipe. Swipe."
-            play sound "audio/sfx/message.ogg"
-            "It's a match!"
-            p "HA!"
-            p "What should I type..."
-            p "You know what? I'll figure out tomorrow."
+            "BEEEEEEEEEEE"
+            p "Now what??"
+            "EMERGENCY! GO TO THE NEAREST EXIT"
+            p "Jesus! Fine."
+            "You get dressed."
+            "You go out."
+            "You look at everything."
+            "The couple, the friends, the loner, the tree, the rain, the sun."
+            "They all still lived after today."
+            "They all will be here tomorrow."
     stop music fadeout 1.5
     $ mark_ending("none")
 
