@@ -14,6 +14,19 @@
 ##     $ phone_typing_start(p_txt)      # show "..." for the player
 ##     $ phone_typing_stop()            # remove all "..." bubbles
 ##     $ phone_close()                  # hide the phone
+##
+## Times, read receipts and earlier messages:
+##
+##     $ phone_stamp(_("Tue 9:41 PM"))  # small centered line in the chat
+##     $ phone_note(_("Delivered"))     # small line under the last message,
+##                                      # gone as soon as anything new arrives
+##     $ phone_add(p_txt, "Hey")        # put an earlier message in the chat
+##                                      # without showing it, e.g. when coming
+##                                      # back to a conversation
+##
+## Chats in the dating app look different from normal messages:
+##
+##     $ phone_open("Arielle", app="dating")
 
 ## Characters that talk through the phone.
 ## Elena replies almost instantly; Emma takes her time; Arielle replies slowly. Very slowly.
@@ -22,6 +35,17 @@ define b_txt = PhoneCharacter("Emma", "#0e719e", typing_delay=1.3)
 define x_txt = PhoneCharacter("Zane", "#B5B9FF")
 define p_txt = PhoneCharacter("[player_name]", "#7d00ae", mine=True)
 define ar_txt = PhoneCharacter("Arielle", "#e8a33d", typing_delay=2.0)
+
+## Emma's long message on day 13: she wrote it somewhere else first and pastes
+## it in, so the parts arrive one after another with no typing in between.
+define b_paste = PhoneCharacter("Emma", "#0e719e", typing_delay=0)
+
+## The dating app: its own frame (made by tools/make_phone_frames.py), a warmer
+## background, and the same two bubble colors for everyone, like a real app.
+define phone_app_frame = "gui/chat/phone_frame_app.png"
+define phone_app_background = "#fff5f6"
+define phone_app_mine = "#ff4f73"
+define phone_app_them = "#ececec"
 
 ## How long the "..." typing bubble shows before an incoming message, unless
 ## the character sets its own typing_delay.
@@ -37,12 +61,20 @@ init python:
     renpy.music.register_channel("phone", "sfx", loop=False)
 
 default phone_contact = ""
+
+## None for normal messages, or "dating" for the dating app.
+default phone_app = None
+
+## Each entry is (mine, bubble color, text). Stamps have None for both.
 default phone_log = []
 
 ## The color of the other person's "..." bubble, or None when they are not
 ## typing, and whether the player's "..." bubble is showing.
 default phone_typing_them = None
 default phone_typing_me = False
+
+## The small line under the last message ("Delivered", "Seen"), or None.
+default phone_note_text = None
 
 init -1 python:
 
@@ -54,11 +86,23 @@ init -1 python:
     def phone_bubble_bg(color):
         return Frame(Transform("gui/chat/bubble.png", matrixcolor=TintMatrix(color)), 22, 22)
 
-    def phone_open(contact):
+    def phone_bubble_color(mine, bubble):
+        """In the dating app everyone gets the app's colors."""
+        if store.phone_app == "dating":
+            return phone_app_mine if mine else phone_app_them
+        return bubble
+
+    def phone_log_add(mine, bubble, what):
+        store.phone_log.append((mine, bubble, what))
+        store.phone_note_text = None
+
+    def phone_open(contact, app=None):
         store.phone_contact = contact
+        store.phone_app = app
         store.phone_log = [ ]
         store.phone_typing_them = None
         store.phone_typing_me = False
+        store.phone_note_text = None
         renpy.show_screen("phone_chat")
         renpy.with_statement(dissolve)
 
@@ -66,11 +110,20 @@ init -1 python:
         renpy.hide_screen("phone_chat")
         renpy.with_statement(dissolve)
 
+    def phone_stamp(what):
+        phone_log_add(None, None, __(what))
+
+    def phone_note(what):
+        store.phone_note_text = __(what)
+
+    def phone_add(who, what):
+        phone_log_add(who.phone_mine, phone_bubble_color(who.phone_mine, who.phone_bubble), what)
+
     def phone_typing_start(who):
         if who.phone_mine:
             store.phone_typing_me = True
         else:
-            store.phone_typing_them = who.phone_bubble
+            store.phone_typing_them = phone_bubble_color(False, who.phone_bubble)
 
     def phone_typing_stop():
         store.phone_typing_me = False
@@ -97,13 +150,16 @@ init -1 python:
             return self.phone_delay
 
         def __call__(self, what, *args, **kwargs):
+            bubble = phone_bubble_color(self.phone_mine, self.phone_bubble)
+            store.phone_note_text = None
+
             if self.phone_mine:
                 store.phone_typing_me = False
 
             elif self.get_typing_delay() and not renpy.is_skipping():
                 # Show "..." in the phone, and the sender's name with "..." in
                 # the textbox (replacing the empty textbox) while they type.
-                store.phone_typing_them = self.phone_bubble
+                store.phone_typing_them = bubble
                 window = store._window
                 store._window = False
                 renpy.show_screen("phone_typing_say", who=renpy.substitute(self.name), color=self.phone_bubble)
@@ -119,7 +175,7 @@ init -1 python:
                 renpy.sound.play(sound, channel="phone")
 
             rv = ADVCharacter.__call__(self, what, *args, **kwargs)
-            store.phone_log.append((self.phone_mine, self.phone_bubble, what))
+            phone_log_add(self.phone_mine, bubble, what)
             return rv
 
 
@@ -150,7 +206,12 @@ screen phone_body(current=None, mine=False, bubble=None):
 
     fixed:
         style "phone"
-        add "gui/chat/phone_frame.png"
+
+        if phone_app == "dating":
+            add phone_app_frame
+        else:
+            add "gui/chat/phone_frame.png"
+
         text "[phone_contact]" style "phone_contact"
 
         # The message area of the phone's screen. Old messages scroll off the
@@ -159,20 +220,29 @@ screen phone_body(current=None, mine=False, bubble=None):
             style "phone_area"
             at phone_clip
 
+            if phone_app == "dating":
+                add Solid(phone_app_background)
+
             vbox:
                 style "phone_messages"
 
                 for m, b, msg in phone_log[-15:]:
-                    use phone_bubble(msg, m, b)
+                    if b is None:
+                        text msg style "phone_stamp"
+                    else:
+                        use phone_bubble(msg, m, b)
 
                 if current is not None:
                     use phone_bubble(current, mine, bubble)
+
+                if phone_note_text:
+                    text phone_note_text style "phone_note"
 
                 if phone_typing_them:
                     use phone_typing_bubble(False, phone_typing_them)
 
                 if phone_typing_me:
-                    use phone_typing_bubble(True, p_txt.phone_bubble)
+                    use phone_typing_bubble(True, phone_bubble_color(True, p_txt.phone_bubble))
 
 
 ## Shown for the whole conversation, behind the dialogue.
@@ -185,7 +255,7 @@ screen phone_chat():
 ## its last bubble, on top of phone_chat, plus the usual textbox.
 screen phone_say(who, what, mine=False, bubble="#888888"):
 
-    use phone_body(what, mine, bubble)
+    use phone_body(what, mine, phone_bubble_color(mine, bubble))
 
     window:
         id "window"
@@ -254,3 +324,16 @@ style phone_bubble is frame:
 style phone_bubble_text is text:
     size 22
     line_spacing 2
+
+## Times and "liked a message" lines, centered between the bubbles.
+style phone_stamp is text:
+    size 16
+    color "#8e8e8e"
+    xalign 0.5
+    text_align 0.5
+
+## "Delivered" / "Seen" under the last message.
+style phone_note is text:
+    size 16
+    color "#8e8e8e"
+    xalign 1.0
