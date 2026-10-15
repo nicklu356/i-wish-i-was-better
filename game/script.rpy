@@ -188,10 +188,31 @@ label day1:
     "You take out the phone and start looking at [player_name2]'s photos."
     "You might have had a chance to be with her, but none of it ever happened."
     "Sometimes you think it's the unknown possibility of that future that makes you regret it and dwell on it so much."
-    "As if this doesn't hurt you enough, you open the dating app you downloaded over the summer."
-    "The one you've opened many times and never have a successful experience."
-    "To your surprise, there is a match!"
-    "Her name is Arielle."
+    "So you decide to something you haven't done in a while."
+    "You open the dating app."
+    "The one you've opened many times and never have a successful experience with."
+    "And you start to look at the files."
+    "Then you see a girl called Arielle."
+    "She looks like your type, so you decide to give it a go."
+    menu:
+        "Answer her prompts":
+            "You answer one of her prompts:"
+            "If you can be an animal, what would it be?"
+            $ prompt_answer = renpy.input(__("You answer:"), length=25, exclude="[]{}")
+            $ prompt_answer = prompt_answer.strip()
+            if prompt_answer == "":
+                $ favorite_movie = "lama"
+            p "[prompt_answer]."
+        "Just like":
+            "You don't type anything and just give a like."
+        "A simple hi":
+            "You just type hi!"  
+    "Then you close your phone and go to take a bath."
+    scene black
+    "Some time later..."
+    "You got a notification from the dating app."
+    "You have a match with Arielle!"
+    "She didn't say anything so now it's up to you."
     p "(All right. How should I do this?)"
     $ phone_open("Arielle")
     menu:
@@ -208,10 +229,8 @@ label day1:
         "Ask how her day is going?":
             p_txt "Hi! How's your day going?"  
     "Nothing."
-    $ phone_close()
-    scene black
-    "Some time later..."
-    "Before you go to bed, you somehow decide to check Elena's social media."
+    "Now there's nothing else you can do."
+    "But before you go to bed, you somehow decide to check Elena's social media."
     "Concerts. Road trips." 
     "Rooftop parties." 
     "Friends laughing at a joke you'll never hear."
@@ -230,8 +249,8 @@ label day1:
         p_txt "I'm sure it will get better haha"
         p_txt "What degree are you in?"
         $ arielle_stage = 1
-    "You close your phone."
-    "You then take a shower, chat with your old friends, and get ready for bed."
+    "You close the app again."
+    "You then have a video chat with your old friends, and get ready for bed."
     p "(Sigh) Sweet dreams, I hope."
     stop music fadeout 1.5
 
@@ -476,6 +495,41 @@ label day3:
     "Then again, why not?"
     "He's just such an extroverted person."
     stop music fadeout 1.5
+    if not arielle_gone:
+        scene bedroomnight
+        with dissolve
+        play sound "audio/sfx/message.ogg"
+        "When you get home, there's a notification on the dating app again."
+        $ phone_open("Arielle")
+        ar_txt "sorry i'm slow at replying btw, pottery class ate my whole week"
+        ar_txt "I'm studying bachelor of art(as you can guess haha) at the moment!"
+        ar_txt "and my bowl collapsed AGAIN"
+        p "(Pottery. Okay. Say something normal.)"
+        menu:
+            "Ask her questions.":
+                p_txt "Pottery? That's cool! How long have you been doing it?"
+                p_txt "Do you like art in the first place?"
+                p_txt "What's the best thing you've made so far?"
+                $ arielle_gone = True
+            "Simple reply.":
+                p_txt "that's sad."
+                "And you're done."
+                $ arielle_gone = True
+            "One question, one story.":
+                p_txt "That's unfortunate:( Is pottery your favorite form of art?"
+                p_txt "I tried making a mug once in high school. It deosn't look good HAHA."
+                ar_txt "No, I actually enjoy painting a lot better."
+                ar_txt "I'm sure it's not that bad!"
+                p_txt "Oh really? Paintings are my favorite form of art as well, specially portraits and landscape!"
+                p_txt "I do try to draw from time to time, but it still needs practice :("
+                $ arielle_stage = 2
+        $ phone_close()
+        if arielle_gone:
+            "Ten minutes later, the chat is gone."
+            "Arielle unmatched you."
+            p "(Two days of waiting for that.)"
+            p "(Great job, [player_name].)"
+        "You go to sleep."
     
 label day4:
     scene black
@@ -638,6 +692,12 @@ label day4:
     x "You don't have the confidence and never take the initiative, huh?"
     x "I bet that's why you've been single your whole life."
     p "Bro, what the fuck is that supposed to mean? And get out of my head!"
+    if arielle_gone:
+        p "(Thanks for the reminder. I literally got unmatched this week.)"
+    else:
+        if arielle_stage >= 2:
+            p "(Well at least I'm talking to someone on a dating app at the moment.)"
+            p "(Sort of. She replies pretty slow though.)"
     x "HAHA, you're like an open book. Way too easy to read."
     x "But seriously, have some faith."
     x "Don't think too much about it."
@@ -861,6 +921,56 @@ label day5:
             b "See you!"
     stop music fadeout 1.5
 
+    if not arielle_gone:
+        scene bedroomnight
+        with dissolve
+        "You get home and another notification on the dating app."
+        $ phone_open("Arielle")
+        ar_txt "sorry again for the late reply, I don't turn on notifications most of the time"
+        ar_txt "NO WAY Portraits are my favorite kind of painting!"
+        ar_txt "If you don't mind I can be the judge of that lol"
+        "You think things are actually going pretty well?"
+        "What should you do next?"
+        menu:
+            "Keep talking":
+                p_txt "Don't worry it's all good!"
+                p_txt "I know right portraits are really awesome to see, I try to feel every painter's perspective on different people."
+                p_txt "It's all good I think I still need to improve a lot more."
+                p_txt "Do you draw yourself as well?"
+                $ arielle_gone = True
+            "Ask for her social media.":
+                p_txt "Don't worry it's all good!"
+                p_txt "I know! I like to feel every painter's perspective on different people."
+                p_txt "If you don't mind seeing something really amateur then sure!"
+                p_txt "Though I think I can't send pictures here, do you have social?"
+                ar_txt "oh of course!"
+                ar_txt "it's @arielle.makes.paintings"
+                "You laugh out loudly (literally.)"
+                "You follow her."
+                p_txt "Nice, just followed you!"
+                "A minute later, she follows you back."
+                "You decide to start the conversation in social."
+                p_txt "This is [player_name] saying hi from another place now haha"
+                ar_txt "Hello to you from here as well!"
+                ar_txt "I'm going to sleep, we'll talk later?"
+                p_txt "Of course! Have a good night!"
+                "She liked the message."
+                $ arielle_stage = 3
+            "Just agree with her.":
+                p_txt "Don't worry it's all good!"
+                p_txt "I know right portraits are really awesome!"
+                p_txt "It's fine I think I should practice more first."
+                "You wait for her to say something else."
+                "She doesn't."
+                "You don't either."
+                "And just like that, the conversation stops."
+                $ arielle_gone = True
+        if arielle_gone:
+            "Ten minutes later, the chat is gone."
+            "Arielle unmatched you."
+            p "(Sometimes you really sucks, [player_name].)"        
+        $ phone_close()
+
 label day6:
     scene black
     with fade
@@ -871,6 +981,19 @@ label day6:
     "You got home exhausted yesterday."
     "So much has happened in just a few days."
     "You're pretty sure more has happened this week than in all of high school."
+    if arielle_stage >= 3:
+        "You decide to have a look on Arielle's Instagram as well."
+        "Though you guys never meet(yet), you feel like you've known her for a while."
+        "You think you should probably take some actions."
+        "So you do."
+        $ phone_open("Arielle")
+        p_txt "Hey do you wanna grab some coffee or do something together?"
+        $ phone_close()
+        "You throw your phone away."
+        "You really FUCKING DO IT."
+        "Now it's all up to her now."
+        "Still that doesn't make you feel better."
+        "You're still nervous as fuck."
     play sound "audio/sfx/message.ogg"
     "As you drown in your thoughts, your phone chimes."
     $ phone_open("Emma")
@@ -1282,7 +1405,11 @@ label day8:
     with dissolve
     "Another day of school."
     "And yes, you're still early."
-    "But so is Elena."
+    if arielle_stage >= 3:
+        "Before class, you check Instagram. Arielle still hasn't opened your last message."
+        "It's been two days."
+        "You started to wonder what you've done wrong along the way."
+    "Then you notice Elena."
     "She really meant what she said about coming earlier."
     "So you sit next to her."
     show elenaclassroom at pos_center
@@ -1467,7 +1594,10 @@ label day10:
     daycard "DAY 10"
     scene classroom2
     with dissolve
-    "Back to school again."
+    if arielle_stage >= 3:
+        "You notice you've stopped checking whether Arielle opened your message."
+        "You're not sure when that happened."
+    "And Back to school again."
     "This time, you go straight to the seat next to Emma."
     "And you guys talk about whatever you can think of."
     play music "audio/ilikeyoualot.mp3" fadein 1.0
@@ -2144,6 +2274,9 @@ label elena_ending:
     call reject_emma
     "You feel like shit, but you're also happy it's time."
     "Time to do what you've been waiting to do for a long time."
+    "On the way, you open the dating app one last time."
+    "Then you delete it."
+    "You don't need it anymore."
     stop music fadeout 1.5
 
     scene black
@@ -2274,6 +2407,9 @@ label emma_ending:
     call reject_elena
     "You feel a little relieved, and you're also happy it's time."
     "Time to do what you've been waiting to do for a long time."
+    "On the way, you open the dating app one last time."
+    "Then you delete it."
+    "You don't need it anymore."
     stop music fadeout 1.5
 
     scene black
@@ -2455,10 +2591,28 @@ label none_ending:
     "In time, you believe all of you will heal."
     "But for now, you just want to lie in bed and do nothing."
     "Thinking about all the decisions in your life that have led you to this moment."
-    "[player_name2], Elena, Emma, Zane, Gus..."
-    "But most importantly, YOU."
-    "There's no point looking back now. Only forward."
-    "There's always tomorrow."
+    "[player_name2], Elena, Emma, Zane, Gus, Arielle..."
+    if arielle_stage >= 3:
+            play sound "audio/sfx/message.ogg"
+            "Then your phone buzzes."
+            "IT'S Arielle."
+            $ phone_open("Arielle")
+            ar_txt "omg hi"
+            ar_txt "i'm SO sorry. my social got hacked and i lost literally everything"
+            ar_txt "just restore it and remembered i never replied to you"
+            "You stare at the screen."
+            "Maybe it's true. Maybe it isn't."
+            "You'll never know."
+            ar_txt "anyway, are you still up for getting coffee sometime?"
+            "HOW ABOUT TOMORROW?"
+    else:
+            "Out of habit, you open the dating app."
+            "Swipe. Swipe."
+            play sound "audio/sfx/message.ogg"
+            "It's a match!"
+            p "HA!"
+            p "What should I type..."
+            p "You know what? I'll figure out tomorrow."
     stop music fadeout 1.5
     $ mark_ending("none")
 
