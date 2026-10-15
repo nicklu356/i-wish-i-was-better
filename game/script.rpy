@@ -47,7 +47,7 @@ label day1:
     $ player_name2 = renpy.input(__("Please enter your dream girl's name:"), length=12, exclude="[]{}")
     $ player_name2 = player_name2.strip()
     if player_name2 == "":
-        $ player_name2 = "dream girl"
+        $ player_name2 = "Angharad"
     $ persistent.last_player_name = player_name
     $ persistent.last_player_name2 = player_name2
     scene shadow
@@ -141,7 +141,7 @@ label day1:
     p "Oh hi! I didn't know you were in this class, too."
     q "Well, who would have known, right? HAHA."
     q "I should give you a proper thanks!" 
-    q "Though, you know you actually gave me the wrong direction?"
+    q "Though, you know you actually gave me the wrong directions?"
     p "(Crap!)"
     p "Oh shoot, I'm so sorry about that."
     q "It's all good haha."
@@ -188,20 +188,20 @@ label day1:
     "You take out the phone and start looking at [player_name2]'s photos."
     "You might have had a chance to be with her, but none of it ever happened."
     "Sometimes you think it's the unknown possibility of that future that makes you regret it and dwell on it so much."
-    "So you decide to something you haven't done in a while."
+    "So you decide to do something you haven't done in a while."
     "You open the dating app."
     "The one you've opened many times and never have a successful experience with."
-    "And you start to look at the files."
+    "And you start to look at the profiles."
     "Then you see a girl called Arielle."
     "She looks like your type, so you decide to give it a go."
     menu:
         "Answer her prompts":
             "You answer one of her prompts:"
-            "If you can be an animal, what would it be?"
+            "If you could be an animal, what would it be?"
             $ prompt_answer = renpy.input(__("You answer:"), length=25, exclude="[]{}")
             $ prompt_answer = prompt_answer.strip()
             if prompt_answer == "":
-                $ favorite_movie = "lama"
+                $ prompt_answer = "llama"
             p "[prompt_answer]."
         "Just like":
             "You don't type anything and just give a like."
@@ -210,7 +210,7 @@ label day1:
     "Then you close your phone and go to take a bath."
     scene black
     "Some time later..."
-    "You got a notification from the dating app."
+    "You get a notification from the dating app."
     "You have a match with Arielle!"
     "She didn't say anything so now it's up to you."
     p "(All right. How should I do this?)"
@@ -218,7 +218,7 @@ label day1:
     menu:
         "Wait for her to respond first.":
             "Waiting is also a virtue, right?"
-            "So you did nothing."
+            "So you do nothing."
             $ arielle_gone = True
         "Say hi.":
             p_txt "Hey"
@@ -313,9 +313,9 @@ label day2:
     "You get back home."
     "Today wasn't that bad."
     "Out of curiosity, you decide to check Emma's social as well."
-    "There aren't many posts nor selfies."
-    "Just some sceneries like windows in the rain, a book page with one sentence underlinedand a lake at sunset, captioned only with a date."
-    "This is the type of contents that you feel more familiar with."
+    "There aren't many posts or selfies."
+    "Just some sceneries like windows in the rain, a book page with one sentence underlinedand, and a lake at sunset, captioned only with a date."
+    "This is the kind of contents that you feel more familiar with."
     "You kind of like it."
     "Then again, who gives a shit if you like it or not?"
     play sound "audio/sfx/message.ogg"
@@ -369,14 +369,14 @@ label day3:
     "Then you get a message."
     play sound "audio/sfx/message.ogg"
     $ phone_open("Elena")
-    "Turns out it's Elena replying your story."
+    "Turns out it's Elena replying to your story."
     a_txt "niceee where did you go??"
     a_txt "u a night walk person??"
     p_txt "Kind of, haha. Just walking around after class."
     a_txt "respect"
     $ phone_close()
     p "(Cool...?)"
-    "Since you didn't expect she would reply your story at all."
+    "Since you didn't expect she would reply to your story at all."
     scene black
     with fade
     "Some time later..."
@@ -517,10 +517,10 @@ label day3:
                 $ arielle_gone = True
             "One question, one story.":
                 p_txt "That's unfortunate:( Is pottery your favorite form of art?"
-                p_txt "I tried making a mug once in high school. It deosn't look good HAHA."
+                p_txt "I tried making a mug once in high school. It doesn't look good HAHA."
                 ar_txt "No, I actually enjoy painting a lot better."
                 ar_txt "I'm sure it's not that bad!"
-                p_txt "Oh really? Paintings are my favorite form of art as well, specially portraits and landscape!"
+                p_txt "Oh really? Paintings are my favorite form of art as well, especially portraits and landscape!"
                 p_txt "I do try to draw from time to time, but it still needs practice :("
                 $ arielle_stage = 2
         $ phone_close()
@@ -573,7 +573,7 @@ label day4:
             a "Yeah, I must have left the wrong impression. I'm actually a good student who's always on time. HAHA."
             p "No, no no, I'm sure you are."
             a "I will believe you for now."
-            p "I actually never got to school this early in high school."
+            p "I don't usually got to school this early in high school."
             a "Is that so?"
         "Hey, good to see you again.":
             $ elena_affection += 1
@@ -853,6 +853,7 @@ label day5:
     p "(God damn it, Gus, why are you the first to leave?)"
     "You have two choices:"
     "You could make up an excuse, say you need to catch the metro, and escape before it gets awkward."
+    "Or get your shit together and you may have some great conversation."
     "So?"
     menu:
         "Try to have a chat":
@@ -945,7 +946,7 @@ label day5:
                 p_txt "Though I think I can't send pictures here, do you have social?"
                 ar_txt "oh of course!"
                 ar_txt "it's @arielle.makes.paintings"
-                "You laugh out loudly (literally.)"
+                "You laugh out loud (literally.)"
                 "You follow her."
                 p_txt "Nice, just followed you!"
                 "A minute later, she follows you back."
@@ -983,7 +984,7 @@ label day6:
     "You're pretty sure more has happened this week than in all of high school."
     if arielle_stage >= 3:
         "You decide to have a look on Arielle's Instagram as well."
-        "Though you guys never meet(yet), you feel like you've known her for a while."
+        "Though you guys have never met(yet), you feel like you've known her for a while."
         "You think you should probably take some actions."
         "So you do."
         $ phone_open("Arielle")
@@ -991,7 +992,7 @@ label day6:
         $ phone_close()
         "You throw your phone away."
         "You really FUCKING DO IT."
-        "Now it's all up to her now."
+        "Now it's all up to her."
         "Still that doesn't make you feel better."
         "You're still nervous as fuck."
     play sound "audio/sfx/message.ogg"
@@ -1009,7 +1010,7 @@ label day6:
             "Then a message comes in."
             b_txt "can't agree more haha"
             p "(Wait, does she mean she likes hanging out, or the walk?)"
-            p "(Dumbass! Why make a statement even yourself can't understand?)"
+            p "(Dumbass! Why make a statement even you can't understand?)"
         "You know where to find me.":
             "Not knowing exactly what to write, you type the first thing that comes to mind."
             "Send."
@@ -1408,7 +1409,7 @@ label day8:
     if arielle_stage >= 3:
         "Before class, you check Instagram. Arielle still hasn't opened your last message."
         "It's been two days."
-        "You started to wonder what you've done wrong along the way."
+        "You start to wonder what you've done wrong along the way."
     "Then you notice Elena."
     "She really meant what she said about coming earlier."
     "So you sit next to her."
@@ -1597,7 +1598,7 @@ label day10:
     if arielle_stage >= 3:
         "You notice you've stopped checking whether Arielle opened your message."
         "You're not sure when that happened."
-    "And Back to school again."
+    "And back to school again."
     "This time, you go straight to the seat next to Emma."
     "And you guys talk about whatever you can think of."
     play music "audio/ilikeyoualot.mp3" fadein 1.0
@@ -1835,7 +1836,7 @@ label day12:
     p "You have no idea?"
     a "I mean, the experience is more important, right?"
     p "Yeah, yeah. But if it's a horror film, I'm leaving."
-    a "You don't like being scared your ass off?"
+    a "You don't like being scared shitless?"
     p "HAHA, very funny."
     a "Don't worry, if it's a horror film, you have my permission to hold my hand."
     "She says it while showing her hand."
@@ -1847,7 +1848,7 @@ label day12:
     "Some time later..."
     scene drivein
     with dissolve
-    "Lucky (or maybe not) for you, it's just some normal romance movie."
+    "Luckily (or maybe not) for you, it's just some normal romance movie."
     "The plot isn't that good, but Elena was right."
     "The experience definitely makes the movie better."
     "You guys watch the movie without talking."
@@ -1899,7 +1900,7 @@ label day12:
     "Not knowing what to do, you text Zane for advice."
     "Since Gus's credibility isn't exactly high right now."
     $ phone_open("Zane")
-    x_txt "Hey man, What's up?"
+    x_txt "Hey man, what's up?"
     play music "audio/lahth.mp3" fadein 1.0
     p_txt "Hypothetical question, does it count as cheating if I go on two dates?"
     x_txt "'Hypothetical', huh?"
@@ -2022,7 +2023,7 @@ label day13:
     $ player_wish = renpy.input(__("What should you wish for?"), length=40, exclude="[]{}")
     $ player_wish = player_wish.strip()
     if player_wish == "":
-        $ player_wish = "Become someone you like."
+        $ player_wish = "Become someone you like"
     "You hope it comes true."
     p "All right, I'm done. You good to go?"
     b "Yep, let's go!"
@@ -2107,7 +2108,7 @@ label theday:
     x "Or which one makes you happier?"
     x "Think about that."
     x "Also, I'm gonna have to be honest with you."
-    x "If you don't have the answer after I ask you those questions, then perhaps you shouldn't choose any of them."
+    x "If you don't have the answer after I ask you those questions, then perhaps you shouldn't choose either of them."
     z "Wait, why?"
     x "Because that means [player_name] doesn't have stronger feelings for either of them."
     x "If that's the case, then neither of them feels right enough for [player_name] to say yes."
@@ -2128,7 +2129,7 @@ label theday:
         "None" if emma_affection >= 8 or elena_affection >= 3:
             p "You know what? You're right."
             p "If I'm still sitting here thinking about it, it means I don't like either of them more."
-            p "I'm not even sure either of them likes me that much."
+            p "Maybe my feelings for them are just not strong enough."
             p "I should let both of them go, it's better this way."
             z "I salute you my friend. You're a god damn legend."
             x "I trust your choice. This is gonna hurt, but it'll be worth it in time."
@@ -2136,7 +2137,7 @@ label theday:
         "None (score too low)" if emma_affection <= 7 and elena_affection <= 2:
             p "You know what? You're right."
             p "If I'm still sitting here thinking about it, it means I don't like either of them more."
-            p "Maybe my feelings for them are just not strong enough."
+            p "I'm not even sure either of them likes me that much."
             p "I should let both of them go, it's better this way."
             z "I salute you my friend. You're a god damn legend."
             x "I trust your choice. This is gonna hurt, but it'll be worth it in time."
@@ -2256,7 +2257,7 @@ label reject_elena:
     "You shake her hand."
     p "Of course, friends."
     a "Friends."
-    "Then she hugs you and shouts when she's on the way of leaving."
+    "Then she hugs you and shouts as she leaves."
     a "Let me know if you wanna hang out or something."
     a "Don't just ghost me because of this."
     p "Never!"
