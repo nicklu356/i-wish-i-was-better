@@ -8,6 +8,7 @@ default go_with_elena = False
 define b = Character("Emma", color="#0e719e")
 default emma_affection = 0
 default try_talk_emaa = False
+default emma_walk_talk = False
 define lv = Character(None, what_color="#db81ff")
 default arielle_stage = 0     
 default arielle_gone = False  
@@ -880,6 +881,7 @@ label day5:
     menu:
         "Try to have a chat":
             $emma_affection+=1
+            $ emma_walk_talk = True
             "You decide to say something first to break the ice."
             s "So..."
             s "Sorry, you go first."
@@ -2109,20 +2111,88 @@ label day13:
     p "No problem."
     "She opens her mouth, then closes it."
     "Then she opens her mouth again."
-    b "You know I like you a lot, right?"
-    play sound "audio/sfx/heartbeat.ogg"
-    p "(Oh shit!)"
-    "She can definitely tell you're overthinking."
-    b "Hey, don't overthink this, okay?"
-    b "I just feel like I need to say this or I probably will regret it."
-    b "You don't have to say anything now, but let me know how you feel soon, okay?"
-    p "Okay, I promise you."
+    b "[player_name], I..."
+    "You wait for the rest of the sentence."
+    "It doesn't come."
+    b "...Never mind. It's nothing."
+    b "I'm just tired, I think."
+    "She turns to the window."
+    "You can see her reflection in the glass, and she isn't looking at the view."
+    "You spend the rest of the ride wondering what 'nothing' was."
     stop music fadeout 1.5
     scene black
     with fade
     "Some time later..."
     scene bedroomnight
     with dissolve
+    "You're lying in bed, replaying the bus ride over and over."
+    "'Never mind. It's nothing.'"
+    "It didn't sound like nothing."
+    "You open your chat with Emma, thinking you should at least say goodnight."
+    $ phone_open("Emma")
+    $ phone_stamp(_("Sat 9:52 PM"))
+    $ phone_add(p_txt, "Got home! Thanks again for today.")
+    $ phone_add(b_txt, "me too :) get some rest")
+    $ phone_stamp(_("1:47 AM"))
+    $ phone_typing_start(b_txt)
+    "Before you can type anything, the typing indicator pops up."
+    p "(She's still awake?)"
+    $ phone_typing_stop()
+    "It stops."
+    pause 1.5
+    $ phone_typing_start(b_txt)
+    "Then it starts again."
+    pause 2.0
+    $ phone_typing_stop()
+    pause 1.0
+    $ phone_typing_start(b_txt)
+    "Stops. Starts."
+    play music "audio/ilikeyoualot.mp3" fadein 3.0
+    "You put your phone down, then pick it right back up."
+    "Still typing."
+    pause 2.0
+    "Two minutes."
+    pause 2.0
+    "Five minutes."
+    p "(What is she writing, a novel?)"
+    pause 2.0
+    "Ten minutes."
+    "You realize you've been holding your breath."
+    $ phone_typing_stop()
+    "Then the indicator disappears."
+    pause 2.0
+    "Nothing comes."
+    p "(Did she give up?)"
+    "Then the messages arrive all at once, one after another, like she wrote them somewhere else first and is pasting them in."
+    b_paste "okay. i've rewritten this about ten times, so i'm sending it before i talk myself out of it again"
+    b_paste "on the bus today i was going to say something and then i didn't. you probably noticed. i'm a lot better at writing things than saying them"
+    b_paste "when we first met, you were just the quiet guy who sat behind me."
+    b_paste "then we played darts and you turned into a completely different person, and i laughed harder than i have in a long time"
+    if emma_walk_talk:
+        b_paste "and on the walk home, you told me nothing happened in high school. i keep thinking about that, because i know exactly what you meant"
+    b_paste "you remember my script? the one about being the only person left on earth? i couldn't figure out how it ends"
+    b_paste "i think i know now. it ends with her finding out she wasn't the only one"
+    play sound "audio/sfx/heartbeat.ogg"
+    b_paste "so here it is, properly this time. i like you. not as a groupmate, not as gus's friend. i really like you, and i have for a while"
+    b_paste "you don't have to answer tonight. honestly, please don't, or i'll just stare at my phone until morning"
+    b_paste "but let me know how you feel soon, okay? whatever the answer is, i'd rather know"
+    b_paste "goodnight [player_name] :)"
+    "You read it again."
+    "And again."
+    "Your heart is beating so loudly you're scared she can hear it through the phone."
+    "She told you not to answer tonight."
+    "But you can't leave her with nothing. Not after this."
+    $ phone_typing_start(p_txt)
+    "You type and delete five different replies."
+    "In the end, you send the only one that feels honest."
+    p_txt "I read every word."
+    p_txt "I'll tell you soon. I promise."
+    $ phone_note(_("Seen"))
+    "Seen."
+    "She doesn't reply."
+    "Somehow, that feels exactly right."
+    $ phone_close()
+    stop music fadeout 1.5
     "Okay, this is definitely getting out of hand."
     "Two girls have just confessed their feelings to you."
     "And worst of all, you have feelings for both of them."
