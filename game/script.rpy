@@ -211,6 +211,8 @@ label day1:
     "Then you close your phone and go to take a bath."
     scene black
     "Some time later..."
+    scene bedroomnight
+    with dissolve
     "You get a notification from the dating app."
     "You have a match with Arielle!"
     "She didn't say anything so now it's up to you."
@@ -395,6 +397,8 @@ label day3:
     scene black
     with fade
     "Some time later..."
+    scene classroom3
+    with dissolve
     "Class just finished."
     "You remember you're working on the project with your group later."
     "Gus messaged you last night asking when you're free."
@@ -1466,6 +1470,7 @@ label day8:
         "Arielle still hasn't opened your last message."
         "It's been two days."
         "You start to wonder what you've done wrong along the way."
+        $ phone_close()
     "Then you notice Elena."
     "She really meant what she said about coming earlier."
     "So you sit next to her."
@@ -2105,16 +2110,21 @@ label day13:
     "Then Emma speaks."
     b "Hey, I really appreciate you doing this with me."
     p "No problem."
+    p "Always at your service."
+    "You smile back."
     "She opens her mouth, then closes it."
+    "She's probably thinking if she should say something."
     "Then she opens her mouth again."
-    b "[player_name], I..."
+    b "Hey..."
     "You wait for the rest of the sentence."
-    "It doesn't come."
-    b "...Never mind. It's nothing."
-    b "I'm just tired, I think."
-    "She turns to the window."
-    "You can see her reflection in the glass, and she isn't looking at the view."
-    "You spend the rest of the ride wondering what 'nothing' was."
+    b "Do you think the wish we wrote will come true?"
+    "You thought she was about to say something very important."
+    p "Oh! I have no idea."
+    p "But one can hopes, right?"
+    b "Yeah, I guess you have a point..."
+    "Then she turns to the window."
+    "You spend the rest of the ride wondering if she's exhausted or angry or anything."
+    "You also wondering if you've done anything wrong."
     stop music fadeout 1.5
     scene black
     with fade
@@ -2122,9 +2132,8 @@ label day13:
     scene bedroomnight
     with dissolve
     "You're lying in bed, replaying the bus ride over and over."
-    "'Never mind. It's nothing.'"
-    "It didn't sound like nothing."
-    "You open your chat with Emma, thinking you should at least say goodnight."
+    "There's definitely something wrong you just don't know what exacly happened."
+    "You open your chat with Emma, thinking you should probably ask about it."
     $ phone_open("Emma")
     $ phone_stamp(_("Sat 9:52 PM"))
     $ phone_add(p_txt, "Got home! Thanks again for today.")
@@ -2143,14 +2152,14 @@ label day13:
     pause 1.0
     $ phone_typing_start(b_txt)
     "Stops. Starts."
-    play music "audio/ilikeyoualot.mp3" fadein 3.0
+    play music "audio/theladyofthelake.mp3" fadein 3.0
     "You put your phone down, then pick it right back up."
     "Still typing."
     pause 2.0
     "Two minutes."
     pause 2.0
     "Five minutes."
-    p "(What is she writing, a novel?)"
+    p "(WHAT IS GOING ONNNN?)"
     pause 2.0
     "Ten minutes."
     "You realize you've been holding your breath."
@@ -2158,31 +2167,37 @@ label day13:
     "Then the indicator disappears."
     pause 2.0
     "Nothing comes."
-    p "(Did she give up?)"
+    p "(Or maybe she just stay in the typing status accidently?)"
     "Then the messages arrive all at once, one after another, like she wrote them somewhere else first and is pasting them in."
-    b_paste "okay. i've rewritten this about ten times, so i'm sending it before i talk myself out of it again"
+    b_paste "i'm sending it before i talk myself out of it again"
     b_paste "on the bus today i was going to say something and then i didn't. you probably noticed. i'm a lot better at writing things than saying them"
     b_paste "when we first met, you were just the quiet guy who sat behind me."
-    b_paste "then we played darts and you turned into a completely different person, and i laughed harder than i have in a long time"
+    b_paste "and as I known you better and you also turned into a different person around me, i laughed harder than i have in a long time"
     if emma_walk_talk:
         b_paste "and on the walk home, you told me nothing happened in high school. i keep thinking about that, because i know exactly what you meant"
     b_paste "you remember my script? the one about being the only person left on earth? i couldn't figure out how it ends"
     b_paste "i think i know now. it ends with her finding out she wasn't the only one"
     play sound "audio/sfx/heartbeat.ogg"
-    b_paste "so here it is, properly this time. i like you. not as a groupmate, not as gus's friend. i really like you, and i have for a while"
-    b_paste "you don't have to answer tonight. honestly, please don't, or i'll just stare at my phone until morning"
+    b_paste "i like you, [player_name] not as a groupmate, not as a friend. i really like you, and i have for a while"
+    b_paste "it might be a lot to suddenly hear so much from me so please just take your time"
+    b_paste "i just like to express my feelings or i think i'll regret it forever"
     b_paste "but let me know how you feel soon, okay? whatever the answer is, i'd rather know"
-    b_paste "goodnight [player_name] :)"
+    b_paste "i really appreciate you."
     "You read it again."
     "And again."
     "Your heart is beating so loudly you're scared she can hear it through the phone."
     "She told you not to answer tonight."
-    "But you can't leave her with nothing. Not after this."
+    "You're really glad she didn't pressure you into making a decision."
+    "But at the same time you're kind of confused."
+    "Never would you have imagined that Emma would like you."
+
     $ phone_typing_start(p_txt)
-    "You type and delete five different replies."
-    "In the end, you send the only one that feels honest."
-    p_txt "I read every word."
-    p_txt "I'll tell you soon. I promise."
+    "But you know you need to say something."
+    "Anything first, just to comfort her."
+    "Hell, and you as well."
+    p_txt "Hey I appreciate everything you said, I really do."
+    p_txt "It just come out so abruptly that I have to think about it deeply."
+    p_txt "But I promise I'll tell you as soon as I make up my mind. I promise."
     $ phone_note(_("Seen"))
     "Seen."
     "She doesn't reply."
