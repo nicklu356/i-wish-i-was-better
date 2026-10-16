@@ -78,6 +78,11 @@ default phone_typing_me = False
 ## The small line under the last message ("Delivered", "Seen"), or None.
 default phone_note_text = None
 
+## True right after opening the phone for a notification: the messages that
+## came in are already there, so they show up without "..." or a sound. Ends
+## when the player sends something or someone starts typing.
+default phone_unread = False
+
 init -1 python:
 
     import re
@@ -111,9 +116,10 @@ init -1 python:
         store.phone_log.append((mine, bubble, what))
         store.phone_note_text = None
 
-    def phone_open(contact, app=None):
+    def phone_open(contact, app=None, unread=False):
         store.phone_contact = contact
         store.phone_app = app
+        store.phone_unread = unread
         store.phone_log = [ ]
         store.phone_typing_them = None
         store.phone_typing_me = False
@@ -135,6 +141,7 @@ init -1 python:
         phone_log_add(who.phone_mine, phone_bubble_color(who.phone_mine, who.phone_bubble), __(what))
 
     def phone_typing_start(who):
+        store.phone_unread = False
         if who.phone_mine:
             store.phone_typing_me = True
         else:
@@ -170,8 +177,9 @@ init -1 python:
 
             if self.phone_mine:
                 store.phone_typing_me = False
+                store.phone_unread = False
 
-            elif self.get_typing_delay() and not renpy.is_skipping():
+            elif self.get_typing_delay() and not renpy.is_skipping() and not store.phone_unread:
                 # Show "..." in the phone, and the sender's name with "..." in
                 # the textbox (replacing the empty textbox) while they type.
                 store.phone_typing_them = bubble
@@ -185,13 +193,14 @@ init -1 python:
             if not self.phone_mine:
                 store.phone_typing_them = None
 
-            if not renpy.is_skipping():
+            if not renpy.is_skipping() and (self.phone_mine or not store.phone_unread):
                 sound = phone_send_sound if self.phone_mine else phone_receive_sound
                 renpy.sound.play(sound, channel="phone")
 
-            rv = ADVCharacter.__call__(self, what, *args, **kwargs)
+            # Put the message in the chat before showing it, so the phone is
+            # already up to date if it's closed right after this line.
             phone_log_add(self.phone_mine, bubble, what)
-            return rv
+            return ADVCharacter.__call__(self, what, *args, **kwargs)
 
 
 ## One chat bubble.
@@ -215,9 +224,8 @@ screen phone_typing_bubble(mine, bubble):
                 add Transform("gui/chat/dot.png", matrixcolor=TintMatrix(phone_text_color(bubble))) at phone_dot(i * 0.15)
 
 
-## The phone with the chat so far. `current` is a message that is being said
-## right now, which goes after the others.
-screen phone_body(current=None, mine=False, bubble=None):
+## The phone with the chat so far.
+screen phone_body():
 
     fixed:
         style "phone"
@@ -247,9 +255,6 @@ screen phone_body(current=None, mine=False, bubble=None):
                     else:
                         use phone_bubble(msg, m, b)
 
-                if current is not None:
-                    use phone_bubble(current, mine, bubble)
-
                 if phone_note_text:
                     text phone_note_text style "phone_note"
 
@@ -266,11 +271,9 @@ screen phone_chat():
     use phone_body
 
 
-## The say screen used by PhoneCharacter: the phone with the new message as
-## its last bubble, on top of phone_chat, plus the usual textbox.
+## The say screen used by PhoneCharacter: the usual textbox. The new message is
+## already in phone_log, so phone_chat shows it in the phone.
 screen phone_say(who, what, mine=False, bubble="#888888"):
-
-    use phone_body(what, mine, phone_bubble_color(mine, bubble))
 
     window:
         id "window"

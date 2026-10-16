@@ -265,7 +265,7 @@ label day1:
     "Yours looks like a loading screen."
     p "(Fuck my life.)"
     "You decide to check the dating app one last time."
-    $ phone_open("Arielle", app="dating")
+    $ phone_open("Arielle", app="dating", unread=True)
     if arielle_gone:
         $ phone_stamp(_("This match is no longer available."))
         "The chat is gone."
@@ -276,8 +276,8 @@ label day1:
         $ phone_stamp(_("Mon 10:47 PM"))
         $ phone_add(p_txt, _("Hi! How's your day going?"))
         $ phone_stamp(_("11:58 PM"))
-        $ phone_add(ar_txt, _("Just finish my classes, and I'm exhausted at the moment:("))
         "To your surprise, you got a message."
+        ar_txt "Just finish my classes, and I'm exhausted at the moment:("
         p_txt "I'm sure it will get better haha"
         p_txt "What degree are you in?"
         $ phone_note(_("Delivered"))
@@ -354,11 +354,10 @@ label day2:
     "Then again, who gives a shit if you like it or not?"
     play sound "audio/sfx/message.ogg"
     "You get a message."
-    $ phone_open("Elena")
+    $ phone_open("Elena", unread=True)
     $ phone_stamp(_("Tue 9:41 PM"))
-    $ phone_add(a_txt, _("PARTNER"))
-    $ phone_add(a_txt, _("did u read the assignment brief yet"))
-    "It's Elena."
+    a_txt "PARTNER"
+    a_txt "did u read the assignment brief yet"
     p_txt "Oh not yet, sorry about that."
     a_txt "all good me neither"
     a_txt "we're gonna be so good at this"
@@ -404,10 +403,10 @@ label day3:
     "You're in classes."
     "Then you get a message."
     play sound "audio/sfx/message.ogg"
-    $ phone_open("Elena")
-    $ phone_add(a_txt, _("niceee where did you go??"))
-    $ phone_add(a_txt, _("u a night walk person??"))
+    $ phone_open("Elena", unread=True)
     "Turns out it's Elena replying to your story."
+    a_txt "niceee where did you go??"
+    a_txt "u a night walk person??"
     p_txt "Kind of, haha. Just walking around after class."
     a_txt "respect"
     $ phone_close()
@@ -538,15 +537,15 @@ label day3:
         with dissolve
         play sound "audio/sfx/message.ogg"
         "When you get home, there's a notification on the dating app again."
-        $ phone_open("Arielle", app="dating")
+        $ phone_open("Arielle", app="dating", unread=True)
         $ phone_stamp(_("Mon 11:58 PM"))
         $ phone_add(ar_txt, _("Just finish my classes, and I'm exhausted at the moment:("))
         $ phone_add(p_txt, _("I'm sure it will get better haha"))
         $ phone_add(p_txt, _("What degree are you in?"))
         $ phone_stamp(_("Wed 9:14 PM"))
-        $ phone_add(ar_txt, _("sorry i'm slow at replying btw, pottery class ate my whole week"))
-        $ phone_add(ar_txt, _("I'm studying bachelor of art(as you can guess haha) at the moment!"))
-        $ phone_add(ar_txt, _("and my bowl collapsed AGAIN"))
+        ar_txt "sorry i'm slow at replying btw, pottery class ate my whole week"
+        ar_txt "I'm studying bachelor of art(as you can guess haha) at the moment!"
+        ar_txt "and my bowl collapsed AGAIN"
         p "(Pottery. Okay. Say something normal.)"
         menu:
             "Ask her questions.":
@@ -973,16 +972,16 @@ label day5:
         scene bedroomnight
         with dissolve
         "You get home and another notification on the dating app."
-        $ phone_open("Arielle", app="dating")
+        $ phone_open("Arielle", app="dating", unread=True)
         $ phone_stamp(_("Wed 9:14 PM"))
         $ phone_add(ar_txt, _("No, I actually enjoy painting a lot better."))
         $ phone_add(ar_txt, _("I'm sure it's not that bad!"))
         $ phone_add(p_txt, _("Oh really? Paintings are my favorite form of art as well, especially portraits and landscape!"))
         $ phone_add(p_txt, _("I do try to draw from time to time, but it still needs practice :("))
         $ phone_stamp(_("Fri 10:37 PM"))
-        $ phone_add(ar_txt, _("sorry again for the late reply, I don't turn on notifications most of the time"))
-        $ phone_add(ar_txt, _("NO WAY Portraits are my favorite kind of painting!"))
-        $ phone_add(ar_txt, _("If you don't mind I can be the judge of that lol"))
+        ar_txt "sorry again for the late reply, I don't turn on notifications most of the time"
+        ar_txt "NO WAY Portraits are my favorite kind of painting!"
+        ar_txt "If you don't mind I can be the judge of that lol"
         "You think things are actually going pretty well?"
         "What should you do next?"
         menu:
@@ -1065,10 +1064,10 @@ label day6:
         "You're still nervous as fuck."
     play sound "audio/sfx/message.ogg"
     "As you drown in your thoughts, your phone chimes."
-    $ phone_open("Emma")
+    $ phone_open("Emma", unread=True)
     $ phone_stamp(_("Sat 11:26 AM"))
-    $ phone_add(b_txt, _("last night was really fun :)"))
     "It's a message and it's from Emma."
+    b_txt "last night was really fun :)"
     p_txt "Yeah!"
     menu:
         "We should do that more often.":
@@ -1101,10 +1100,10 @@ label day6:
     with dissolve
     play sound "audio/sfx/message.ogg"
     "You get another message."
-    $ phone_open("Elena")
+    $ phone_open("Elena", unread=True)
     $ phone_stamp(_("Sat 7:12 PM"))
-    $ phone_add(a_txt, _("heyyy whatcha doing rn??"))
     "But this time, it's Elena."
+    a_txt "heyyy whatcha doing rn??"
     p_txt "Nothing currently."
     a_txt "wanna hang out??"
     p "(What's with people and their sudden invitations?)"
@@ -1296,10 +1295,10 @@ label day7:
             "Don't text, that's kind of weird.":
                 play sound "audio/sfx/message.ogg"
                 "You get a text from Elena:"
-                $ phone_open("Elena")
+                $ phone_open("Elena", unread=True)
                 $ phone_stamp(_("Sun 10:15 AM"))
-                $ phone_add(a_txt, _("heyyy thanks for last night!!"))
-                $ phone_add(a_txt, _("u were good company ngl"))
+                a_txt "heyyy thanks for last night!!"
+                a_txt "u were good company ngl"
                 p_txt "No problem, always at your service."
                 "You can't help smiling, and you try to hide it like an idiot."
                 "You hope whatever this is, it doesn't end badly."
@@ -1318,9 +1317,9 @@ label day7:
         "But for now, you just lie on your bed and play with your phone."
         play sound "audio/sfx/message.ogg"
         "Then, you get a message."
-        $ phone_open("Elena")
+        $ phone_open("Elena", unread=True)
         $ phone_stamp(_("Sun 1:26 PM"))
-        $ phone_add(a_txt, _("HEYYY"))
+        a_txt "HEYYY"
         play music "audio/joyful.mp3" fadein 1.0
         "It's Elena."
         a_txt "so about last night"
@@ -2751,13 +2750,13 @@ label none_ending:
             play sound "audio/sfx/message.ogg"
             "Then your phone buzzes."
             "IT'S Arielle."
-            $ phone_open("Arielle")
+            $ phone_open("Arielle", unread=True)
             $ phone_stamp(_("Sat 9:03 AM"))
             $ phone_add(p_txt, _("Hey do you wanna grab some coffee or do something together?"))
             $ phone_stamp(_("Today 11:41 PM"))
-            $ phone_add(ar_txt, _("omg hi"))
-            $ phone_add(ar_txt, _("i'm SO sorry. my social got hacked and i lost literally everything"))
-            $ phone_add(ar_txt, _("just restore it and remembered i never replied to you"))
+            ar_txt "omg hi"
+            ar_txt "i'm SO sorry. my social got hacked and i lost literally everything"
+            ar_txt "just restore it and remembered i never replied to you"
             "You stare at the screen."
             "Maybe it's true. Maybe it isn't."
             "You'll never know."
